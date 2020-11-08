@@ -1,0 +1,54 @@
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+
+        <link rel="stylesheet" href="MikoClient.css">
+    </head>
+    <body>
+
+        <canvas id="tobBar" height="150" style='position:absolute; left:0px; top:0px;'> </canvas>
+        <canvas id="bottomBar" height="150" style='position:absolute; left:0px; bottom:0px;'></canvas>
+        <div style='overflow: auto; height:600px; width:98%; position:absolute; left:1%; top:150px;'>
+            <canvas id="contentCanvas" height="10" width="10"> </canvas>
+        </div>
+
+        <script>
+            (function() {
+                var topCanvas = document.getElementById('tobBar'),
+                    topContext = topCanvas.getContext('2d'),
+                    bottomCanvas = document.getElementById('bottomBar'),
+                    bottomContext = bottomCanvas.getContext('2d');
+
+                initialize();
+
+                function initialize() {
+                       window.addEventListener('resize', resizeCanvas, false);
+                       resizeCanvas();
+                }
+
+                function redraw() {
+                    topContext.canvas.width  = window.innerWidth;
+                    topContext.shadowBlur = 20;
+                    topContext.shadowColor = "black";
+                    topContext.fillStyle = "#293133";
+                    topContext.fillRect(0, 0, window.innerWidth, 120);
+
+                    bottomContext.canvas.width  = window.innerWidth;
+                    bottomContext.shadowBlur = 20;
+                    bottomContext.shadowColor = "black";
+                    bottomContext.fillStyle = "#293133";
+                    bottomContext.fillRect(0, 50, window.innerWidth, 120);
+                }
+
+                function resizeCanvas() {
+                    topCanvas.width = window.innerWidth;
+                    bottomCanvas.width = window.innerWidth;
+                    redraw();
+                }
+            })();
+            
+        </script>
+    </body>
+</html>

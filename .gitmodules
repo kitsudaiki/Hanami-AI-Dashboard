@@ -1,0 +1,3 @@
+[submodule "src/libKitsunemimiSakuraGui"]
+	path = src/libKitsunemimiSakuraGui
+	url = git@github.com:kitsudaiki/libKitsunemimiSakuraGui.git

@@ -25,6 +25,4 @@ function websocketMessageProcessing(message)
         //hexagons[i].updatePosition(obj[i][0], obj[i][1]);
         //hexagons[i].color = obj[i][2];
     }
-
-    updateCanvas(hexagons);
 };

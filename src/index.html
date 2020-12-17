@@ -34,8 +34,17 @@ limitations under the License. -->
 
         <!-- content -->
         <div id="content_div">
-            <div class="shadow p-3 mb-5 text-white" id="hex_view_div">
-                <canvas id="contentCanvas" height="10" width="10"> </canvas> 
+            <div class="shadow p-3 mb-5 text-white" id="io_view">
+                <textarea class="form-control" id="io_input"></textarea>
+                <button type="button" class="btn btn-primary" id="io_send_button">Send</button>
+                <textarea class="form-control" id="io_output"></textarea>
+            </div>
+            <div class="shadow p-3 mb-5 text-white" id="learn_view">
+                <textarea class="form-control" id="learn_input"></textarea>
+                <button type="button" class="btn btn-primary" id="register_input_button">Register Input</button>
+                <button type="button" class="btn btn-primary" id="register_output_button">Register Output</button>
+                <button type="button" class="btn btn-primary" id="learn_send_button">Learn</button>
+                <textarea class="form-control" id="learn_output"></textarea>
             </div>
         </div>
 
@@ -44,19 +53,15 @@ limitations under the License. -->
         </div>
 
         <!-- scripts-->
-        <script>
-            var contentCanvas = document.getElementById("contentCanvas");
-            contentCanvas.style.position = 'absolute';
-            var ctx = contentCanvas.getContext("2d");
-            drawHexagons(ctx, hexagons)
-        </script>
+        <script src="/scripts/http_control_functions.js"></script>
+        <script src="/scripts/button_functions.js"></script>
         <script src="/scripts/websocket_functions.js"></script>
         <script src="/libKitsunemimiSakuraGui/src/http_websocket_create.js"></script>
 
 
-        <!-- Bootstrap scrips 
+        <!-- Bootstrap scrips -->
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>-->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
 
     </body>
 </html>

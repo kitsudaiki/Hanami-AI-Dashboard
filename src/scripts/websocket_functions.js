@@ -17,12 +17,7 @@
 function websocketMessageProcessing(message) 
 {
     console.log("websocket-data: " + message.data);
-    var obj = JSON.parse(message.data); 
+    //var obj = JSON.parse(message.data); 
 
-    for (i = 0; i < obj.length; i++) 
-    {
-        //console.log(obj[i][0]+"  "+obj[i][1]+"  "+obj[i][2]);
-        //hexagons[i].updatePosition(obj[i][0], obj[i][1]);
-        //hexagons[i].color = obj[i][2];
-    }
+    document.getElementById('io_output').value = message.data;
 };

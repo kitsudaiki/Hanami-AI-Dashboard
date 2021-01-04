@@ -41,10 +41,25 @@ limitations under the License. -->
             </div>
             <div class="shadow p-3 mb-5 text-white" id="learn_view">
                 <textarea class="form-control" id="learn_input"></textarea>
-                <button type="button" class="btn btn-primary" id="register_input_button">Register Input</button>
-                <button type="button" class="btn btn-primary" id="register_output_button">Register Output</button>
-                <button type="button" class="btn btn-primary" id="learn_send_button">Learn</button>
+
+                <button id="register_input_button" type="button" class="btn btn-primary">Register Input</button>
+                <button id="register_output_button" type="button" class="btn btn-primary">Register Output</button>
+                <button id="learn_send_button" type="button" class="btn btn-primary">Learn</button>
+                <button id="reset_lerning_button" type="button" class="btn btn-primary">Learn</button>
+                <button id="snapshot_learning_button" type="button" class="btn btn-primary">Learn</button>
+
                 <textarea class="form-control" id="learn_output"></textarea>
+            </div>
+            <div class="shadow p-3 mb-5 text-white" id="global_settings_view">
+
+                <div>Initial Memorizing: <input id="initial_memorizing_value" class="global_value_field" type="number" step="0.01" min="0" max="1.0" value="0.1"></div>
+                <div>Memorizing: <input id="memorizing_offset_value" class="global_value_field" type="number" step="0.01" min="0" max="1.0" value="0.1"></div>
+                <div>Sensitivity: <input id="sensitivity_value" class="global_value_field" type="number" step="0.01" min="0" max="1.0" value="0.1"></div>
+                <div>Learning: <input id="learning_value" class="global_value_field" type="number" step="0.01" min="0" max="1.0" value="0.1"></div>
+                <div>Glia: <input id="glia_value" class="global_value_field" type="number" step="0.01" min="1.0" max="2.0" value="1.0"></div>
+
+                <button id="set_glovalue_values_button" type="button" class="btn btn-primary">Set global values</button>
+
             </div>
         </div>
 

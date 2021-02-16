@@ -16,20 +16,11 @@
 
 function sendIoInput(e) 
 {
-    httpControlConnection.open("POST", 'http://127.0.0.1:1500/input');
+	var ioInput = document.getElementById('io_input').value; 
+
+    httpControlConnection.open("POST", 'http://127.0.0.1:1500/set_input');
+    httpControlConnection.send("{'input' : '" + ioInput + "'}");
 	httpControlConnection.send(); 
-}
-
-function registerInput(e) 
-{
-    httpControlConnection.open("POST", 'http://127.0.0.1:1500/register_input');
-	httpControlConnection.send("{'brickId': 1}"); 
-}
-
-function registerOutput(e) 
-{
-    httpControlConnection.open("POST", 'http://127.0.0.1:1500/register_output');
-	httpControlConnection.send("{'brickId': 60}"); 
 }
 
 function sendLearnInput(e) 
@@ -41,41 +32,5 @@ function sendLearnInput(e)
 	httpControlConnection.send("{'input' : '" + learnInput + "', 'should': '" + learnOutput + "'}");
 }
 
-function snapshotLearning(e) 
-{
-    httpControlConnection.open("POST", 'http://127.0.0.1:1500/snapshot_learning');
-	httpControlConnection.send(); 
-}
-
-function reseLearning(e) 
-{
-    httpControlConnection.open("POST", 'http://127.0.0.1:1500/reset_learning');
-	httpControlConnection.send(); 
-}
-
-function setGlobalValues(e) 
-{
-    httpControlConnection.open("POST", 'http://127.0.0.1:1500/set_global_values');
-
-	var initialMemorizing = document.getElementById('initial_memorizing_value').value; 
-	var memorizing = document.getElementById('memorizing_offset_value').value; 
-	var sensitivity = document.getElementById('sensitivity_value').value; 
-	var learning = document.getElementById('learning_value').value; 
-	var glia = document.getElementById('glia_value').value; 
-
-	httpControlConnection.send("{'initial_memorizing' : '" + initialMemorizing 
-					           + "', 'memorizing' : '" + memorizing 
-							   + "', 'sensitivity' : '" + sensitivity
-							   + "', 'learning' : '" + learning
-		                       + "', 'glia_value': '" + glia + "'}");
-}
-
-document.getElementById("register_input_button").addEventListener("click", registerInput, false);
-document.getElementById("register_output_button").addEventListener("click", registerOutput, false);
-
 document.getElementById("io_send_button").addEventListener("click", sendIoInput, false);
 document.getElementById("learn_send_button").addEventListener("click", sendLearnInput, false);
-document.getElementById("snapshot_learning_button").addEventListener("click", snapshotLearning, false);
-document.getElementById("reset_lerning_button").addEventListener("click", reseLearning, false);
-
-document.getElementById("set_glovalue_values_button").addEventListener("click", sendLearnInput, false);

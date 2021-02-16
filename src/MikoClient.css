@@ -28,7 +28,7 @@ limitations under the License.
 #io_view {
   	overflow: auto; 
   	height: 98%; 
-  	width: 39%; 
+  	width: 49%; 
   	left: 1%; 
   	top: 1%; 
   	position: absolute;
@@ -37,22 +37,11 @@ limitations under the License.
 #learn_view {
   	overflow: auto; 
   	height: 98%; 
-  	width: 39%; 
-  	left: 41%; 
+  	width: 49%; 
+  	left: 51%; 
   	top: 1%; 
   	position: absolute;
 } 
-
-
-#global_settings_view {
-    overflow: auto; 
-    height: 98%; 
-    width: 18%; 
-    left: 81%; 
-    top: 1%; 
-    position: absolute;
-} 
-
 
 .global_value_field {
     width: 50%;

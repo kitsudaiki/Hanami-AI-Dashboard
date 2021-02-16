@@ -1,3 +1,8 @@
+
+var hostUrl = window.location.host;
+var hostUrlWithoutPort = hostUrl.split(":")[0];
+const websocketRequestUrl = 'http://' + hostUrl + '/client/websocket';
+
 const httpControlConnection = new XMLHttpRequest();
 
 httpControlConnection.addEventListener("progress", updateProgress);
@@ -13,7 +18,7 @@ function transferComplete(event)
 {
     console.log("The transfer is complete.");
     console.log(httpControlConnection.responseText);
-    var jsonResponse = JSON.parse(httpConnection.responseText);
+    var jsonResponse = JSON.parse(httpControlConnection.responseText);
     // TODO: handle response
 }
 

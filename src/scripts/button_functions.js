@@ -18,7 +18,7 @@ function sendIoInput(e)
 {
 	var ioInput = document.getElementById('io_input').value; 
 
-    httpControlConnection.open("POST", 'http://127.0.0.1:1500/set_input');
+    httpControlConnection.open("POST", "http://" + window.location.host + "/control/set_input");
     httpControlConnection.send("{'input' : '" + ioInput + "'}");
 	httpControlConnection.send(); 
 }
@@ -28,9 +28,9 @@ function sendLearnInput(e)
 	var learnInput = document.getElementById('learn_input').value; 
 	var learnOutput = document.getElementById('learn_output').value; 
 
-    httpControlConnection.open("POST", 'http://127.0.0.1:1500/learn');
+    httpControlConnection.open("POST", "http://" + window.location.host + "/control/learn");
 	httpControlConnection.send("{'input' : '" + learnInput + "', 'should': '" + learnOutput + "'}");
 }
 
 document.getElementById("io_send_button").addEventListener("click", sendIoInput, false);
-document.getElementById("learn_send_button").addEventListener("click", sendLearnInput, false);
+document.getElementById("learn_button").addEventListener("click", sendLearnInput, false);

@@ -51,7 +51,7 @@ limitations under the License. -->
             var ctx = contentCanvas.getContext("2d");
             drawHexagons(ctx, hexagons)
 
-            var testData = "{\"bricks\": [[1,2,100],[2,2,100],[3,2,100]]}"
+            var testData = "{\"bricks\": [[1,2,1],[2,2,1],[3,2,1]]}"
             var obj = JSON.parse(testData); 
 
             if(obj.hasOwnProperty("bricks"))
@@ -60,7 +60,7 @@ limitations under the License. -->
                 for (i = 0; i < bricks.length; i++) 
                 {
                     hexagons[i].updatePosition(bricks[i][0], bricks[i][1]);
-                    hexagons[i].color = 100;
+                    hexagons[i].color = bricks[i][2];
                     
                     if(bricks[i][0] > sizeX) {
                         sizeX = bricks[i][0];
@@ -70,9 +70,8 @@ limitations under the License. -->
                         sizeY = bricks[i][1];
                     }
                 }
-
-                updateCanvas(hexagons);
             }
+
         </script>
 
     </body>

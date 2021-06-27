@@ -14,6 +14,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+requestAnimationFrame(mainLoop);
+
 var sizeX = 0;
 var sizeY = 0;
 var stepCount = 0;
@@ -21,8 +23,12 @@ var ypx = 0;
 var xpx = 0;
 var hexSize = 50;
 
+var refresh = true;
+var hexagons = [];
+
 class Hexagon 
 {
+    visible = false;
     color = 0;
     x = 0;
     y = 0;
@@ -31,19 +37,15 @@ class Hexagon
     {
         this.color = color;
         this.updatePosition(row, column);
+        this.visible = false;
     }
 
     updatePosition(column, row) 
     {
+        this.visible = true;
         this.x = (column * hexSize * 2) + ((row % 2) * hexSize);
         this.y = (row * hexSize * 1.732);
     }
-}
-
-
-var hexagons = [];
-for (i = 0; i < 25*25; i++) {
-    hexagons.push(new Hexagon(0, 0, 0));
 }
 
 function drawRotatedRect(contextObj, 
@@ -54,7 +56,8 @@ function drawRotatedRect(contextObj,
                          degrees) 
 {
     contextObj.save();
-    contextObj.translate(x + (width / 2),  y + 2 * (height / 2));
+    contextObj.translate(x + (width / 2),  
+                         y + 2 * (height / 2));
     contextObj.rotate(degrees * (Math.PI / 180));
     contextObj.fillRect(-width / 2, -height / 2, width, height);
     contextObj.restore();
@@ -65,10 +68,15 @@ function drawHexagons(contextObj, hexagons, xOffset)
     for (i = 0; i < hexagons.length; i++) 
     {
         hexagon = hexagons[i];
-        if(hexagon.color > 0)
+        if(hexagon.visible)
         {
-            colorDif = hexagon.color / 100.0;
-            contextObj.fillStyle = "rgb(" + (65 / colorDif) + "," + (105 / colorDif) + "," + (225 / colorDif) + ")";
+            console.log(hexagon.color);
+            if(hexagon.color == 1) {
+                contextObj.fillStyle = "rgb(65,105,225)";
+            } else {
+                contextObj.fillStyle = "rgb(65,225,105)";
+            }
+
             drawRotatedRect(contextObj, 
                             hexagon.x + xOffset, 
                             hexagon.y, 
@@ -118,7 +126,7 @@ function updateCanvas(hexagons)
     var context2 = canvas2.getContext('2d');
 
     // draw new canvas
-    drawHexagons(context2, hexagons, (contentCanvas.width - xpx) / 2);
+    drawHexagons(context2, hexagons, 0);
 
     // switch canvas to show the updates
     ctx.clearRect(0, 0, contentCanvas.width, contentCanvas.height);
@@ -126,3 +134,85 @@ function updateCanvas(hexagons)
     delete canvas2;
 }
 
+
+function toggleColor(mouseX, mouseY) 
+{
+    for (i = 0; i < hexagons.length; i++) 
+    {
+        hexagon = hexagons[i];
+        if(hexagon.visible)
+        {
+            if(hexagon.x < mouseX 
+                && hexagon.x + hexSize * 1.732 > mouseX 
+                && hexagon.y < mouseY 
+                && hexagon.y + hexSize * 1.732 > mouseY)
+            {
+                if(hexagons[i].color == 1) {
+                    hexagons[i].color = 2;
+                } else {
+                    hexagons[i].color = 1;
+                }
+            }
+        }
+    }
+}
+
+const mouse = {
+    button : false,
+    x : 0,
+    y : 0,
+    down : false,
+    up : false,
+    element : null,
+    event(e) 
+    {
+        const m = mouse;
+        m.bounds = m.element.getBoundingClientRect();
+        m.x = e.pageX - m.bounds.left - scrollX;
+        m.y = e.pageY - m.bounds.top - scrollY;
+        const prevButton = m.button;
+        m.button = e.type === "mousedown" ? true : e.type === "mouseup" ? false : mouse.button;
+
+        if(!prevButton 
+            && m.button) 
+        { 
+            //console.log("poi1" + " x: " + m.x +"  y: " + m.y);
+            //refresh = true;
+            m.down = true 
+        }
+
+        if(prevButton 
+            && !m.button) 
+        { 
+            //console.log("poi2" + " x: " + m.x +"  y: " + m.y);
+            toggleColor(m.x, m.y);
+            refresh = true;
+            m.up = true 
+        }
+    },
+    start(element) 
+    {
+        mouse.element = element;
+        "down,up,move".split(",").forEach(name => document.addEventListener("mouse" + name, mouse.event));
+    }
+}
+
+function mainLoop() 
+{
+    if(refresh)
+    {
+        refresh = false;
+        updateCanvas(hexagons);
+    }
+
+    requestAnimationFrame(mainLoop)
+}
+   
+
+var contentCanvas = document.getElementById("contentCanvas");
+mouse.start(contentCanvas);
+
+// init empty hexagon-list
+for (i = 0; i < 25*25; i++) {
+    hexagons.push(new Hexagon(0, 0, 0));
+}

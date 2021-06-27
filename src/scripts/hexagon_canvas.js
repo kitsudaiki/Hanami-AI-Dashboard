@@ -139,6 +139,11 @@ function toggleColor(mouseX, mouseY)
 {
     for (i = 0; i < hexagons.length; i++) 
     {
+        hexagons[i].color = 1;
+    }
+    
+    for (i = 0; i < hexagons.length; i++) 
+    {
         hexagon = hexagons[i];
         if(hexagon.visible)
         {
@@ -149,8 +154,6 @@ function toggleColor(mouseX, mouseY)
             {
                 if(hexagons[i].color == 1) {
                     hexagons[i].color = 2;
-                } else {
-                    hexagons[i].color = 1;
                 }
             }
         }

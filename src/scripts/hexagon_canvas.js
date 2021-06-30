@@ -21,7 +21,8 @@ var sizeY = 0;
 var stepCount = 0;
 var ypx = 0;
 var xpx = 0;
-var hexSize = 50;
+var hexSize = 50.0;
+var ratio = 1.0;
 
 var refresh = true;
 var hexagons = [];
@@ -78,22 +79,22 @@ function drawHexagons(contextObj, hexagons, xOffset)
             }
 
             drawRotatedRect(contextObj, 
-                            hexagon.x + xOffset, 
-                            hexagon.y, 
-                            hexSize * 1.732, 
-                            hexSize, 
+                            hexagon.x * ratio + xOffset, 
+                            hexagon.y * ratio, 
+                            hexSize * 1.732 * ratio, 
+                            hexSize * ratio, 
                             0);
             drawRotatedRect(contextObj, 
-                            hexagon.x + xOffset, 
-                            hexagon.y, 
-                            hexSize * 1.732, 
-                            hexSize, 
+                            hexagon.x  * ratio+ xOffset, 
+                            hexagon.y * ratio, 
+                            hexSize * 1.732 * ratio, 
+                            hexSize * ratio, 
                             60);
             drawRotatedRect(contextObj, 
-                            hexagon.x + xOffset, 
-                            hexagon.y, 
-                            hexSize * 1.732, 
-                            hexSize, 
+                            hexagon.x * ratio + xOffset, 
+                            hexagon.y * ratio, 
+                            hexSize * 1.732 * ratio, 
+                            hexSize * ratio, 
                             120);
         }
     }
@@ -110,10 +111,9 @@ function updateCanvas(hexagons)
     ypx = ((2.5 + sizeY) * hexSize * 1.732);
 
     // calculate new size to fix into content-div
-    var ratio = hex_view_div.offsetHeight / ypx;
+    ratio = hex_view_div.offsetHeight / ypx;
     ypx = ypx * ratio;
     xpx = xpx * ratio;
-    //hexSize = hexSize * ratio;
 
     // set size values to canvas
     contentCanvas.width = hex_view_div.offsetWidth * 0.95;
@@ -141,16 +141,16 @@ function toggleColor(mouseX, mouseY)
     {
         hexagons[i].color = 1;
     }
-    
+
     for (i = 0; i < hexagons.length; i++) 
     {
         hexagon = hexagons[i];
         if(hexagon.visible)
         {
-            if(hexagon.x < mouseX 
-                && hexagon.x + hexSize * 1.732 > mouseX 
-                && hexagon.y < mouseY 
-                && hexagon.y + hexSize * 1.732 > mouseY)
+            if(hexagon.x * ratio < mouseX 
+                && hexagon.x * ratio + hexSize * 1.732 * ratio > mouseX 
+                && hexagon.y * ratio < mouseY 
+                && hexagon.y * ratio + hexSize * 1.732 * ratio > mouseY)
             {
                 if(hexagons[i].color == 1) {
                     hexagons[i].color = 2;
@@ -161,9 +161,9 @@ function toggleColor(mouseX, mouseY)
 }
 
 const mouse = {
-    button : false,
     x : 0,
     y : 0,
+    button : false,
     down : false,
     up : false,
     element : null,
@@ -179,15 +179,12 @@ const mouse = {
         if(!prevButton 
             && m.button) 
         { 
-            //console.log("poi1" + " x: " + m.x +"  y: " + m.y);
-            //refresh = true;
             m.down = true 
         }
 
         if(prevButton 
             && !m.button) 
         { 
-            //console.log("poi2" + " x: " + m.x +"  y: " + m.y);
             toggleColor(m.x, m.y);
             refresh = true;
             m.up = true 
@@ -196,7 +193,13 @@ const mouse = {
     start(element) 
     {
         mouse.element = element;
-        "down,up,move".split(",").forEach(name => document.addEventListener("mouse" + name, mouse.event));
+        document.addEventListener("mouseup" + name, mouse.event);
+        document.addEventListener("mousedown" + name, mouse.event);
+        document.addEventListener("mousemove" + name, mouse.event);
+        document.addEventListener('contextmenu', function(e) {
+            alert("You've tried to open context menu"); //here you draw your own menu
+            e.preventDefault();
+          }, false);
     }
 }
 
@@ -211,7 +214,7 @@ function mainLoop()
     requestAnimationFrame(mainLoop)
 }
    
-
+refresh = true;
 var contentCanvas = document.getElementById("contentCanvas");
 mouse.start(contentCanvas);
 

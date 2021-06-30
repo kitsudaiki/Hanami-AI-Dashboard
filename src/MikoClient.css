@@ -34,6 +34,13 @@ limitations under the License.
     position: absolute;
 } 
 
+#hex_field_div {
+   margin: auto;
+   height: 100%; 
+   width: 100%; 
+} 
+
+
 .global_value_field {
     width: 50%;
 }

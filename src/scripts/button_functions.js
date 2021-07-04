@@ -14,23 +14,48 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-function sendIoInput(e) 
+function saveFile(e) 
 {
-	var ioInput = document.getElementById('io_input').value; 
+	console.log("save");
+	var modal = document.getElementById("save_modal");
+	var span = document.getElementsByClassName("close")[0];
 
-    httpControlConnection.open("POST", "http://" + window.location.host + "/control/set_input");
-    httpControlConnection.send("{'input' : '" + ioInput + "'}");
-	httpControlConnection.send(); 
+	// When the user clicks on <span> (x), close the modal
+	span.onclick = function() {
+		modal.style.display = "none";
+	}
+
+	// When the user clicks anywhere outside of the modal, close it
+	window.onclick = function(event) {
+		if (event.target == modal) {
+			modal.style.display = "none";
+		}
+	} 
+
+	modal.style.display = "block";
 }
 
-function sendLearnInput(e) 
+function loadFile(e) 
 {
-	var learnInput = document.getElementById('learn_input').value; 
-	var learnOutput = document.getElementById('learn_output').value; 
+	console.log("load");
 
-    httpControlConnection.open("POST", "http://" + window.location.host + "/control/learn");
-	httpControlConnection.send("{'input' : '" + learnInput + "', 'should': '" + learnOutput + "'}");
+	var modal = document.getElementById("open_modal");
+	var span = document.getElementsByClassName("close")[0];
+
+	// When the user clicks on <span> (x), close the modal
+	span.onclick = function() {
+		modal.style.display = "none";
+	}
+
+	// When the user clicks anywhere outside of the modal, close it
+	window.onclick = function(event) {
+		if (event.target == modal) {
+			modal.style.display = "none";
+		}
+	} 
+
+	modal.style.display = "block";
 }
 
-document.getElementById("io_send_button").addEventListener("click", sendIoInput, false);
-document.getElementById("learn_button").addEventListener("click", sendLearnInput, false);
+document.getElementById("save_button").addEventListener("click", saveFile, false);
+document.getElementById("load_button").addEventListener("click", loadFile, false);

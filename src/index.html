@@ -37,99 +37,122 @@ limitations under the License. -->
             <div class="shadow p-3 mb-5 text-white" id="hex_view_div">
                 <canvas id="contentCanvas"> </canvas> 
             </div>
-            <div id="meta_data_div">
+            <div id="meta_data_div" class="shadow p-3 mb-5 text-white" >
                 <div class="tab">
                     <button class="tablinks" onclick="openCity(event, 'global_settings')">Global settings</button>
                     <button class="tablinks" onclick="openCity(event, 'brick_sessings')">Brick settings</button>
                 </div>
-                <div id="brick_sessings" class="tabcontent">
-                </div>
-                <div id="global_settings" class="tabcontent" class="shadow p-3 mb-5 text-white" id="global_settings_div">
-                    <table cellspacing="0" cellpadding="1"  class="table text-white" id="processing_table">
-                      <thead>
-                        <tr>
-                          <th scope="col" style="width: 60%">Field</th>
-                          <th scope="col" style="width: 40%">Value</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <th scope="row">Refraction time</th>
-                          <td contenteditable='true'>1</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">Synapse delete border</th>
-                          <td contenteditable='true'>0.01</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">Action potential</th>
-                          <td contenteditable='true'>0.0</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">Node cooldown</th>
-                          <td contenteditable='true'>3000.0</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">Memorizing</th>
-                          <td contenteditable='true'>0.5</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">Glia value</th>
-                          <td contenteditable='true'>1.0</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">Max synapse weight</th>
-                          <td contenteditable='true'>0.01</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">Negative sign</th>
-                          <td contenteditable='true'>0.5</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">Potential overflow</th>
-                          <td contenteditable='true'>1.0</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">Multiplicator range</th>
-                          <td contenteditable='true'>1</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">Cycle time</th>
-                          <td contenteditable='true'>1000000</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">Nodes per brick</th>
-                          <td contenteditable='true'>1568</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">Node lower border</th>
-                          <td contenteditable='true'>2.0</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">Node upper border</th>
-                          <td contenteditable='true'>7.0</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">Max brick distance</th>
-                          <td contenteditable='true'>10</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">Max sections</th>
-                          <td contenteditable='true'>5000</td>
-                        </tr>
-                      </tbody>
-                    </table>
+                <div id="tab_bar_content">
+                    <div id="brick_sessings" class="tabcontent">
+                    </div>
+                    <div id="global_settings" class="tabcontent" class="shadow p-3 mb-5 text-white" id="global_settings_div">
+                        <table cellspacing="0" cellpadding="1"  class="table text-white" id="processing_table">
+                          <thead>
+                            <tr>
+                              <th scope="col" style="width: 60%">Field</th>
+                              <th scope="col" style="width: 40%">Value</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <th scope="row">Refraction time</th>
+                              <td contenteditable='true'>1</td>
+                            </tr>
+                            <tr>
+                              <th scope="row">Synapse delete border</th>
+                              <td contenteditable='true'>0.01</td>
+                            </tr>
+                            <tr>
+                              <th scope="row">Action potential</th>
+                              <td contenteditable='true'>0.0</td>
+                            </tr>
+                            <tr>
+                              <th scope="row">Node cooldown</th>
+                              <td contenteditable='true'>3000.0</td>
+                            </tr>
+                            <tr>
+                              <th scope="row">Memorizing</th>
+                              <td contenteditable='true'>0.5</td>
+                            </tr>
+                            <tr>
+                              <th scope="row">Glia value</th>
+                              <td contenteditable='true'>1.0</td>
+                            </tr>
+                            <tr>
+                              <th scope="row">Max synapse weight</th>
+                              <td contenteditable='true'>0.01</td>
+                            </tr>
+                            <tr>
+                              <th scope="row">Negative sign</th>
+                              <td contenteditable='true'>0.5</td>
+                            </tr>
+                            <tr>
+                              <th scope="row">Potential overflow</th>
+                              <td contenteditable='true'>1.0</td>
+                            </tr>
+                            <tr>
+                              <th scope="row">Multiplicator range</th>
+                              <td contenteditable='true'>1</td>
+                            </tr>
+                            <tr>
+                              <th scope="row">Cycle time</th>
+                              <td contenteditable='true'>1000000</td>
+                            </tr>
+                            <tr>
+                              <th scope="row">Nodes per brick</th>
+                              <td contenteditable='true'>1568</td>
+                            </tr>
+                            <tr>
+                              <th scope="row">Node lower border</th>
+                              <td contenteditable='true'>2.0</td>
+                            </tr>
+                            <tr>
+                              <th scope="row">Node upper border</th>
+                              <td contenteditable='true'>7.0</td>
+                            </tr>
+                            <tr>
+                              <th scope="row">Max brick distance</th>
+                              <td contenteditable='true'>10</td>
+                            </tr>
+                            <tr>
+                              <th scope="row">Max sections</th>
+                              <td contenteditable='true'>5000</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
 
-         <!-- bottom -->
+        <!-- bottom -->
         <div class="container-flow text-white kitsunemimi_bottom">
+            <div id="bottom_bar_content">
+                <svg id="save_button" class="save_load_buton">
+                    <rect class="save_load_buton" style="fill:rgb(255, 0,0);stroke-width:3;stroke:rgb(0,0,0)" />
+                </svg> 
+                <div id="save_modal" class="modal">
+                    <div class="modal-content">
+                        <span class="close">&times;</span>
+                    </div>
+                </div>
+
+                <svg id="load_button" class="save_load_buton">
+                    <rect class="save_load_buton" style="fill:rgb(0,255,0);stroke-width:3;stroke:rgb(0,0,0)" />
+                </svg> 
+                <div id="open_modal" class="modal">
+                    <div class="modal-content">
+                        <span class="close">&times;</span>
+                        <input type="file">
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- scripts-->
         <script src="/client/scripts/tabbar.js"></script>
         <script src="/client/scripts/hexagon_canvas.js"></script>
         <script src="/client/scripts/initial_data.js"></script>
+        <script src="/client/scripts/button_functions.js"></script>
     </body>
 </html>

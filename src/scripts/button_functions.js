@@ -18,7 +18,7 @@ function saveFile(e)
 {
 	console.log("save");
 	var modal = document.getElementById("save_modal");
-	var span = document.getElementsByClassName("close")[0];
+		var span = document.getElementById("close_save_modal");
 
 	// When the user clicks on <span> (x), close the modal
 	span.onclick = function() {
@@ -33,29 +33,52 @@ function saveFile(e)
 	} 
 
 	modal.style.display = "block";
+}
+
+
+function handleFileSelect(e) 
+{
+	var reader = new FileReader();
+	reader.readAsText(document.getElementById("file_chooser").files[0]);
+	reader.onload = function (oFREvent) {
+        var fileContent = reader.result;
+        // TODO: load-function
+        console.log("poipoipoi: " + fileContent);
+    };
 }
 
 function loadFile(e) 
 {
 	console.log("load");
 
-	var modal = document.getElementById("open_modal");
-	var span = document.getElementsByClassName("close")[0];
+	// Check for the various File API support.
+	if(window.File 
+		&& window.FileReader 
+		&& window.Blob) 
+	{
+		var modal = document.getElementById("open_modal");
+		var span = document.getElementById("close_open_modal");
 
-	// When the user clicks on <span> (x), close the modal
-	span.onclick = function() {
-		modal.style.display = "none";
-	}
-
-	// When the user clicks anywhere outside of the modal, close it
-	window.onclick = function(event) {
-		if (event.target == modal) {
+		// When the user clicks on <span> (x), close the modal
+		span.onclick = function() {
 			modal.style.display = "none";
 		}
-	} 
 
-	modal.style.display = "block";
+		// When the user clicks anywhere outside of the modal, close it
+		window.onclick = function(event) {
+			if (event.target == modal) {
+				modal.style.display = "none";
+			}
+		} 
+
+		modal.style.display = "block";
+	} 
+	else 
+	{
+	   	alert('The File APIs are not fully supported in this browser.');
+	}
 }
 
 document.getElementById("save_button").addEventListener("click", saveFile, false);
 document.getElementById("load_button").addEventListener("click", loadFile, false);
+document.getElementById("file_loader").addEventListener("click", handleFileSelect, false);

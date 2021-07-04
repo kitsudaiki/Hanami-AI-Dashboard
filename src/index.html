@@ -151,7 +151,13 @@ limitations under the License. -->
                 </svg> 
                 <div id="save_modal" class="modal">
                     <div class="modal-content">
-                        <span class="close">&times;</span>
+                        <div>
+                            <span id="close_save_modal" class="close">&times;</span>
+                        </div>
+                        <div style="width: 80%;height: 50px;margin: auto;margin-top: 10px;">
+                        </div>
+                        <div style="width: 80%;height: 100px;margin: auto;margin-top: 10px;">
+                        </div>
                     </div>
                 </div>
 
@@ -160,8 +166,15 @@ limitations under the License. -->
                 </svg> 
                 <div id="open_modal" class="modal">
                     <div class="modal-content">
-                        <span class="close">&times;</span>
-                        <input type="file">
+                        <div>
+                            <span id="close_open_modal" class="close">&times;</span>
+                        </div>
+                        <div style="width: 80%;height: 50px;margin: auto;margin-top: 10px;">
+                            <input type="file" id="file_chooser" style="width: 100%;height: 60px;">
+                        </div>
+                        <div style="width: 80%;height: 100px;margin: auto;margin-top: 10px;">
+                            <button type="button" id="file_loader" style="width: 100%;height: 60px;">Load file</button> 
+                        </div>
                     </div>
                 </div>
             </div>

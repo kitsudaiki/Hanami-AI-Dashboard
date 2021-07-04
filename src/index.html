@@ -39,13 +39,31 @@ limitations under the License. -->
             </div>
             <div id="meta_data_div" class="shadow p-3 mb-5 text-white" >
                 <div class="tab">
-                    <button class="tablinks" onclick="openCity(event, 'global_settings')">Global settings</button>
-                    <button class="tablinks" onclick="openCity(event, 'brick_sessings')">Brick settings</button>
+                    <button class="tablinks" onclick="selectTable(event, 'global_settings')">Global settings</button>
+                    <button class="tablinks" onclick="selectTable(event, 'brick_sessings')">Brick settings</button>
                 </div>
                 <div id="tab_bar_content">
                     <div id="brick_sessings" class="tabcontent">
+                        <table cellspacing="0" cellpadding="1"  class="table text-white" id="processing_table">
+                          <thead>
+                            <tr>
+                              <th scope="col" style="width: 60%">Field</th>
+                              <th scope="col" style="width: 40%">Value</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <th scope="row">Refraction time</th>
+                              <td contenteditable='true'>x</td>
+                            </tr>
+                            <tr>
+                              <th scope="row">Synapse delete border</th>
+                              <td contenteditable='true'>x</td>
+                            </tr>
+                          </tbody>
+                        </table>
                     </div>
-                    <div id="global_settings" class="tabcontent" class="shadow p-3 mb-5 text-white" id="global_settings_div">
+                    <div id="global_settings" class="tabcontent">
                         <table cellspacing="0" cellpadding="1"  class="table text-white" id="processing_table">
                           <thead>
                             <tr>

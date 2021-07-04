@@ -14,15 +14,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-requestAnimationFrame(mainLoop);
+var ratio = 1.0;
+var hexSize = 50.0;
 
-var sizeX = 0;
-var sizeY = 0;
-var stepCount = 0;
+var offsetX = 0.0;
+var offsetY = 0.0;
+
+var nubmerBricksXdim = 5;
+var nubmerBricksYdim = 5;
+
 var ypx = 0;
 var xpx = 0;
-var hexSize = 50.0;
-var ratio = 1.0;
 
 var refresh = true;
 var hexagons = [];
@@ -64,56 +66,63 @@ function drawRotatedRect(contextObj,
     contextObj.restore();
 }
 
-function drawHexagons(contextObj, hexagons, xOffset) 
+function drawHexagons(contextObj) 
 {
     for (i = 0; i < hexagons.length; i++) 
     {
         hexagon = hexagons[i];
         if(hexagon.visible)
         {
-            console.log(hexagon.color);
             if(hexagon.color == 1) {
                 contextObj.fillStyle = "rgb(65,105,225)";
             } else {
                 contextObj.fillStyle = "rgb(65,225,105)";
             }
-
-            drawRotatedRect(contextObj, 
-                            hexagon.x * ratio + xOffset, 
-                            hexagon.y * ratio, 
-                            hexSize * 1.732 * ratio, 
-                            hexSize * ratio, 
-                            0);
-            drawRotatedRect(contextObj, 
-                            hexagon.x  * ratio+ xOffset, 
-                            hexagon.y * ratio, 
-                            hexSize * 1.732 * ratio, 
-                            hexSize * ratio, 
-                            60);
-            drawRotatedRect(contextObj, 
-                            hexagon.x * ratio + xOffset, 
-                            hexagon.y * ratio, 
-                            hexSize * 1.732 * ratio, 
-                            hexSize * ratio, 
-                            120);
         }
+        else
+        {
+            contextObj.fillStyle = "rgb(75,75,75)";
+        }
+
+        drawRotatedRect(contextObj, 
+                        hexagon.x * ratio + offsetX, 
+                        hexagon.y * ratio + offsetY, 
+                        hexSize * 1.732 * ratio, 
+                        hexSize * ratio, 
+                        0);
+        drawRotatedRect(contextObj, 
+                        hexagon.x  * ratio + offsetX, 
+                        hexagon.y * ratio + offsetY, 
+                        hexSize * 1.732 * ratio, 
+                        hexSize * ratio, 
+                        60);
+        drawRotatedRect(contextObj, 
+                        hexagon.x * ratio + offsetX, 
+                        hexagon.y * ratio + offsetY, 
+                        hexSize * 1.732 * ratio, 
+                        hexSize * ratio, 
+                        120);
+
     }
 }
 
-function updateCanvas(hexagons) 
+function updateCanvas() 
 {
+    console.log("poi");
     var contentCanvas = document.getElementById("contentCanvas");
     var ctx = contentCanvas.getContext("2d");
     var hex_view_div = document.getElementById("hex_view_div");
 
     // calculate width
-    xpx = ((1.5 + sizeX) * hexSize * 2) + ((sizeX % 2) * hexSize);
-    ypx = ((2.5 + sizeY) * hexSize * 1.732);
+    xpx = ((1 + nubmerBricksXdim) * hexSize * 2) + ((nubmerBricksXdim % 2) * hexSize);
+    ypx = ((1 + nubmerBricksYdim) * hexSize * 1.732);
 
     // calculate new size to fix into content-div
     ratio = hex_view_div.offsetHeight / ypx;
     ypx = ypx * ratio;
     xpx = xpx * ratio;
+    offsetX = (hex_view_div.offsetWidth - hex_view_div.offsetHeight) / 2.0;
+    console.log("offsetX: "+ offsetX);
 
     // set size values to canvas
     contentCanvas.width = hex_view_div.offsetWidth * 0.95;
@@ -126,7 +135,7 @@ function updateCanvas(hexagons)
     var context2 = canvas2.getContext('2d');
 
     // draw new canvas
-    drawHexagons(context2, hexagons, 0);
+    drawHexagons(context2);
 
     // switch canvas to show the updates
     ctx.clearRect(0, 0, contentCanvas.width, contentCanvas.height);
@@ -137,8 +146,7 @@ function updateCanvas(hexagons)
 
 function toggleColor(mouseX, mouseY) 
 {
-    for (i = 0; i < hexagons.length; i++) 
-    {
+    for (i = 0; i < hexagons.length; i++) {
         hexagons[i].color = 1;
     }
 
@@ -147,10 +155,10 @@ function toggleColor(mouseX, mouseY)
         hexagon = hexagons[i];
         if(hexagon.visible)
         {
-            if(hexagon.x * ratio < mouseX 
-                && hexagon.x * ratio + hexSize * 1.732 * ratio > mouseX 
-                && hexagon.y * ratio < mouseY 
-                && hexagon.y * ratio + hexSize * 1.732 * ratio > mouseY)
+            if(hexagon.x * ratio + offsetX < mouseX 
+                && hexagon.x * ratio + hexSize * 1.732 * ratio + offsetX > mouseX 
+                && hexagon.y * ratio + offsetY < mouseY 
+                && hexagon.y * ratio + hexSize * 1.732 * ratio + offsetY > mouseY)
             {
                 if(hexagons[i].color == 1) {
                     hexagons[i].color = 2;
@@ -208,17 +216,29 @@ function mainLoop()
     if(refresh)
     {
         refresh = false;
-        updateCanvas(hexagons);
+        updateCanvas();
     }
 
     requestAnimationFrame(mainLoop)
 }
    
-refresh = true;
-var contentCanvas = document.getElementById("contentCanvas");
-mouse.start(contentCanvas);
 
-// init empty hexagon-list
-for (i = 0; i < 25*25; i++) {
-    hexagons.push(new Hexagon(0, 0, 0));
+function initHexagonView()
+{
+    // init empty hexagon-list
+    for(x = 0; x < 5; x++) 
+    {
+        for(y = 0; y < 5; y++) 
+        {
+            hexagons.push(new Hexagon(x, y, 0));
+        }
+    }
+
+    refresh = true;
+    var contentCanvas = document.getElementById("contentCanvas");
+    mouse.start(contentCanvas);
+    requestAnimationFrame(mainLoop);
+    window.onresize = updateCanvas;
 }
+
+initHexagonView();

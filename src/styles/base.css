@@ -56,3 +56,25 @@ limitations under the License.
     width: 60px;
     height: 60px;
 }
+
+.internal_box {
+
+}
+
+.internal_table {
+    width: 100%;
+}
+
+table {
+    text-align: left;
+    border-collapse: collapse;
+}
+
+table tr {
+    height:  35px;
+    border-bottom: 1px solid white;
+}
+
+table tr:last-child {
+    border: 0;
+}

@@ -48,8 +48,9 @@ limitations under the License.
 
 #tab_bar_content {
     overflow: auto; 
+    padding-left: 10px;
     height: 90%; 
-    width: 100%; 
+    width: 96%; 
 }
 
 #bottom_bar_content {

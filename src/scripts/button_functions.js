@@ -14,11 +14,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-function saveFile(e) 
+function openFile(e) 
 {
-	console.log("save");
-	var modal = document.getElementById("save_modal");
-		var span = document.getElementById("close_save_modal");
+	console.log("openFile");
+	var modal = document.getElementById("open_modal");
+	var span = document.getElementById("close_open_modal");
 
 	// When the user clicks on <span> (x), close the modal
 	span.onclick = function() {
@@ -47,17 +47,17 @@ function handleFileSelect(e)
     };
 }
 
-function loadFile(e) 
+function downloadFile(e) 
 {
-	console.log("load");
+	console.log("downloadFile");
 
 	// Check for the various File API support.
 	if(window.File 
 		&& window.FileReader 
 		&& window.Blob) 
 	{
-		var modal = document.getElementById("open_modal");
-		var span = document.getElementById("close_open_modal");
+		var modal = document.getElementById("download_modal");
+		var span = document.getElementById("close_download_modal");
 
 		// When the user clicks on <span> (x), close the modal
 		span.onclick = function() {
@@ -79,6 +79,29 @@ function loadFile(e)
 	}
 }
 
-document.getElementById("save_button").addEventListener("click", saveFile, false);
-document.getElementById("load_button").addEventListener("click", loadFile, false);
+function uploadFile(e) 
+{
+	console.log("uploadFile");
+	var modal = document.getElementById("upload_modal");
+	var span = document.getElementById("close_upload_modal");
+
+	// When the user clicks on <span> (x), close the modal
+	span.onclick = function() {
+		modal.style.display = "none";
+	}
+
+	// When the user clicks anywhere outside of the modal, close it
+	window.onclick = function(event) {
+		if (event.target == modal) {
+			modal.style.display = "none";
+		}
+	} 
+
+	modal.style.display = "block";
+}
+
+
+document.getElementById("open_button").addEventListener("click", openFile, false);
+document.getElementById("download_button").addEventListener("click", downloadFile, false);
+document.getElementById("upload_button").addEventListener("click", uploadFile, false);
 document.getElementById("file_loader").addEventListener("click", handleFileSelect, false);

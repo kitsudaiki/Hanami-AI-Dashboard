@@ -18,7 +18,7 @@ var ratio = 1.0;
 var hexSize = 50.0;
 
 var offsetX = 0.0;
-var offsetY = 0.0;
+var offsetY = 40.0;
 
 var nubmerBricksXdim = 5;
 var nubmerBricksYdim = 5;
@@ -108,7 +108,7 @@ function drawHexagons(contextObj)
 
 function updateCanvas() 
 {
-    console.log("poi");
+    //console.log("poi");
     var contentCanvas = document.getElementById("contentCanvas");
     var ctx = contentCanvas.getContext("2d");
     var hex_view_div = document.getElementById("hex_view_div");
@@ -122,7 +122,7 @@ function updateCanvas()
     ypx = ypx * ratio;
     xpx = xpx * ratio;
     offsetX = (hex_view_div.offsetWidth - hex_view_div.offsetHeight) / 2.0;
-    console.log("offsetX: "+ offsetX);
+    //console.log("offsetX: "+ offsetX);
 
     // set size values to canvas
     contentCanvas.width = hex_view_div.offsetWidth * 0.95;

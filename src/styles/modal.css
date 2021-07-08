@@ -28,11 +28,12 @@ limitations under the License.
     background-color: rgb(0,0,0); /* Fallback color */
     background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
 
-    padding: 20px 20px 20px 20px;
+    
+    /*padding: 20px 20px 20px 20px;
     -webkit-animation-name: modal-animation;
     -webkit-animation-duration: 0.5s;
     animation-name: modal-animation;
-    animation-duration: 0.5s;
+    animation-duration: 0.5s;*/
 }
         
 @-webkit-keyframes modal-animation {
@@ -60,11 +61,18 @@ limitations under the License.
 /* Modal Content/Box */
 .modal-content {
     background-color: #31363b;
-    margin: 20% auto; /* 15% from the top and centered */
+    margin: 15% auto; /* 15% from the top and centered */
     padding: 20px;
     border: 1px solid #888;
     height: 200px;
     width: 750px; /* Could be more or less, depending on screen size */
+
+
+    padding: 20px 20px 20px 20px;
+    -webkit-animation-name: modal-animation;
+    -webkit-animation-duration: 0.5s;
+    animation-name: modal-animation;
+    animation-duration: 0.5s;
 }
 
 /* The Close Button */

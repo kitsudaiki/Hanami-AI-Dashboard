@@ -14,23 +14,94 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-function sendIoInput(e) 
+function openFile(e) 
 {
-	var ioInput = document.getElementById('io_input').value; 
+	console.log("openFile");
+	var modal = document.getElementById("open_modal");
+	var span = document.getElementById("close_open_modal");
 
-    httpControlConnection.open("POST", "http://" + window.location.host + "/control/set_input");
-    httpControlConnection.send("{'input' : '" + ioInput + "'}");
-	httpControlConnection.send(); 
+	// When the user clicks on <span> (x), close the modal
+	span.onclick = function() {
+		modal.style.display = "none";
+	}
+
+	// When the user clicks anywhere outside of the modal, close it
+	window.onclick = function(event) {
+		if (event.target == modal) {
+			modal.style.display = "none";
+		}
+	} 
+
+	modal.style.display = "block";
 }
 
-function sendLearnInput(e) 
-{
-	var learnInput = document.getElementById('learn_input').value; 
-	var learnOutput = document.getElementById('learn_output').value; 
 
-    httpControlConnection.open("POST", "http://" + window.location.host + "/control/learn");
-	httpControlConnection.send("{'input' : '" + learnInput + "', 'should': '" + learnOutput + "'}");
+function handleFileSelect(e) 
+{
+	var reader = new FileReader();
+	reader.readAsText(document.getElementById("file_chooser").files[0]);
+	reader.onload = function (oFREvent) {
+        var fileContent = reader.result;
+        // TODO: load-function
+        console.log("poipoipoi: " + fileContent);
+    };
 }
 
-document.getElementById("io_send_button").addEventListener("click", sendIoInput, false);
-document.getElementById("learn_button").addEventListener("click", sendLearnInput, false);
+function downloadFile(e) 
+{
+	console.log("downloadFile");
+
+	// Check for the various File API support.
+	if(window.File 
+		&& window.FileReader 
+		&& window.Blob) 
+	{
+		var modal = document.getElementById("download_modal");
+		var span = document.getElementById("close_download_modal");
+
+		// When the user clicks on <span> (x), close the modal
+		span.onclick = function() {
+			modal.style.display = "none";
+		}
+
+		// When the user clicks anywhere outside of the modal, close it
+		window.onclick = function(event) {
+			if (event.target == modal) {
+				modal.style.display = "none";
+			}
+		} 
+
+		modal.style.display = "block";
+	} 
+	else 
+	{
+	   	alert('The File APIs are not fully supported in this browser.');
+	}
+}
+
+function uploadFile(e) 
+{
+	console.log("uploadFile");
+	var modal = document.getElementById("upload_modal");
+	var span = document.getElementById("close_upload_modal");
+
+	// When the user clicks on <span> (x), close the modal
+	span.onclick = function() {
+		modal.style.display = "none";
+	}
+
+	// When the user clicks anywhere outside of the modal, close it
+	window.onclick = function(event) {
+		if (event.target == modal) {
+			modal.style.display = "none";
+		}
+	} 
+
+	modal.style.display = "block";
+}
+
+
+document.getElementById("open_button").addEventListener("click", openFile, false);
+document.getElementById("download_button").addEventListener("click", downloadFile, false);
+document.getElementById("upload_button").addEventListener("click", uploadFile, false);
+document.getElementById("file_loader").addEventListener("click", handleFileSelect, false);

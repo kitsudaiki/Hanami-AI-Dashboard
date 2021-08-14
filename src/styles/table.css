@@ -16,33 +16,17 @@ limitations under the License.
 */
 
 
-#content_div {
-  	overflow: auto; 
-  	height: 74%; 
-  	width: 100%; 
-  	left: 0%; 
-  	top: 14%; 
-  	position: absolute;
-} 
-
-#io_view {
-  	overflow: auto; 
-  	height: 98%; 
-  	width: 49%; 
-  	left: 1%; 
-  	top: 1%; 
-  	position: absolute;
-} 
-
-#learn_view {
-  	overflow: auto; 
-  	height: 98%; 
-  	width: 49%; 
-  	left: 51%; 
-  	top: 1%; 
-  	position: absolute;
-} 
-
-.global_value_field {
-    width: 50%;
+.internal_table {
+    width: 100%;
 }
+
+table {
+    text-align: left;
+    border-collapse: collapse;
+}
+
+table tr {
+    height:  38px;
+    border-bottom: 1px solid white;
+}
+

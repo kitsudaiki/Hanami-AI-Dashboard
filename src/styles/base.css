@@ -67,18 +67,3 @@ limitations under the License.
 .internal_box {
 
 }
-
-.internal_table {
-    width: 100%;
-}
-
-table {
-    text-align: left;
-    border-collapse: collapse;
-}
-
-table tr {
-    height:  38px;
-    border-bottom: 1px solid white;
-}
-

@@ -100,7 +100,6 @@ function uploadFile(e)
 	modal.style.display = "block";
 }
 
-
 document.getElementById("open_button").addEventListener("click", openFile, false);
 document.getElementById("download_button").addEventListener("click", downloadFile, false);
 document.getElementById("upload_button").addEventListener("click", uploadFile, false);

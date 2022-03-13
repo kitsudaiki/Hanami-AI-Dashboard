@@ -102,7 +102,6 @@ function drawHexagons(contextObj)
                         hexSize * 1.732 * ratio, 
                         hexSize * ratio, 
                         120);
-
     }
 }
 

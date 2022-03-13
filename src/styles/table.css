@@ -17,6 +17,8 @@ limitations under the License.
 
 
 .internal_table {
+    color: rgb(255, 255, 255);
+    font-family: Arial, Helvetica, sans-serif;
     width: 100%;
 }
 
@@ -29,4 +31,3 @@ table tr {
     height:  38px;
     border-bottom: 1px solid white;
 }
-

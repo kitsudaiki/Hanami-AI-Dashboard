@@ -15,55 +15,146 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+:root {
+    --color-background: #2a2f33;
+    --color-tile: #3b3f42;
+    --color-shadow: #292929;
+    --color-text: #ffffff;
+    --color-table: #ffffff;
+    --color-highlight: rgb(247, 181, 225);
 
-#content_div {
-  	height: 74%; 
-  	width: 100%; 
-  	left: 0%; 
-  	top: 14%; 
+    --text-font-family: Arial, Helvetica, sans-serif;
+    --text-font-size: 0.8rem;
+
+    --box-shadow: 0  0.5rem 0.5rem var(--color-shadow);
+    --box-shadow-footer: 0 -0.5rem 0.5rem var(--color-shadow);
+    --box-shadow-header: 0 0.5rem 0.5rem var(--color-shadow);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    outline: 0;
+    border: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--color-background);
+    width: 100%;
+    height: 100%;
+    font-family: var(--text-font-family);
+    font-size: var(--text-font-size);
+    user-select: none;
+    overflow-x: hidden;
+    
+    /* scalse entire page */
+    /*transform: scale(1.4);
+    transform-origin: 0 0; */
+}
+
+a {
+    color: var(--color-text);
+}
+
+button {
+    color: var(--color-text);
+}
+
+h1 {
+    font-size: 2.0rem;
+}
+
+#avatar {
+    width: 2.0rem;
+    height: 2.0rem;
+    border-radius: 50%;
+    overflow: hidden; /* hide scrollbar */
+}
+
+#kitsunemimi_top {
+    background-color: var(--color-tile);
+    overflow: auto; 
+    height: 4.2rem; 
+    width: 100%; 
+    left: 0rem; 
+    top: 0rem; 
+    position: absolute;
+    box-shadow: var(--box-shadow-header);
+    min-height: 150;
+}
+
+#sidebar_div {
+    background-color: var(--color-tile);
+  	height: 50rem; 
+  	width: 15rem; 
+  	left: 0.8rem; 
+  	top: 5.5rem; 
   	position: absolute;
 } 
 
-#hex_view_div {
-    height: 99%; 
-    width: 73%; 
-    left: 1%; 
-    top: 0%; 
-    -webkit-box-shadow: 0 0 8px 6px #2d2d2d;
-    -moz-box-shadow: 0 0 8px 6px #2d2d2d;
-    box-shadow: 0 0 8px 6px #2d2d2d;
+#content_div {
+    height: 50rem; 
+    width: calc(100% - 17.4rem); 
+    left: 16.6rem; 
+    top: 5.5rem; 
     position: absolute;
 } 
 
-#meta_data_div {
-    height: 99%; 
-    width: 24%; 
-    left: 75%; 
-    top: 0%; 
-    -webkit-box-shadow: 0 0 8px 6px #2d2d2d;
-    -moz-box-shadow: 0 0 8px 6px #2d2d2d;
-    box-shadow: 0 0 8px 6px #2d2d2d;
-    position: absolute;
-} 
-
-#tab_bar_content {
-    overflow: auto; 
-    padding-left: 10px;
-    height: 90%; 
-    width: 96%; 
+.create_button {
+    color: rgb(0, 0, 0);
+    width: 10.0rem;
+    height: 3.0rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    margin-bottom: 1.5rem;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+    box-shadow: var(--box-shadow);
 }
 
-#bottom_bar_content {
-    margin: auto;
-    width: 200px;
-    padding: 10px;
+.generic_button {
+    color: rgb(0, 0, 0);
+    width: 10.0rem;
+    height: 3.0rem;
+    box-shadow: var(--box-shadow);
 }
 
-.save_load_buton {
-    width: 60px;
-    height: 60px;
+.generic_svg_button {
+    filter: invert(1);
+    margin-top: 1rem;
+    width: 2rem;
+    height: 2rem;
 }
 
-.internal_box {
+.table_delete_button {
+    color: rgb(0, 0, 0);
+    background-color: var(--color-highlight);
+    width: 4.0rem;
+    height: 1.2rem;
+    box-shadow: var(--box-shadow);
+}
 
+.tile_div {
+    background-color: var(--color-tile);
+    padding-top: 2.5rem;
+    padding-bottom: 3rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    margin-bottom: 1.0rem;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+    margin-top: -53px;
+    margin-bottom: -20px;
+    align-items: center;
+    box-shadow: var(--box-shadow);
+}
+
+.hexagon_field {
+    color: rgb(0, 0, 0);
+    fill: white;
+    font-weight: bold;
+    filter: drop-shadow(var(--box-shadow-header));
 }

@@ -16,70 +16,49 @@ limitations under the License. -->
 
 <!DOCTYPE html>
 <html>
-    <title>MikoClient</title>
     <head>
-        <meta charset="utf-8">
+        <meta charset="UTF-8">
+        <meta name="viewport" content ="width-device-width, initial-scale=1.0">
+
+        <title>HanamiDashboard</title>
 
         <link rel="stylesheet" href="/client/styles/base.css">
         <link rel="stylesheet" href="/client/styles/modal.css">
         <link rel="stylesheet" href="/client/styles/tabs.css">
         <link rel="stylesheet" href="/client/styles/table.css">
-        <link rel="stylesheet" href="/client/styles/kitsunemimi_sakura.css">
+
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>  
-          
     </head>
     <body>
-        <!-- top -->
-        <div class="kitsunemimi_top">
-        </div>
+        <div id="kitsunemimi_top"> </div>
+        <div id="content_div"><h1>test</h1></div>
+        <div id="sidebar_div"></div>
 
-        <!-- content -->
-        <div id="content_div">
-            <div id="hex_view_div" class="internal_box">
-                <canvas id="contentCanvas"> </canvas> 
-            </div>
-            <div id="meta_data_div" class="internal_box" >
-                <div class="tab">
-                    <button class="tablinks" onclick="selectTable(event, 'global_settings')">Global settings</button>
-                    <button class="tablinks" onclick="selectTable(event, 'brick_sessings')">Brick settings</button>
+        <div id="login_modal" class="modal">
+            <span onclick="document.getElementById('login_modal').style.display='none'" class="close" title="Close Modal">&times;</span>
+            <form class="modal-content animate" action="/action_page.php">
+                <div class="container">
+                    <label for="uname"><b>Username</b></label>
+                    <input type="text" placeholder="Enter Username" name="uname" required>
+          
+                    <label for="psw"><b>Password</b></label>
+                    <input type="password" placeholder="Enter Password" name="psw" required>
+          
+                    <button type="submit">Login</button>
+                    <label>
+                        <input type="checkbox" checked="checked" name="remember"> Remember me
+                    </label>
                 </div>
-                <div id="tab_bar_content">
-                    <div id="brick_sessings" class="tabcontent">
-                        <table cellspacing="0" cellpadding="1" class="internal_table" id="processing_table">
-                          <thead>
-                            <tr>
-                              <th scope="col" style="width: 60%">Field</th>
-                              <th scope="col" style="width: 40%">Value</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <tr>
-                              <th scope="row">Refraction time</th>
-                              <td contenteditable='true'>x</td>
-                            </tr>
-                            <tr>
-                              <th scope="row">Synapse delete border</th>
-                              <td contenteditable='true'>x</td>
-                            </tr>
-                          </tbody>
-                        </table>
-                    </div>
-                    <div id="global_settings" class="tabcontent">
-                        <div id="table_content_html"></div>
-                    </div>
+          
+                <div class="container" style="background-color:#f1f1f1">
+                    <button type="button" onclick="document.getElementById('login_modal').style.display='none'" class="cancelbtn">Cancel</button>
                 </div>
-            </div>
+            </form>
         </div>
-
-        <!-- bottom -->
-        <div class="kitsunemimi_bottom">
-            <div id="modals_content_html"></div>
-        </div>
-
-        <!-- scripts-->
+        
+              
         <script src="/client/scripts/html_loading.js"></script>
-        <script src="/client/scripts/tabbar.js"></script>
-        <script src="/client/scripts/hexagon_canvas.js"></script>
-        <script src="/client/scripts/initial_data.js"></script>
+        <script src="/client/scripts/login.js"></script>
     </body>
-</html>
+</html> 

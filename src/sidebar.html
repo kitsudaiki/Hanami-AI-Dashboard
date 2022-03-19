@@ -1,0 +1,221 @@
+<!-- Apache License Version 2.0
+
+Copyright 2020 Tobias Anker
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License. -->
+
+<aside>
+    <div class="sidebar">
+
+      <button class="sidebar_drop_down"> 
+        <span class="material-icons-sharp">grid_view</span>
+        <h3>Admin</h3>
+      </button>
+      <div class="sidebar_drop_content">
+        <a id="misaka_user_list" class="sidebar_dropdown_entry" href="#">User</a>
+      </div>
+    </div>
+</aside>
+<br>
+<center>
+  <button id="download_rest_api_docu_button" class="create_button">
+    Download Rest-API-documentation
+  </button>
+</center>
+
+<!--=============================================================================-->
+<!--                                 style                                       -->
+<!--=============================================================================-->
+
+<style>
+    #download_rest_api_docu_button { 
+        color: invert(var(--color-text));
+        width: 10rem;
+        height: 3.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    aside {
+        height: 100%; 
+        width: 100%; 
+        box-shadow: var(--box-shadow);
+    } 
+
+    aside .sidebar {
+        display: flex;
+        flex-direction: column;
+        position: relative; /* necessary for the top-value below */
+        top: 1rem;
+    }
+
+    aside .sidebar button {
+        display: flex;
+        align-items: center;
+        position: relative;
+        height: 3rem;
+        padding-left: 1rem;
+        background-color: var(--color-tile);
+    }
+
+    aside .sidebar a {
+        display: flex;
+        margin-left: 1rem;
+        gap: 1rem;
+        align-items: center;
+        position: relative;
+        height: 2rem;
+    }
+
+    aside .sidebar button span {
+        transition: all 200ms;
+    }
+
+    aside .sidebar button.active{
+        background-color: var(--color-highlight);
+        color: invert(var(--color-text))
+    }
+
+    .sidebar_drop_content {
+        background-color: var(--color-shadow);
+        position:relative;
+        overflow: hidden;  /* avoid content-overlapping when max-height is set to 0 */
+        padding-left: 8px;
+        -webkit-transition: max-height .5s;
+        -o-transition: max-height .5s;
+        transition: max-height .5s;
+    }
+
+    .sidebar_dropdown_entry:hover { 
+        padding-left: 8px;
+        margin-left: 1rem;
+        transition: all 200ms;
+    }
+
+</style>
+
+<!--=============================================================================-->
+<!--                                 script                                      -->
+<!--=============================================================================-->
+
+<script>
+    var defaultDropdownIndex = 0;
+
+    function initAllDropdowns() 
+    {
+        var dropdown = document.getElementsByClassName("sidebar_drop_down");
+        var i;
+
+        for(i = 0; i < dropdown.length; i++) 
+        {
+            dropdown[i].addEventListener("click", function() 
+            {
+                var dropdown = document.getElementsByClassName("sidebar_drop_down");
+                for(i = 0; i < dropdown.length; i++) {
+                    dropdown[i].nextElementSibling.style.maxHeight = "0px"; 
+                    dropdown[i].className = dropdown[i].className.replace(" active", "");
+                }
+
+                this.className += " active";
+                var dropdownContent = this.nextElementSibling;
+                dropdownContent.style.maxHeight = "100px"; 
+            });
+        }
+    }
+
+    function activateDefaultSideEntry() 
+    {
+        var dropdown = document.getElementsByClassName("sidebar_drop_down");
+
+        for(i = 0; i < dropdown.length; i++) 
+        {
+            dropdown[i].nextElementSibling.style.maxHeight = "0px"; 
+            dropdown[i].className = dropdown[i].className.replace(" active", "");
+        }
+
+        dropdown[defaultDropdownIndex].nextElementSibling.style.maxHeight = "100px"; 
+        dropdown[defaultDropdownIndex].className += " active";
+    }
+
+    initAllDropdowns();
+    activateDefaultSideEntry();
+
+    document.getElementById("misaka_user_list").addEventListener("click", function() {
+      $("#content_div").load("/client/subsites/misaka/user_list.html"); 
+    });
+
+    document.getElementById("download_rest_api_docu_button").addEventListener("click", function() {
+      $("#content_div").load("/client/subsites/misaka/rest_api_docu_download.html"); 
+    });
+
+
+    loadUserList();
+
+    function loadUserList()
+    {
+        login("test_user", "poipoi");
+    }
+
+    function login(user, pw)
+    {
+        const request = "/control/misaka/v1/token?name=" + user + "&pw=" + pw;
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.open("GET", request, false); // false for synchronous request
+        xmlHttp.send(null);
+        if(xmlHttp.status != 200) {
+            return false;
+        }
+
+        const responseJson = JSON.parse(xmlHttp.responseText);
+        token = responseJson.token;
+        
+        return true;
+    }
+
+    function DownloadDocumentation_Request()
+    {
+        const request = "/control/misaka/v1/documentation/api/rest";
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.open("GET", request, false);
+        xmlHttp.setRequestHeader("X-Auth-Token", token);
+        xmlHttp.send(null);
+        if(xmlHttp.status != 200) {
+            return "";
+        }
+
+        console.log("DownloadDocumentation_Request: " + xmlHttp.responseText);
+        
+        var decodedDocu = atob(JSON.parse(xmlHttp.responseText).documentation);
+
+        var saveByteArray = (function () {
+            var a = document.createElement("a");
+            document.body.appendChild(a);
+            a.style = "display: none";
+            return function (data, name) {
+                var blob = new Blob(data, {type: "octet/stream"}),
+                    url = window.URL.createObjectURL(blob);
+                a.href = url;
+                a.download = name;
+                a.click();
+                window.URL.revokeObjectURL(url);
+            };
+            
+        }());
+
+        saveByteArray([decodedDocu], 'rest_api_documentation.pdf');
+
+        return ;
+    }
+
+    document.getElementById("download_rest_api_docu_button").addEventListener("click", DownloadDocumentation_Request, false);
+
+</script>

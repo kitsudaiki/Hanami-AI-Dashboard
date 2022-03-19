@@ -15,13 +15,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-/* Style the tab */
 .tab {
     overflow: hidden;
     background-color: #31363b;
 }
 
-/* Style the buttons that are used to open the tab content */
 .tab button {
     background-color: inherit;
     float: left;
@@ -34,7 +32,6 @@ limitations under the License.
     color: white;
     font-size: large;
 }
-
 
 /* Change background color of buttons on hover */
 .tab button:hover {

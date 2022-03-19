@@ -1,0 +1,369 @@
+<!-- Apache License Version 2.0
+
+Copyright 2020 Tobias Anker
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License. -->
+
+<script src="/client/scripts/table_processing.js"></script>
+
+<!--=============================================================================-->
+<!--                                content                                      -->
+<!--=============================================================================-->
+
+<svg width="100%" height="70">
+    <polygon class="hexagon_field header_position" points="200,20 185,40 15,40 0,20 15,0 185,0"></polygon>
+    <text x="80" y="25"  class="header_position" font-size="20px">User</text>
+</svg>
+
+<div class="tile_div">
+    <button id="create_user_button">+</button>
+    <table align = "center" id="table" border="1"></table>
+</div>
+
+<!--=============================================================================-->
+<!--                              create modal                                   -->
+<!--=============================================================================-->
+
+<div id="create_user_modal" class="modal">
+    <div id="create_user_modal_content" class="modal-content">
+        <div class="modal_header_part">
+            <svg width="100%" height="70" class="modal_header_position">
+                <polygon class="hexagon_field header_position " points="200,20 185,40 15,40 0,20 15,0 185,0"></polygon>
+                <text x="27" y="25"  class="header_position" font-size="20px">Create new user</text>
+            </svg>
+        </div>
+        <div class="modal_content_part">
+            <center>
+                <div id="input_fields">
+                    <label for="name">Name:</label>
+                    <input type="text" id="name_field" class="input_field" name="name">
+                    <br><br>
+                    <label for="roles">Roles:</label>
+                    <input type="text" id="roles_field" class="input_field" name="roles">
+                    <br><br>
+                    <label for="projects">Projects:</label>
+                    <input type="text" id="projects_field" class="input_field" name="projects">
+                    <br><br>
+                    <label for="isAdmin">Is Admin:</label>
+                    <input type="checkbox" id="isAdmin_field" class="input_field" name="isAdmin">
+                    <br><br>
+                    <br><br>
+                    <label for="pass">Password
+(8 characters minimum):</label>
+                    <input type="password" id="pass1" name="password" minlength="8" class="input_field" required>
+                    <br><br>
+                    <label for="pass">Password repeat:</label>
+                    <input type="password" id="pass2" name="password" minlength="8" class="input_field" required>
+                </div>
+                <label id="error_message"></label>
+            </center>
+        </div>
+        <div class="modal_footer_part">
+            <center>
+                <img id="modal_create_accept_button" class="generic_svg_button" src="/client/icons/uberprufen.svg">
+                <img id="modal_create_cancel_button" class="generic_svg_button" src="/client/icons/kreuzen.svg">
+            </center>
+        </div>
+    </div>
+</div>
+
+<!--=============================================================================-->
+<!--                              delete modal                                   -->
+<!--=============================================================================-->
+
+<div id="delete_user_modal" class="modal">
+    <div id="delete_user_modal_content" class="modal-content">
+        <div class="modal_header_part">
+            <svg width="100%" height="70" class="modal_header_position">
+                <polygon class="hexagon_field header_position " points="200,20 185,40 15,40 0,20 15,0 185,0"></polygon>
+                <text x="50" y="25"  class="header_position" font-size="20px">Delete user</text>
+            </svg>
+        </div>
+        <div id="delete_modal_content_part" class="modal_content_part">
+            <center>
+                <br><br>
+                Do you really want to delete user:
+                <br><br><br>
+                <h2><label id="delete_label_text"></label></h2>
+            </center>
+        </div>
+        <div id="delete_modal_footer_part" class="modal_footer_part">
+            <center>
+                <img id="modal_delete_accept_button" class="generic_svg_button" src="/client/icons/uberprufen.svg">
+                <img id="modal_delete_cancel_button" class="generic_svg_button" src="/client/icons/kreuzen.svg">
+            </center>
+        </div>
+    </div>
+</div>
+
+<!--=============================================================================-->
+<!--                                 style                                       -->
+<!--=============================================================================-->
+
+<style>
+    #create_user_modal_content { 
+        color: var(--color-text);
+        width: 35rem;
+        height: 23.7rem;
+    }
+
+    #delete_user_modal_content { 
+        color: var(--color-text);
+        width: 20rem;
+        height: 17rem;
+    }
+
+    #input_fields {
+        width: 30rem;
+        margin: auto;
+        margin-top: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .input_field {
+        width: 15rem;
+    }
+
+    #delete_label_text {
+        vertical-align:middle;
+        text-align:center;
+    }
+
+    #modal_create_button {
+        margin-top: 2.5rem;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    #delete_modal_content_part {
+        height: 10rem;
+    }
+
+    #modal_create_accept_button {
+        margin-right: 10rem;
+    }
+
+    #modal_delete_accept_button {
+        margin-right: 5rem;
+    }
+
+    label {
+        white-space: pre-wrap;  /* to allow multi-line lables */
+        display: inline-block;
+        width: 12rem;
+        text-align: left;
+    }
+
+    #create_user_button {
+        color: rgb(0, 0, 0);
+        width: 2.0rem;
+        height: 2.0rem;
+        margin-top: -2rem;
+        float: right;
+        position: relative; /* necessary for the z-index */
+        z-index: 1;
+        box-shadow: var(--box-shadow);
+    }
+
+    .header_position {
+        /* calculate position: 50% of total window - width of sidebar + some offset where I don't know, why it has to be 140px */
+        transform: translate(calc((50% - 15rem) + 140px), 0%);
+    }
+
+    .button_position {
+        transform: translate(calc((50% - 15rem) + 210px), 0%);
+    }
+
+</style>
+
+<!--=============================================================================-->
+<!--                                 script                                      -->
+<!--=============================================================================-->
+
+<script>
+    loadUserList();
+
+    function loadUserList()
+    {
+        login("test_user", "poipoi");
+
+        var headerMapping = {};
+        headerMapping["roles"] = "Roles"; 
+        headerMapping["name"] = "Name"; 
+        headerMapping["projects"] = "Projects"; 
+        headerMapping["is_admin"] = "Is Admin"; 
+
+        var content = ListUser_Request();
+
+        constructTable(content, headerMapping, '#table');
+    }
+
+    function login(user, pw)
+    {
+        const request = "/control/misaka/v1/token?name=" + user + "&pw=" + pw;
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.open("GET", request, false); // false for synchronous request
+        xmlHttp.send(null);
+        if(xmlHttp.status != 200) {
+            return false;
+        }
+
+        const responseJson = JSON.parse(xmlHttp.responseText);
+        token = responseJson.token;
+        
+        return true;
+    }
+
+    function ListUser_Request()
+    {
+        const request = "/control/misaka/v1/user/all";
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.open("GET", request, false);
+        xmlHttp.setRequestHeader("X-Auth-Token", token);
+        xmlHttp.send(null);
+        if(xmlHttp.status != 200) {
+            return "";
+        }
+
+        console.log("ListUser_Request: " + xmlHttp.responseText);
+        
+        return JSON.parse(xmlHttp.responseText);
+    }
+
+    function CreateUser_Request()
+    {
+        const name = document.getElementById('name_field').value;
+        const projects = document.getElementById('projects_field').value;
+        const roles = document.getElementById('roles_field').value;
+        const isAdmin = document.getElementById('isAdmin_field').checked;
+        const password1 = document.getElementById('pass1').value;
+        const password2 = document.getElementById('pass2').value;
+
+        // TODO: check if password1 and password2 are the same
+        // TODO: check if values are all fillled
+
+        var reqContent = "{name:" + name;
+        reqContent += ",pw:" + password1;
+        reqContent += ",roles:" + roles;
+        reqContent += ",projects:" + projects;
+        reqContent += ",is_admin:" + isAdmin + "}";
+
+        const request = "/control/misaka/v1/user";
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.open("POST", request, false);
+        xmlHttp.setRequestHeader("X-Auth-Token", token);
+        xmlHttp.send(reqContent);
+        if(xmlHttp.status != 200) {
+            return;
+        }
+
+        console.log("CreateUser_Request: " + xmlHttp.responseText);
+    }
+
+    function DeleteUser_Request(name)
+    {
+        // TODO: check if password1 and password2 are the same
+        // TODO: check if values are all fillled
+
+        const request = "/control/misaka/v1/user?name=" + name;
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.open("DELETE", request, false);
+        xmlHttp.setRequestHeader("X-Auth-Token", token);
+        xmlHttp.send(null);
+        if(xmlHttp.status != 200) {
+            return;
+        }
+
+        console.log("DeleteUser_Request: " + xmlHttp.responseText);
+    }
+
+    function clearModalFields()
+    {
+        document.getElementById('name_field').value = "";
+        document.getElementById('projects_field').value = "";
+        document.getElementById('roles_field').value = "";
+        document.getElementById('isAdmin_field').checked = "";
+        document.getElementById('pass1').value = "";
+        document.getElementById('pass2').value = "";
+    }
+
+    function createUser(e) 
+    {
+        console.log("createUser");
+        var modal = document.getElementById("create_user_modal");
+        var acceptButton = document.getElementById("modal_create_accept_button");
+        var cancelButton = document.getElementById("modal_create_cancel_button");
+
+        // handle accept-button
+        acceptButton.onclick = function() 
+        {
+            clearModalFields();
+            modal.style.display = "none";
+            loadUserList();
+        }
+
+        // handle cancel-button
+        cancelButton.onclick = function() {
+            modal.style.display = "none";
+        } 
+
+        // handle click outside of the window
+        window.onclick = function(event) 
+        {
+            if(event.target == modal) 
+            {
+                clearModalFields();
+                modal.style.display = "none";
+            }
+        } 
+
+        modal.style.display = "block";
+    }
+
+    function deleteObject(val)
+    {
+        console.log(val);
+        var modal = document.getElementById("delete_user_modal");
+        var acceptButton = document.getElementById("modal_delete_accept_button");
+        var cancelButton = document.getElementById("modal_delete_cancel_button");
+
+        document.getElementById('delete_label_text').innerText = val;
+
+        // handle accept-button
+        acceptButton.onclick = function() 
+        {
+            DeleteUser_Request(val);
+            modal.style.display = "none";
+            loadUserList();
+        }
+
+        // handle cancel-button
+        cancelButton.onclick = function() {
+            modal.style.display = "none";
+        } 
+
+        // handle click outside of the window
+        window.onclick = function(event) 
+        {
+            if(event.target == modal) {
+                modal.style.display = "none";
+            }
+        } 
+
+        modal.style.display = "block";
+    }
+
+    document.getElementById("create_user_button").addEventListener("click", createUser, false);
+    document.getElementById("modal_create_accept_button").addEventListener("click", CreateUser_Request, false);
+    
+</script>

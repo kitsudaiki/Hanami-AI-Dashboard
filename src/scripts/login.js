@@ -14,10 +14,30 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-function websocketMessageProcessing(message) 
+function uploadFile(e) 
 {
-    console.log("websocket-data: " + message.data);
-    //var obj = JSON.parse(message.data); 
+	var modal = document.getElementById("login_modal");
 
-    document.getElementById('io_output').value = message.data;
-};
+	modal.style.display = "block";
+}
+
+var token = "";
+
+function login(user, pw)
+{
+    const request = "/control/misaka/v1/token?name=" + user + "&pw=" + pw;
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.open("GET", request, false); // false for synchronous request
+    xmlHttp.send(null);
+	if(xmlHttp.status != 200) {
+		return false;
+	}
+
+	const responseJson = JSON.parse(xmlHttp.responseText);
+	token = responseJson.token;
+	
+	return true;
+}
+
+
+login("test_user", "poipoi");

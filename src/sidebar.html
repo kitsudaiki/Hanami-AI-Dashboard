@@ -157,32 +157,13 @@ limitations under the License. -->
       $("#content_div").load("/client/subsites/misaka/rest_api_docu_download.html"); 
     });
 
-
-    loadUserList();
-
-    function loadUserList()
-    {
-        login("test_user", "poipoi");
-    }
-
-    function login(user, pw)
-    {
-        const request = "/control/misaka/v1/token?name=" + user + "&pw=" + pw;
-        var xmlHttp = new XMLHttpRequest();
-        xmlHttp.open("GET", request, false); // false for synchronous request
-        xmlHttp.send(null);
-        if(xmlHttp.status != 200) {
-            return false;
-        }
-
-        const responseJson = JSON.parse(xmlHttp.responseText);
-        token = responseJson.token;
-        
-        return true;
-    }
-
     function DownloadDocumentation_Request()
     {
+        const token = getAndCheckToken();
+        if(token == "") {
+            return;
+        }
+        
         const request = "/control/misaka/v1/documentation/api/rest";
         var xmlHttp = new XMLHttpRequest();
         xmlHttp.open("GET", request, false);

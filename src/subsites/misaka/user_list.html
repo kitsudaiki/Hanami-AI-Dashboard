@@ -21,8 +21,8 @@ limitations under the License. -->
 <!--=============================================================================-->
 
 <svg width="100%" height="70">
-    <polygon class="hexagon_field header_position" points="200,20 185,40 15,40 0,20 15,0 185,0"></polygon>
-    <text x="80" y="25"  class="header_position" font-size="20px">User</text>
+    <polygon class="hexagon_field header_label_position" points="200,20 185,40 15,40 0,20 15,0 185,0"></polygon>
+    <text x="80" y="25"  class="header_label_position" font-size="20px">User</text>
 </svg>
 
 <div class="tile_div">
@@ -38,8 +38,8 @@ limitations under the License. -->
     <div id="create_user_modal_content" class="modal-content">
         <div class="modal_header_part">
             <svg width="100%" height="70" class="modal_header_position">
-                <polygon class="hexagon_field header_position " points="200,20 185,40 15,40 0,20 15,0 185,0"></polygon>
-                <text x="27" y="25"  class="header_position" font-size="20px">Create new user</text>
+                <polygon class="hexagon_field header_label_position " points="200,20 185,40 15,40 0,20 15,0 185,0"></polygon>
+                <text x="27" y="25"  class="header_label_position" font-size="20px">Create new user</text>
             </svg>
         </div>
         <div class="modal_content_part">
@@ -85,8 +85,8 @@ limitations under the License. -->
     <div id="delete_user_modal_content" class="modal-content">
         <div class="modal_header_part">
             <svg width="100%" height="70" class="modal_header_position">
-                <polygon class="hexagon_field header_position " points="200,20 185,40 15,40 0,20 15,0 185,0"></polygon>
-                <text x="50" y="25"  class="header_position" font-size="20px">Delete user</text>
+                <polygon class="hexagon_field header_label_position " points="200,20 185,40 15,40 0,20 15,0 185,0"></polygon>
+                <text x="50" y="25"  class="header_label_position" font-size="20px">Delete user</text>
             </svg>
         </div>
         <div id="delete_modal_content_part" class="modal_content_part">
@@ -139,12 +139,6 @@ limitations under the License. -->
         text-align:center;
     }
 
-    #modal_create_button {
-        margin-top: 2.5rem;
-        margin-left: auto;
-        margin-right: auto;
-    }
-
     #delete_modal_content_part {
         height: 10rem;
     }
@@ -175,15 +169,6 @@ limitations under the License. -->
         box-shadow: var(--box-shadow);
     }
 
-    .header_position {
-        /* calculate position: 50% of total window - width of sidebar + some offset where I don't know, why it has to be 140px */
-        transform: translate(calc((50% - 15rem) + 140px), 0%);
-    }
-
-    .button_position {
-        transform: translate(calc((50% - 15rem) + 210px), 0%);
-    }
-
 </style>
 
 <!--=============================================================================-->
@@ -195,8 +180,6 @@ limitations under the License. -->
 
     function loadUserList()
     {
-        login("test_user", "poipoi");
-
         var headerMapping = {};
         headerMapping["roles"] = "Roles"; 
         headerMapping["name"] = "Name"; 
@@ -208,24 +191,13 @@ limitations under the License. -->
         constructTable(content, headerMapping, '#table');
     }
 
-    function login(user, pw)
-    {
-        const request = "/control/misaka/v1/token?name=" + user + "&pw=" + pw;
-        var xmlHttp = new XMLHttpRequest();
-        xmlHttp.open("GET", request, false); // false for synchronous request
-        xmlHttp.send(null);
-        if(xmlHttp.status != 200) {
-            return false;
-        }
-
-        const responseJson = JSON.parse(xmlHttp.responseText);
-        token = responseJson.token;
-        
-        return true;
-    }
-
     function ListUser_Request()
     {
+        const token = getAndCheckToken();
+        if(token == "") {
+            return;
+        }
+
         const request = "/control/misaka/v1/user/all";
         var xmlHttp = new XMLHttpRequest();
         xmlHttp.open("GET", request, false);
@@ -242,6 +214,11 @@ limitations under the License. -->
 
     function CreateUser_Request()
     {
+        const token = getAndCheckToken();
+        if(token == "") {
+            return;
+        }
+
         const name = document.getElementById('name_field').value;
         const projects = document.getElementById('projects_field').value;
         const roles = document.getElementById('roles_field').value;
@@ -275,6 +252,11 @@ limitations under the License. -->
         // TODO: check if password1 and password2 are the same
         // TODO: check if values are all fillled
 
+        const token = getAndCheckToken();
+        if(token == "") {
+            return;
+        }
+        
         const request = "/control/misaka/v1/user?name=" + name;
         var xmlHttp = new XMLHttpRequest();
         xmlHttp.open("DELETE", request, false);

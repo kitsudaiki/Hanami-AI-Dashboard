@@ -14,16 +14,38 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+function getAuthCookie() 
+{
+	const cn = "Auth_JWT_Token=";
+	const idx = document.cookie.indexOf(cn)
+
+	if (idx != -1) 
+	{
+		var end = document.cookie.indexOf(";", idx + 1);
+		if (end == -1) end = document.cookie.length;
+		return document.cookie.substring(idx + cn.length, end);
+	} 
+	else 
+	{
+		return "";
+	}
+}
+
+function deleteAllCookies() 
+{
+    const cookies = document.cookie.split(";");
+    for (var i = 0; i < cookies.length; i++) {
+        document.cookie = cookies[i] + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    }
+}
+
 function uploadFile(e) 
 {
 	var modal = document.getElementById("login_modal");
-
 	modal.style.display = "block";
 }
 
-var token = "";
-
-function login(user, pw)
+function loginRequest(user, pw)
 {
     const request = "/control/misaka/v1/token?name=" + user + "&pw=" + pw;
     var xmlHttp = new XMLHttpRequest();
@@ -33,11 +55,79 @@ function login(user, pw)
 		return false;
 	}
 
+	console.log("login successful");
 	const responseJson = JSON.parse(xmlHttp.responseText);
-	token = responseJson.token;
+	// TODO: check if json-parsing is successful
+    document.cookie = "Auth_JWT_Token=" + responseJson.token;
 	
 	return true;
 }
 
+function tokenCheckRequest(token)
+{
+    const request = "/control/misaka/v1/auth?token=" + token;
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.open("GET", request, false); // false for synchronous request
+	xmlHttp.setRequestHeader("X-Auth-Token", token);
+    xmlHttp.send(null);
+	if(xmlHttp.status != 200) {
+		console.log("token-check failed");
 
-login("test_user", "poipoi");
+		return false;
+	}
+	
+	return true;
+}
+
+function login() 
+{
+	console.log("login");
+	deleteAllCookies();
+
+	var modal = document.getElementById("login_modal");
+	var loginButton = document.getElementById("modal_login_button");
+
+	// handle login-button
+	loginButton.onclick = function() 
+	{
+		const userName = document.getElementById("login_name_field").value;
+		const pw = document.getElementById("login_pw_field").value;
+
+		if(loginRequest(userName, pw) == true) 
+		{
+			modal.style.display = "none";
+			document.getElementById("login_name_field").value = "";
+			document.getElementById("login_pw_field").value = "";
+		}
+		else
+		{
+			document.getElementById("login_name_field").value = "";
+			document.getElementById("login_pw_field").value = "";
+		}
+	}
+
+	modal.style.display = "block";
+}
+
+function getAndCheckToken() 
+{
+	const authToken = getAuthCookie();
+	if(authToken == "") 
+	{
+		login();
+	}
+	else
+	{
+		if(tokenCheckRequest(authToken) == false) 
+		{
+			login();
+			return "";
+		}
+	}
+	return authToken;
+}
+
+// deleteAllCookies();
+getAndCheckToken();
+
+// login("test_user", "poipoi");

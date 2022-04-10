@@ -14,8 +14,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. -->
 
-<script src="/client/scripts/table_processing.js"></script>
-
 <!--=============================================================================-->
 <!--                                content                                      -->
 <!--=============================================================================-->
@@ -186,6 +184,47 @@ limitations under the License. -->
     headerMapping["name"] = "Name"; 
     headerMapping["projects"] = "Projects"; 
     headerMapping["is_admin"] = "Is Admin"; 
+
+    function constructTable(content, headerMapping, selector) 
+    {
+        // clear old table-content
+        $(selector).empty();
+
+        Headers(content.header, headerMapping, selector); 
+        Body(content.body, selector); 
+    }
+        
+    function Headers(headerContent, headerMapping, selector) 
+    {
+        var header = $('<tr/>');             
+        for(var i = 0; i < headerContent.length; i++) {
+            header.append($('<th/>').html(headerMapping[headerContent[i]]));
+        }
+        $(selector).append(header);
+    }     
+
+    function Body(bodyContent, selector) 
+    {
+        for(var row = 0; row < bodyContent.length; row++) 
+        {
+            var body = $('<tr/>');  
+
+            // add textual values to the row
+            const rowContent = bodyContent[row];   
+            for(var col = 0; col < rowContent.length; col++) {
+                body.append($('<td/>').html(rowContent[col]));
+            }
+
+            // create and add delete-button to the row
+            var deleteButton = '<button class="table_delete_button" value="' + rowContent[0] + '" '
+            deleteButton += 'onclick="deleteUser(this.value)"';
+            deleteButton += '>Delete</button>'
+            var input = $(deleteButton);
+
+            body.append($('<td/>').html(input));
+            $(selector).append(body);
+        }
+    } 
 
     // inital creation of the user-list when open the window
     listUser_request();
@@ -401,12 +440,10 @@ limitations under the License. -->
 
     /**
      * Open user-delete-modal to ask if user should really be deleted.
-     * This function is named 'deleteObject' instead of 'deleteUser' because it is triggered
-     * by the genric delete-button of the table, which is generated in a generic way.
      *
      * @param {name} Name of the user to delete
      */
-    function deleteObject(name)
+    function deleteUser(name)
     {
         var modal = document.getElementById("delete_modal");
         var acceptButton = document.getElementById("modal_delete_accept_button");

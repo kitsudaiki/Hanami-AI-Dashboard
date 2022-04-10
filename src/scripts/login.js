@@ -39,44 +39,63 @@ function deleteAllCookies()
     }
 }
 
-function uploadFile(e) 
-{
-	var modal = document.getElementById("login_modal");
-	modal.style.display = "block";
-}
-
 function loginRequest(user, pw)
 {
     const request = "/control/misaka/v1/token?name=" + user + "&pw=" + pw;
-    var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open("GET", request, false); // false for synchronous request
-    xmlHttp.send(null);
-	if(xmlHttp.status != 200) {
-		return false;
-	}
 
-	console.log("login successful");
-	const responseJson = JSON.parse(xmlHttp.responseText);
-	// TODO: check if json-parsing is successful
-    document.cookie = "Auth_JWT_Token=" + responseJson.token;
+	var loginConnection = new XMLHttpRequest();
+    loginConnection.open("GET", request, true);
+
+	loginConnection.onload = function(e) 
+	{
+		if(loginConnection.status != 200) {
+			return false;
+		}
 	
-	return true;
+		console.log("login successful");
+		const responseJson = JSON.parse(loginConnection.responseText);
+		// TODO: check if json-parsing is successful
+		document.cookie = "Auth_JWT_Token=" + responseJson.token;
+	
+		document.getElementById("login_name_field").value = "";
+		document.getElementById("login_pw_field").value = "";
+	
+		var modal = document.getElementById("login_modal");
+		modal.style.display = "none";
+	};
+	loginConnection.onerror = function(e) 
+	{
+		document.getElementById("login_name_field").value = "";
+		document.getElementById("login_pw_field").value = "";
+	
+		console.log("An error occurred while transferring the file.");
+	};
+
+    loginConnection.send(null);
 }
 
 function tokenCheckRequest(token)
 {
     const request = "/control/misaka/v1/auth?token=" + token;
-    var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open("GET", request, false); // false for synchronous request
-	xmlHttp.setRequestHeader("X-Auth-Token", token);
-    xmlHttp.send(null);
-	if(xmlHttp.status != 200) {
-		console.log("token-check failed");
 
-		return false;
-	}
-	
-	return true;
+	var authConnection = new XMLHttpRequest();
+    authConnection.open("GET", request, true);
+	authConnection.setRequestHeader("X-Auth-Token", token);
+
+	authConnection.onload = function(e) 
+	{
+		if(authConnection.status != 200) 
+		{
+			console.log("token-check failed");
+			login();
+		}
+	};
+	authConnection.onerror = function(e) 
+	{
+		login();
+	};
+
+    authConnection.send(null);
 }
 
 function login() 
@@ -92,18 +111,7 @@ function login()
 	{
 		const userName = document.getElementById("login_name_field").value;
 		const pw = document.getElementById("login_pw_field").value;
-
-		if(loginRequest(userName, pw) == true) 
-		{
-			modal.style.display = "none";
-			document.getElementById("login_name_field").value = "";
-			document.getElementById("login_pw_field").value = "";
-		}
-		else
-		{
-			document.getElementById("login_name_field").value = "";
-			document.getElementById("login_pw_field").value = "";
-		}
+		loginRequest(userName, pw);
 	}
 
 	modal.style.display = "block";
@@ -112,17 +120,10 @@ function login()
 function getAndCheckToken() 
 {
 	const authToken = getAuthCookie();
-	if(authToken == "") 
-	{
+	if(authToken == "") {
 		login();
-	}
-	else
-	{
-		if(tokenCheckRequest(authToken) == false) 
-		{
-			login();
-			return "";
-		}
+	} else {
+		tokenCheckRequest(authToken);
 	}
 	return authToken;
 }

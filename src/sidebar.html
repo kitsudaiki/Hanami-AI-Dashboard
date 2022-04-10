@@ -150,11 +150,11 @@ limitations under the License. -->
     activateDefaultSideEntry();
 
     document.getElementById("misaka_user_list").addEventListener("click", function() {
-      $("#content_div").load("/client/subsites/misaka/user_list.html"); 
+        $("#content_div").load("/client/subsites/misaka/user_list.html"); 
     });
 
     document.getElementById("download_rest_api_docu_button").addEventListener("click", function() {
-      $("#content_div").load("/client/subsites/misaka/rest_api_docu_download.html"); 
+        $("#content_div").load("/client/subsites/misaka/rest_api_docu_download.html"); 
     });
 
     function DownloadDocumentation_Request()
@@ -166,35 +166,41 @@ limitations under the License. -->
         
         const request = "/control/misaka/v1/documentation/api/rest";
         var xmlHttp = new XMLHttpRequest();
-        xmlHttp.open("GET", request, false);
+        xmlHttp.open("GET", request, true);
         xmlHttp.setRequestHeader("X-Auth-Token", token);
+
+        xmlHttp.onload = function(e) 
+        {
+            if(xmlHttp.status != 200) {
+                return "";
+            }
+
+            console.log("DownloadDocumentation_Request: " + xmlHttp.responseText);
+            var decodedDocu = atob(JSON.parse(xmlHttp.responseText).documentation);
+
+            var saveByteArray = (function () {
+                var a = document.createElement("a");
+                document.body.appendChild(a);
+                a.style = "display: none";
+                return function (data, name) {
+                    var blob = new Blob(data, {type: "octet/stream"}),
+                        url = window.URL.createObjectURL(blob);
+                    a.href = url;
+                    a.download = name;
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                };
+                
+            }());
+
+            saveByteArray([decodedDocu], 'rest_api_documentation.pdf');
+        };
+        xmlHttp.onerror = function(e) 
+        {
+            console.log("Download documentation failed.");
+        };
+
         xmlHttp.send(null);
-        if(xmlHttp.status != 200) {
-            return "";
-        }
-
-        console.log("DownloadDocumentation_Request: " + xmlHttp.responseText);
-        
-        var decodedDocu = atob(JSON.parse(xmlHttp.responseText).documentation);
-
-        var saveByteArray = (function () {
-            var a = document.createElement("a");
-            document.body.appendChild(a);
-            a.style = "display: none";
-            return function (data, name) {
-                var blob = new Blob(data, {type: "octet/stream"}),
-                    url = window.URL.createObjectURL(blob);
-                a.href = url;
-                a.download = name;
-                a.click();
-                window.URL.revokeObjectURL(url);
-            };
-            
-        }());
-
-        saveByteArray([decodedDocu], 'rest_api_documentation.pdf');
-
-        return ;
     }
 
     document.getElementById("download_rest_api_docu_button").addEventListener("click", DownloadDocumentation_Request, false);

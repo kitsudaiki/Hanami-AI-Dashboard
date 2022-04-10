@@ -176,43 +176,47 @@ limitations under the License. -->
 <!--=============================================================================-->
 
 <script>
-    loadUserList();
+    var headerMapping = {};
+    headerMapping["roles"] = "Roles"; 
+    headerMapping["name"] = "Name"; 
+    headerMapping["projects"] = "Projects"; 
+    headerMapping["is_admin"] = "Is Admin"; 
 
-    function loadUserList()
-    {
-        var headerMapping = {};
-        headerMapping["roles"] = "Roles"; 
-        headerMapping["name"] = "Name"; 
-        headerMapping["projects"] = "Projects"; 
-        headerMapping["is_admin"] = "Is Admin"; 
+    listUser_request();
 
-        var content = ListUser_Request();
-
-        constructTable(content, headerMapping, '#table');
-    }
-
-    function ListUser_Request()
+    function listUser_request()
     {
         const token = getAndCheckToken();
         if(token == "") {
+            console.log("FAIL");
             return;
         }
 
         const request = "/control/misaka/v1/user/all";
-        var xmlHttp = new XMLHttpRequest();
-        xmlHttp.open("GET", request, false);
-        xmlHttp.setRequestHeader("X-Auth-Token", token);
-        xmlHttp.send(null);
-        if(xmlHttp.status != 200) {
-            return "";
-        }
 
-        console.log("ListUser_Request: " + xmlHttp.responseText);
-        
-        return JSON.parse(xmlHttp.responseText);
+        var userListConnection = new XMLHttpRequest();
+        userListConnection.open("GET", request, true);
+        userListConnection.setRequestHeader("X-Auth-Token", token);
+
+        userListConnection.onload = function(e) 
+        {
+            if(userListConnection.status != 200) {
+                return false;
+            }
+
+            console.log("listUser_request: " + userListConnection.responseText);
+            const jsonContent = JSON.parse(userListConnection.responseText);
+            constructTable(jsonContent, headerMapping, '#table');
+        };
+        userListConnection.onerror = function(e) 
+        {
+            console.log("Failed to load list of users.");
+        };
+
+        userListConnection.send(null);
     }
 
-    function CreateUser_Request()
+    function createUser_request()
     {
         const token = getAndCheckToken();
         if(token == "") {
@@ -236,15 +240,28 @@ limitations under the License. -->
         reqContent += ",is_admin:" + isAdmin + "}";
 
         const request = "/control/misaka/v1/user";
-        var xmlHttp = new XMLHttpRequest();
-        xmlHttp.open("POST", request, false);
-        xmlHttp.setRequestHeader("X-Auth-Token", token);
-        xmlHttp.send(reqContent);
-        if(xmlHttp.status != 200) {
-            return;
-        }
 
-        console.log("CreateUser_Request: " + xmlHttp.responseText);
+        var userCreateConnection = new XMLHttpRequest();
+        userCreateConnection.open("POST", request, true);
+        userCreateConnection.setRequestHeader("X-Auth-Token", token);
+
+        userCreateConnection.onload = function(e) 
+        {
+            if(userCreateConnection.status != 200) {
+                return false;
+            }
+
+            var modal = document.getElementById("create_user_modal");
+            clearModalFields();
+            listUser_request();
+            modal.style.display = "none";
+        };
+        userCreateConnection.onerror = function(e) 
+        {
+            console.log("Failed to create user.");
+        };
+
+        userCreateConnection.send(reqContent);
     }
 
     function DeleteUser_Request(name)
@@ -258,15 +275,27 @@ limitations under the License. -->
         }
         
         const request = "/control/misaka/v1/user?name=" + name;
-        var xmlHttp = new XMLHttpRequest();
-        xmlHttp.open("DELETE", request, false);
-        xmlHttp.setRequestHeader("X-Auth-Token", token);
-        xmlHttp.send(null);
-        if(xmlHttp.status != 200) {
-            return;
-        }
 
-        console.log("DeleteUser_Request: " + xmlHttp.responseText);
+        var userDeleteConnection = new XMLHttpRequest();
+        userDeleteConnection.open("DELETE", request, true);
+        userDeleteConnection.setRequestHeader("X-Auth-Token", token);
+
+        userDeleteConnection.onload = function(e) 
+        {
+            if(userDeleteConnection.status != 200) {
+                return false;
+            }
+
+            listUser_request();
+            var modal = document.getElementById("delete_user_modal");
+            modal.style.display = "none";
+        };
+        userDeleteConnection.onerror = function(e) 
+        {
+            console.log("Failed to delete user.");
+        };
+
+        userDeleteConnection.send(null);
     }
 
     function clearModalFields()
@@ -287,11 +316,8 @@ limitations under the License. -->
         var cancelButton = document.getElementById("modal_create_cancel_button");
 
         // handle accept-button
-        acceptButton.onclick = function() 
-        {
-            clearModalFields();
-            modal.style.display = "none";
-            loadUserList();
+        acceptButton.onclick = function() {
+            createUser_request();
         }
 
         // handle cancel-button
@@ -322,11 +348,8 @@ limitations under the License. -->
         document.getElementById('delete_label_text').innerText = val;
 
         // handle accept-button
-        acceptButton.onclick = function() 
-        {
+        acceptButton.onclick = function() {
             DeleteUser_Request(val);
-            modal.style.display = "none";
-            loadUserList();
         }
 
         // handle cancel-button
@@ -346,6 +369,5 @@ limitations under the License. -->
     }
 
     document.getElementById("create_user_button").addEventListener("click", createUser, false);
-    document.getElementById("modal_create_accept_button").addEventListener("click", CreateUser_Request, false);
     
 </script>

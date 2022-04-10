@@ -65,7 +65,8 @@ limitations under the License. -->
                     <label for="pass">Password repeat:</label>
                     <input type="password" id="pass2" name="password" minlength="8" class="input_field" required>
                 </div>
-                <label id="error_message"></label>
+                <label id="create_user_modal_error_message" class="modal_error_field"></label>
+                <br><br>
             </center>
         </div>
         <div class="modal_footer_part">
@@ -114,7 +115,7 @@ limitations under the License. -->
     #create_user_modal_content { 
         color: var(--color-text);
         width: 35rem;
-        height: 23.7rem;
+        height: 25rem;
     }
 
     #delete_user_modal_content { 
@@ -151,11 +152,14 @@ limitations under the License. -->
         margin-right: 5rem;
     }
 
+    .modal_error_field {
+        color: red;
+    }
+
     label {
         white-space: pre-wrap;  /* to allow multi-line lables */
         display: inline-block;
         width: 12rem;
-        text-align: left;
     }
 
     #create_user_button {
@@ -223,6 +227,8 @@ limitations under the License. -->
             return;
         }
 
+        document.getElementById('create_user_modal_error_message').innerHTML = "";
+
         const name = document.getElementById('name_field').value;
         const projects = document.getElementById('projects_field').value;
         const roles = document.getElementById('roles_field').value;
@@ -230,14 +236,41 @@ limitations under the License. -->
         const password1 = document.getElementById('pass1').value;
         const password2 = document.getElementById('pass2').value;
 
-        // TODO: check if password1 and password2 are the same
-        // TODO: check if values are all fillled
+        if(password1 != password2) 
+        {
+            document.getElementById('create_user_modal_error_message').innerHTML = "Passwords are not equal";
+            return;
+        }
 
-        var reqContent = "{name:" + name;
-        reqContent += ",pw:" + password1;
-        reqContent += ",roles:" + roles;
-        reqContent += ",projects:" + projects;
-        reqContent += ",is_admin:" + isAdmin + "}";
+        if(name == "") 
+        {
+            document.getElementById('create_user_modal_error_message').innerHTML = "Name is missing";
+            return;
+        }
+
+        if(projects == "") 
+        {
+            document.getElementById('create_user_modal_error_message').innerHTML = "Projects are missing";
+            return;
+        }
+
+        if(roles == "") 
+        {
+            document.getElementById('create_user_modal_error_message').innerHTML = "Roles are missing";
+            return;
+        }
+
+        if(password1 == "") 
+        {
+            document.getElementById('create_user_modal_error_message').innerHTML = "Password is missing";
+            return;
+        }
+
+        var reqContent = "{name:\"" + name;
+        reqContent += "\",pw:\"" + password1;
+        reqContent += "\",roles:\"" + roles;
+        reqContent += "\",projects:\"" + projects;
+        reqContent += "\",is_admin:" + isAdmin + "}";
 
         const request = "/control/misaka/v1/user";
 
@@ -247,7 +280,9 @@ limitations under the License. -->
 
         userCreateConnection.onload = function(e) 
         {
-            if(userCreateConnection.status != 200) {
+            if(userCreateConnection.status != 200) 
+            {
+                document.getElementById('create_user_modal_error_message').innerHTML = userCreateConnection.responseText;
                 return false;
             }
 
@@ -266,9 +301,6 @@ limitations under the License. -->
 
     function DeleteUser_Request(name)
     {
-        // TODO: check if password1 and password2 are the same
-        // TODO: check if values are all fillled
-
         const token = getAndCheckToken();
         if(token == "") {
             return;

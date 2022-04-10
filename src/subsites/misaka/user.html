@@ -34,8 +34,8 @@ limitations under the License. -->
 <!--                              create modal                                   -->
 <!--=============================================================================-->
 
-<div id="create_user_modal" class="modal">
-    <div id="create_user_modal_content" class="modal-content">
+<div id="create_modal" class="modal">
+    <div id="create_modal_content" class="modal_content">
         <div class="modal_header_part">
             <svg width="100%" height="70" class="modal_header_position">
                 <polygon class="hexagon_field header_label_position " points="200,20 185,40 15,40 0,20 15,0 185,0"></polygon>
@@ -65,7 +65,7 @@ limitations under the License. -->
                     <label for="pass">Password repeat:</label>
                     <input type="password" id="pass2" name="password" minlength="8" class="input_field" required>
                 </div>
-                <label id="create_user_modal_error_message" class="modal_error_field"></label>
+                <label id="create_modal_error_message" class="modal_error_field"></label>
                 <br><br>
             </center>
         </div>
@@ -82,8 +82,8 @@ limitations under the License. -->
 <!--                              delete modal                                   -->
 <!--=============================================================================-->
 
-<div id="delete_user_modal" class="modal">
-    <div id="delete_user_modal_content" class="modal-content">
+<div id="delete_modal" class="modal">
+    <div id="delete_modal_content" class="modal_content">
         <div class="modal_header_part">
             <svg width="100%" height="70" class="modal_header_position">
                 <polygon class="hexagon_field header_label_position " points="200,20 185,40 15,40 0,20 15,0 185,0"></polygon>
@@ -98,7 +98,7 @@ limitations under the License. -->
                 <h2><label id="delete_label_text"></label></h2>
             </center>
         </div>
-        <div id="delete_modal_footer_part" class="modal_footer_part">
+        <div class="modal_footer_part">
             <center>
                 <img id="modal_delete_accept_button" class="generic_svg_button" src="/client/icons/uberprufen.svg">
                 <img id="modal_delete_cancel_button" class="generic_svg_button" src="/client/icons/kreuzen.svg">
@@ -112,13 +112,13 @@ limitations under the License. -->
 <!--=============================================================================-->
 
 <style>
-    #create_user_modal_content { 
+    #create_modal_content { 
         color: var(--color-text);
         width: 35rem;
         height: 25rem;
     }
 
-    #delete_user_modal_content { 
+    #delete_modal_content { 
         color: var(--color-text);
         width: 20rem;
         height: 17rem;
@@ -236,7 +236,7 @@ limitations under the License. -->
         }
 
         // clear error-label to remove the error of an old session
-        document.getElementById('create_user_modal_error_message').innerHTML = "";
+        document.getElementById('create_modal_error_message').innerHTML = "";
 
         const name = document.getElementById('name_field').value;
         const projects = document.getElementById('projects_field').value;
@@ -247,31 +247,31 @@ limitations under the License. -->
 
         if(password1 != password2) 
         {
-            document.getElementById('create_user_modal_error_message').innerHTML = "Passwords are not equal";
+            document.getElementById('create_modal_error_message').innerHTML = "Passwords are not equal";
             return;
         }
 
         if(name == "") 
         {
-            document.getElementById('create_user_modal_error_message').innerHTML = "Name is missing";
+            document.getElementById('create_modal_error_message').innerHTML = "Name is missing";
             return;
         }
 
         if(projects == "") 
         {
-            document.getElementById('create_user_modal_error_message').innerHTML = "Projects are missing";
+            document.getElementById('create_modal_error_message').innerHTML = "Projects are missing";
             return;
         }
 
         if(roles == "") 
         {
-            document.getElementById('create_user_modal_error_message').innerHTML = "Roles are missing";
+            document.getElementById('create_modal_error_message').innerHTML = "Roles are missing";
             return;
         }
 
         if(password1 == "") 
         {
-            document.getElementById('create_user_modal_error_message').innerHTML = "Password is missing";
+            document.getElementById('create_modal_error_message').innerHTML = "Password is missing";
             return;
         }
 
@@ -294,12 +294,12 @@ limitations under the License. -->
             // check if request was successfully processed by the backend
             if(userCreateConnection.status != 200) 
             {
-                document.getElementById('create_user_modal_error_message').innerHTML = userCreateConnection.responseText;
+                document.getElementById('create_modal_error_message').innerHTML = userCreateConnection.responseText;
                 return false;
             }
 
             // handle reqponse
-            var modal = document.getElementById("create_user_modal");
+            var modal = document.getElementById("create_modal");
             clearModalFields();
             listUser_request();
             modal.style.display = "none";
@@ -340,7 +340,7 @@ limitations under the License. -->
             }
 
             listUser_request();
-            var modal = document.getElementById("delete_user_modal");
+            var modal = document.getElementById("delete_modal");
             modal.style.display = "none";
         };
 
@@ -372,7 +372,7 @@ limitations under the License. -->
     function createUser() 
     {
         console.log("createUser");
-        var modal = document.getElementById("create_user_modal");
+        var modal = document.getElementById("create_modal");
         var acceptButton = document.getElementById("modal_create_accept_button");
         var cancelButton = document.getElementById("modal_create_cancel_button");
 
@@ -408,7 +408,7 @@ limitations under the License. -->
      */
     function deleteObject(name)
     {
-        var modal = document.getElementById("delete_user_modal");
+        var modal = document.getElementById("delete_modal");
         var acceptButton = document.getElementById("modal_delete_accept_button");
         var cancelButton = document.getElementById("modal_delete_cancel_button");
 

@@ -1,0 +1,530 @@
+<!-- Apache License Version 2.0
+
+Copyright 2020 Tobias Anker
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License. -->
+
+<!--=============================================================================-->
+<!--                                content                                      -->
+<!--=============================================================================-->
+
+<svg width="100%" height="70">
+    <polygon class="hexagon_field header_label_position" points="200,20 185,40 15,40 0,20 15,0 185,0"></polygon>
+    <text x="60" y="25"  class="header_label_position" font-size="20px">Datasets</text>
+</svg>
+
+<div class="tile_div">
+    <button id="create_dataset_button">+</button>
+    <table align = "center" id="table" border="1"></table>
+</div>
+
+<!--=============================================================================-->
+<!--                              create modal                                   -->
+<!--=============================================================================-->
+
+<div id="create_modal" class="modal">
+    <div id="create_modal_content" class="modal_content">
+        <div class="modal_header_part">
+            <svg width="100%" height="70" class="modal_header_position">
+                <polygon class="hexagon_field create_header_label_position" points="300,20 285,40 15,40 0,20 15,0 285,0"></polygon>
+                <text x="62" y="25" class="create_header_label_position" font-size="20px">Create new dataset</text>
+            </svg>
+        </div>
+        <div class="modal_content_part">
+            <center>
+                <div id="input_fields">
+                    <label for="name">Name:</label>
+                    <input type="text" id="name_field" class="input_field" name="name">
+                    <br><br>
+                    <label for="input_file_fieinput_fieldld">Input-file:</label>
+                    <input type="file" id="input_file_field" class="input_field"  name="input_file"> 
+                    <br><br>
+                    <label for="label_file_field">Label-file:</label>
+                    <input type="file" id="label_file_field" class="input_field"  name="label_file"> 
+                </div>
+                <label id="create_modal_error_message" class="modal_error_field"></label>
+                <br><br>
+            </center>
+        </div>
+        <div class="modal_footer_part">
+            <center>
+                <img id="modal_create_accept_button" class="generic_svg_button" src="/client/icons/uberprufen.svg">
+                <img id="modal_create_cancel_button" class="generic_svg_button" src="/client/icons/kreuzen.svg">
+            </center>
+        </div>
+    </div>
+</div>
+
+<!--=============================================================================-->
+<!--                              delete modal                                   -->
+<!--=============================================================================-->
+
+<div id="delete_modal" class="modal">
+    <div id="delete_modal_content" class="modal_content">
+        <div class="modal_header_part">
+            <svg width="100%" height="70" class="modal_header_position">
+                <polygon class="hexagon_field header_label_position " points="200,20 185,40 15,40 0,20 15,0 185,0"></polygon>
+                <text x="35" y="25"  class="header_label_position" font-size="20px">Delete dataset</text>
+            </svg>
+        </div>
+        <div id="delete_modal_content_part" class="modal_content_part">
+            <center>
+                <br><br>
+                Do you really want to delete dataset:
+                <br><br><br>
+                <h2><label id="delete_label_text"></label></h2>
+            </center>
+        </div>
+        <div class="modal_footer_part">
+            <center>
+                <img id="modal_delete_accept_button" class="generic_svg_button" src="/client/icons/uberprufen.svg">
+                <img id="modal_delete_cancel_button" class="generic_svg_button" src="/client/icons/kreuzen.svg">
+            </center>
+        </div>
+    </div>
+</div>
+
+<!--=============================================================================-->
+<!--                                 style                                       -->
+<!--=============================================================================-->
+
+<style>
+    #create_modal_content { 
+        color: var(--color-text);
+        width: 35rem;
+        height: 19rem;
+    }
+
+    #delete_modal_content { 
+        color: var(--color-text);
+        width: 20rem;
+        height: 17rem;
+    }
+
+    #input_fields {
+        width: 33rem;
+        margin: auto;
+        margin-top: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .input_field {
+        width: 20rem;
+    }
+
+    #delete_label_text {
+        vertical-align:middle;
+        text-align:center;
+        width: 20rem;
+    }
+
+    #delete_modal_content_part {
+        height: 10rem;
+    }
+
+    #modal_create_accept_button {
+        margin-right: 10rem;
+    }
+
+    #modal_delete_accept_button {
+        margin-right: 5rem;
+    }
+
+    .modal_error_field {
+        color: red;
+    }
+
+    .header_label_position {
+        transform: translate(calc((50% - 15rem) + 140px), 0%);
+    }
+
+    .create_header_label_position {
+        transform: translate(calc((50% - 15rem) + 90px), 0%);
+    }
+
+    label {
+        white-space: pre-wrap;  /* to allow multi-line lables */
+        display: inline-block;
+        width: 5rem;
+        text-align: left;
+    }
+
+    #create_dataset_button {
+        color: rgb(0, 0, 0);
+        width: 2.0rem;
+        height: 2.0rem;
+        margin-top: -2rem;
+        float: right;
+        position: relative; /* necessary for the z-index */
+        z-index: 1;
+        box-shadow: var(--box-shadow);
+    }
+
+</style>
+
+<!--=============================================================================-->
+<!--                                 script                                      -->
+<!--=============================================================================-->
+
+<script src="/client/scripts/table_processing.js"></script>
+<script src="/client/scripts/common.js"></script>
+<script>
+    // mapping for dataset-table
+    var headerMapping = new Map();
+    headerMapping.set("uuid", "UUID");
+    headerMapping.set("visibility", "Visibility");
+    headerMapping.set("name", "Name");
+    headerMapping.set("type", "Type");
+
+    // inital creation of the dataset-list when open the window
+    listDataset_request();
+
+    /**
+     * Send request to backend to get a list of all dataset
+     */
+    function listDataset_request()
+    {
+        const token = getAndCheckToken();
+        if(token == "") {
+            console.log("FAIL");
+            return;
+        }
+
+        const request = "/control/sagiri/v1/data_set/all";
+
+        var datasetListConnection = new XMLHttpRequest();
+        datasetListConnection.open("GET", request, true);
+        datasetListConnection.setRequestHeader("X-Auth-Token", token);
+
+        datasetListConnection.onload = function(e) 
+        {
+            if(datasetListConnection.status != 200) {
+                return false;
+            }
+
+            const jsonContent = JSON.parse(datasetListConnection.responseText);
+            constructTable(jsonContent, headerMapping, '#table');
+        };
+        datasetListConnection.onerror = function(e) 
+        {
+            console.log("Failed to load list of datasets.");
+        };
+
+        datasetListConnection.send(null);
+    }
+
+    function sendFile(websocket, file, uuid, fileUuid)
+    {
+        var segmentSize = 42 * 1024;
+        let counter = 0;
+        var fileSize = (file.size - 1);
+
+        for(let start = 0; start < fileSize; start += segmentSize) 
+        {
+            var reader = new FileReader();
+            var blob = file.slice(start, segmentSize + start);
+
+            reader.onload = function(e) {
+                // get reeader-result and cut unnecessary header of the resulting string
+                const msg = uuid + "," + fileUuid + "," + start + "," + e.target.result.split(',')[1];
+                console.log("send pkg");
+
+                websocket.send(msg);
+                counter = counter + 1;
+            };
+
+            // read as DataURL instead of array-buffer, because the javascript websocket seems to have problems with plain raw-data
+            reader.readAsDataURL(blob);
+        }
+
+        return true;
+    }
+
+    function sleep(ms) {
+        var start = new Date().getTime(), expire = start + ms;
+        while (new Date().getTime() < expire) { }
+        return;
+    }
+
+    function initWebsocket(websocket, uuid, inputFile, inputUuid, labelFile, labelUuid)
+    {
+        const token = getAndCheckToken();
+        if(token == "") {
+            return false;
+        }
+        
+        websocket.onopen = function () {
+            console.log("WebSocket open")
+            const initialMsg = "{\"token\":\"" + token + "\",\"target\":\"sagiri\"}";
+            websocket.send(initialMsg);
+        };
+        
+        websocket.onerror = function () {
+            console.log("WebSocket failed!");
+        };
+        
+        websocket.onmessage = function(event) {
+            var reader = new FileReader();
+            reader.onload = function() {
+                console.log("Data received from server: " + reader.result);
+            }
+            reader.readAsText(event.data);
+             
+            console.log("send input: " + inputUuid);
+            if(sendFile(websocket, inputFile, uuid, inputUuid) == false) {
+                return false;
+            }
+
+            console.log("send label: " + labelUuid);
+            if(sendFile(websocket, labelFile, uuid, labelUuid) == false) {
+                return false;
+            }
+        };
+
+        // wait until upload completed
+        var completeUploaded = false;
+        while(completeUploaded == false)
+        {
+            sleep(500);  // wait 500ms
+            var request = new XMLHttpRequest();
+            request.open('GET', '/control/sagiri/v1/data_set/progress?uuid=' + uuid, false);  // `false` makes the request synchronous
+            request.setRequestHeader("X-Auth-Token", token);
+            request.send(null);
+
+            console.log(request.responseText);
+
+            if(request.status !== 200) {
+                return false;
+            }
+
+            const jsonContent = JSON.parse(request.responseText);
+            completeUploaded = jsonContent.complete;
+        }
+
+        // finish upload
+        var request = new XMLHttpRequest();
+        request.open('PUT', '/control/sagiri/v1/mnist/data_set', false);  // `false` makes the request synchronous
+        request.setRequestHeader("X-Auth-Token", token);
+        var jsonBody = "{\"uuid\":\"" + uuid + "\",\"uuid_input_file\":\"" + inputUuid + "\",\"uuid_label_file\":\"" + labelUuid + "\"}";
+        request.send(jsonBody);
+
+        if(request.status !== 200) {
+            return false;
+        }
+
+        const jsonContent = JSON.parse(request.responseText);
+        completeUploaded = jsonContent.complete;
+
+        return true;
+    }
+
+    /**
+     * Send request to backend to create a new dataset
+     */
+    function createDataset_request()
+    {
+        const token = getAndCheckToken();
+        if(token == "") {
+            return;
+        }
+
+        // clear error-label to remove the error of an old session
+        document.getElementById('create_modal_error_message').innerHTML = "";
+
+        const name = document.getElementById('name_field').value;
+        const inputFile = document.getElementById('input_file_field').files[0];
+        const labelFile = document.getElementById('label_file_field').files[0];
+
+        if(name == "") 
+        {
+            document.getElementById('create_modal_error_message').innerHTML = "Name is missing";
+            return;
+        }
+
+        if(inputFile.name == "") 
+        {
+            document.getElementById('create_modal_error_message').innerHTML = "Input-file is missing";
+            return;
+        }
+
+        if(labelFile.name == "") 
+        {
+            document.getElementById('create_modal_error_message').innerHTML = "Label-file is missing";
+            return;
+        }
+       
+        // create request-content
+        var reqContent = "{name:\"" + name;
+        reqContent += "\",label_data_size:" + labelFile.size;
+        reqContent += ",input_data_size:" + inputFile.size + "}";
+
+        // create requeset
+        const request = "/control/sagiri/v1/mnist/data_set";
+        var datasetCreateConnection = new XMLHttpRequest();
+        datasetCreateConnection.open("POST", request, true);
+        datasetCreateConnection.setRequestHeader("X-Auth-Token", token);
+
+        // callback for success
+        datasetCreateConnection.onload = function(e) 
+        {
+            if(datasetCreateConnection.status != 200) 
+            {
+                document.getElementById('create_modal_error_message').innerHTML = datasetCreateConnection.responseText;
+                return false;
+            }
+
+            const jsonContent = JSON.parse(datasetCreateConnection.responseText);
+            const uuid = jsonContent.uuid;
+            const inputUuid = jsonContent.uuid_input_file;
+            const labelUuid = jsonContent.uuid_label_file;
+
+            var websocket = new WebSocket('wss://' + location.host);
+            if(initWebsocket(websocket, uuid, inputFile, inputUuid, labelFile, labelUuid) == false) {
+                return false;
+            }
+
+            // handle reqponse
+            var modal = document.getElementById("create_modal");
+            clearModalFields();
+            listDataset_request();
+            modal.style.display = "none";
+        };
+
+        // callback for fail
+        datasetCreateConnection.onerror = function(e) 
+        {
+            console.log("Failed to create dataset.");
+        };
+
+        datasetCreateConnection.send(reqContent);
+    }
+
+    /**
+     * Create and send request to delete a dataset from the list
+     *
+     * @param {name} Name of the dataset to delete
+     */
+    function DeleteDataset_Request(name)
+    {
+        const token = getAndCheckToken();
+        if(token == "") {
+            return;
+        }
+        
+        // create requeset
+        const request = "/control/sagiri/v1/data_set?uuid=" + name;
+        var datasetDeleteConnection = new XMLHttpRequest();
+        datasetDeleteConnection.open("DELETE", request, true);
+        datasetDeleteConnection.setRequestHeader("X-Auth-Token", token);
+
+        // callback for success
+        datasetDeleteConnection.onload = function(e) 
+        {
+            if(datasetDeleteConnection.status != 200) {
+                return;
+            }
+
+            listDataset_request();
+            var modal = document.getElementById("delete_modal");
+            modal.style.display = "none";
+        };
+
+        // callback for fail
+        datasetDeleteConnection.onerror = function(e) 
+        {
+            console.log("Failed to delete dataset.");
+        };
+
+        datasetDeleteConnection.send(null);
+    }
+
+    /**
+     * Clear all fields of the dataset-create-modal
+     */
+    function clearModalFields()
+    {
+        document.getElementById('name_field').value = "";
+    }
+
+    /**
+     * Open dataset-create-modal to ask for the parameter of the new dataset
+     */
+    function createDataset() 
+    {
+        console.log("createDataset");
+        var modal = document.getElementById("create_modal");
+        var acceptButton = document.getElementById("modal_create_accept_button");
+        var cancelButton = document.getElementById("modal_create_cancel_button");
+
+        // handle accept-button
+        acceptButton.onclick = function() {
+            createDataset_request();
+        }
+
+        // handle cancel-button
+        cancelButton.onclick = function() {
+            modal.style.display = "none";
+        } 
+
+        // handle click outside of the window
+        window.onclick = function(event) 
+        {
+            if(event.target == modal) 
+            {
+                clearModalFields();
+                modal.style.display = "none";
+            }
+        } 
+
+        modal.style.display = "block";
+    }
+
+    /**
+     * Open dataset-delete-modal to ask if dataset should really be deleted.
+     * This function is named 'deleteObject' instead of 'deleteDataset' because it is triggered
+     * by the genric delete-button of the table, which is generated in a generic way.
+     *
+     * @param {name} Name of the dataset to delete
+     */
+    function deleteObject(name)
+    {
+        var modal = document.getElementById("delete_modal");
+        var acceptButton = document.getElementById("modal_delete_accept_button");
+        var cancelButton = document.getElementById("modal_delete_cancel_button");
+
+        document.getElementById('delete_label_text').innerText = name;
+
+        // handle accept-button
+        acceptButton.onclick = function() {
+            DeleteDataset_Request(name);
+        }
+
+        // handle cancel-button
+        cancelButton.onclick = function() {
+            modal.style.display = "none";
+        } 
+
+        // handle click outside of the window
+        window.onclick = function(event) 
+        {
+            if(event.target == modal) {
+                modal.style.display = "none";
+            }
+        } 
+
+        modal.style.display = "block";
+    }
+
+    document.getElementById("create_dataset_button").addEventListener("click", createDataset, false);
+    
+</script>

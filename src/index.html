@@ -16,70 +16,81 @@ limitations under the License. -->
 
 <!DOCTYPE html>
 <html>
-    <title>MikoClient</title>
     <head>
-        <meta charset="utf-8">
+        <meta charset="UTF-8">
+        <meta name="viewport" content ="width-device-width, initial-scale=1.0">
+
+        <title>HanamiDashboard</title>
 
         <link rel="stylesheet" href="/client/styles/base.css">
         <link rel="stylesheet" href="/client/styles/modal.css">
         <link rel="stylesheet" href="/client/styles/tabs.css">
         <link rel="stylesheet" href="/client/styles/table.css">
-        <link rel="stylesheet" href="/client/styles/kitsunemimi_sakura.css">
+
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>  
-          
     </head>
     <body>
-        <!-- top -->
-        <div class="kitsunemimi_top">
-        </div>
-
-        <!-- content -->
-        <div id="content_div">
-            <div id="hex_view_div" class="internal_box">
-                <canvas id="contentCanvas"> </canvas> 
-            </div>
-            <div id="meta_data_div" class="internal_box" >
-                <div class="tab">
-                    <button class="tablinks" onclick="selectTable(event, 'global_settings')">Global settings</button>
-                    <button class="tablinks" onclick="selectTable(event, 'brick_sessings')">Brick settings</button>
+        <div id="kitsunemimi_top"> </div>
+        <div id="content_div"><h1>test</h1></div>
+        <div id="sidebar_div"></div>
+        <div id="login_modal" class="modal">
+            <div id="login_modal_content" class="modal_content">
+                <div class="modal_header_part">
+                    <svg width="100%" height="70" class="modal_header_position">
+                        <polygon class="hexagon_field header_label_position " points="200,20 185,40 15,40 0,20 15,0 185,0"></polygon>
+                        <text x="75" y="25"  class="header_label_position" font-size="20px">Login</text>
+                    </svg>
                 </div>
-                <div id="tab_bar_content">
-                    <div id="brick_sessings" class="tabcontent">
-                        <table cellspacing="0" cellpadding="1" class="internal_table" id="processing_table">
-                          <thead>
-                            <tr>
-                              <th scope="col" style="width: 60%">Field</th>
-                              <th scope="col" style="width: 40%">Value</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <tr>
-                              <th scope="row">Refraction time</th>
-                              <td contenteditable='true'>x</td>
-                            </tr>
-                            <tr>
-                              <th scope="row">Synapse delete border</th>
-                              <td contenteditable='true'>x</td>
-                            </tr>
-                          </tbody>
-                        </table>
-                    </div>
-                    <div id="global_settings" class="tabcontent">
-                        <div id="table_content_html"></div>
-                    </div>
+                <div class="modal_content_part">
+                    <center>
+                        <div id="login_modal_input_fields">
+                            <label class="login_modal_label" for="name">Username:</label>
+                            <input type="text" id="login_name_field" class="input_field" name="name">
+                            <br><br>
+                            <label class="login_modal_label" for="password">Password:</label>
+                            <input type="password" id="login_pw_field" class="input_field" name="password">
+                        </div>
+                        <label id="error_message" class="login_modal_label"></label>
+                    </center>
                 </div>
-            </div>
+                <div class="modal_footer_part">
+                    <center>
+                        <img id="modal_login_button" class="generic_svg_button" src="/client/icons/uberprufen.svg">
+                    </center>
+                </div>
+            </form>
         </div>
 
-        <!-- bottom -->
-        <div class="kitsunemimi_bottom">
-            <div id="modals_content_html"></div>
-        </div>
+        <style>
+            #login_modal {
+                background-color: rgba(0,0,0,1.0); 
+            }
 
-        <!-- scripts-->
-        <script src="/client/scripts/html_loading.js"></script>
-        <script src="/client/scripts/tabbar.js"></script>
-        <script src="/client/scripts/hexagon_canvas.js"></script>
-        <script src="/client/scripts/initial_data.js"></script>
+            #login_modal_content { 
+                color: var(--color-text);
+                width: 35rem;
+                height: 13.7rem;
+            }
+
+            #login_modal_input_fields {
+                width: 30rem;
+                margin: auto;
+                margin-top: 2rem;
+                margin-bottom: 2rem;
+            }
+
+            .login_modal_label {
+                white-space: pre-wrap;  /* to allow multi-line lables */
+                display: inline-block;
+                width: 12rem;
+                text-align: left;
+            }
+        </style>
+
+        <script>
+            $("#sidebar_div").load("/client/sidebar.html"); 
+        </script>
+        <script src="/client/scripts/login.js"></script>
     </body>
-</html>
+</html> 

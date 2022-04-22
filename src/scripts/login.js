@@ -55,7 +55,7 @@ function loginRequest(user, pw)
 		console.log("login successful");
 		const responseJson = JSON.parse(loginConnection.responseText);
 		// TODO: check if json-parsing is successful
-		document.cookie = "Auth_JWT_Token=" + responseJson.token;
+		document.cookie = "Auth_JWT_Token=" + responseJson.token + "; SameSite=Strict; Secure";
 	
 		document.getElementById("login_name_field").value = "";
 		document.getElementById("login_pw_field").value = "";
@@ -63,6 +63,7 @@ function loginRequest(user, pw)
 		var modal = document.getElementById("login_modal");
 		modal.style.display = "none";
 	};
+	
 	loginConnection.onerror = function(e) 
 	{
 		document.getElementById("login_name_field").value = "";

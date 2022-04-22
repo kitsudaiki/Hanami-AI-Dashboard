@@ -45,13 +45,13 @@ limitations under the License. -->
                 <div class="modal_content_part">
                     <center>
                         <div id="login_modal_input_fields">
-                            <label for="name">Username:</label>
+                            <label class="login_modal_label" for="name">Username:</label>
                             <input type="text" id="login_name_field" class="input_field" name="name">
                             <br><br>
-                            <label for="password">Password:</label>
+                            <label class="login_modal_label" for="password">Password:</label>
                             <input type="password" id="login_pw_field" class="input_field" name="password">
                         </div>
-                        <label id="error_message"></label>
+                        <label id="error_message" class="login_modal_label"></label>
                     </center>
                 </div>
                 <div class="modal_footer_part">
@@ -80,7 +80,7 @@ limitations under the License. -->
                 margin-bottom: 2rem;
             }
 
-            label {
+            .login_modal_label {
                 white-space: pre-wrap;  /* to allow multi-line lables */
                 display: inline-block;
                 width: 12rem;

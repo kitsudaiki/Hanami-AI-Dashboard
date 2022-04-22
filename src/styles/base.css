@@ -161,6 +161,5 @@ h1 {
 
 .header_label_position {
     /* calculate position: 50% of total window - width of sidebar + some offset where I don't know, why it has to be 140px */
-    /* TODO: find out why 140px */
     transform: translate(calc((50% - 15rem) + 140px), 0%);
 }

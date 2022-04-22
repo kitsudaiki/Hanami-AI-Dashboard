@@ -17,13 +17,21 @@ limitations under the License. -->
 <aside>
     <div class="sidebar">
 
-      <button class="sidebar_drop_down"> 
-        <span class="material-icons-sharp">grid_view</span>
-        <h3>Admin</h3>
-      </button>
-      <div class="sidebar_drop_content">
-        <a id="misaka_user_list" class="sidebar_dropdown_entry" href="#">User</a>
-      </div>
+        <button class="sidebar_drop_down"> 
+            <span class="material-icons-sharp">grid_view</span>
+            <h3>Storage</h3>
+        </button>
+        <div class="sidebar_drop_content">
+            <a id="sagiri_dataset_list" class="sidebar_dropdown_entry" href="#">Dataset</a>
+        </div>
+
+        <button class="sidebar_drop_down"> 
+            <span class="material-icons-sharp">grid_view</span>
+            <h3>Admin</h3>
+        </button>
+        <div class="sidebar_drop_content">
+            <a id="misaka_user_list" class="sidebar_dropdown_entry" href="#">User</a>
+        </div>
     </div>
 </aside>
 <br>
@@ -148,6 +156,10 @@ limitations under the License. -->
 
     initAllDropdowns();
     activateDefaultSideEntry();
+
+    document.getElementById("sagiri_dataset_list").addEventListener("click", function() {
+        $("#content_div").load("/client/subsites/sagiri/dataset.html"); 
+    });
 
     document.getElementById("misaka_user_list").addEventListener("click", function() {
         $("#content_div").load("/client/subsites/misaka/user.html"); 

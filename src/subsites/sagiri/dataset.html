@@ -46,11 +46,8 @@ limitations under the License. -->
                     <label for="name">Name:</label>
                     <input type="text" id="name_field" class="input_field" name="name">
                     <br><br>
-                    <label for="input_file_fieinput_fieldld">Input-file:</label>
-                    <input type="file" id="input_file_field" class="input_field"  name="input_file"> 
-                    <br><br>
-                    <label for="label_file_field">Label-file:</label>
-                    <input type="file" id="label_file_field" class="input_field"  name="label_file"> 
+                    <label for="input_file_field">Input-file:</label>
+                    <input type="file" id="input_file_field" class="input_field" name="input_file"> 
                 </div>
                 <label id="create_modal_error_message" class="modal_error_field"></label>
                 <br><br>
@@ -102,7 +99,7 @@ limitations under the License. -->
     #create_modal_content { 
         color: var(--color-text);
         width: 35rem;
-        height: 19rem;
+        height: 15rem;
     }
 
     #delete_modal_content { 
@@ -196,7 +193,6 @@ limitations under the License. -->
     {
         const token = getAndCheckToken();
         if(token == "") {
-            console.log("FAIL");
             return;
         }
 
@@ -237,8 +233,6 @@ limitations under the License. -->
             reader.onload = function(e) {
                 // get reeader-result and cut unnecessary header of the resulting string
                 const msg = uuid + "," + fileUuid + "," + start + "," + e.target.result.split(',')[1];
-                console.log("send pkg");
-
                 websocket.send(msg);
                 counter = counter + 1;
             };
@@ -256,7 +250,7 @@ limitations under the License. -->
         return;
     }
 
-    function initWebsocket(websocket, uuid, inputFile, inputUuid, labelFile, labelUuid)
+    function sendAllFiles(websocket, uuid, inputFile, inputUuid)
     {
         const token = getAndCheckToken();
         if(token == "") {
@@ -284,11 +278,6 @@ limitations under the License. -->
             if(sendFile(websocket, inputFile, uuid, inputUuid) == false) {
                 return false;
             }
-
-            console.log("send label: " + labelUuid);
-            if(sendFile(websocket, labelFile, uuid, labelUuid) == false) {
-                return false;
-            }
         };
 
         // wait until upload completed
@@ -313,9 +302,9 @@ limitations under the License. -->
 
         // finish upload
         var request = new XMLHttpRequest();
-        request.open('PUT', '/control/sagiri/v1/mnist/data_set', false);  // `false` makes the request synchronous
+        request.open('PUT', '/control/sagiri/v1/csv/data_set', false);  // `false` makes the request synchronous
         request.setRequestHeader("X-Auth-Token", token);
-        var jsonBody = "{\"uuid\":\"" + uuid + "\",\"uuid_input_file\":\"" + inputUuid + "\",\"uuid_label_file\":\"" + labelUuid + "\"}";
+        var jsonBody = "{\"uuid\":\"" + uuid + "\",\"uuid_input_file\":\"" + inputUuid + "\"}";
         request.send(jsonBody);
 
         if(request.status !== 200) {
@@ -343,7 +332,6 @@ limitations under the License. -->
 
         const name = document.getElementById('name_field').value;
         const inputFile = document.getElementById('input_file_field').files[0];
-        const labelFile = document.getElementById('label_file_field').files[0];
 
         if(name == "") 
         {
@@ -356,20 +344,13 @@ limitations under the License. -->
             document.getElementById('create_modal_error_message').innerHTML = "Input-file is missing";
             return;
         }
-
-        if(labelFile.name == "") 
-        {
-            document.getElementById('create_modal_error_message').innerHTML = "Label-file is missing";
-            return;
-        }
        
         // create request-content
         var reqContent = "{name:\"" + name;
-        reqContent += "\",label_data_size:" + labelFile.size;
-        reqContent += ",input_data_size:" + inputFile.size + "}";
+        reqContent += "\",input_data_size:" + inputFile.size + "}";
 
         // create requeset
-        const request = "/control/sagiri/v1/mnist/data_set";
+        const request = "/control/sagiri/v1/csv/data_set";
         var datasetCreateConnection = new XMLHttpRequest();
         datasetCreateConnection.open("POST", request, true);
         datasetCreateConnection.setRequestHeader("X-Auth-Token", token);
@@ -386,10 +367,9 @@ limitations under the License. -->
             const jsonContent = JSON.parse(datasetCreateConnection.responseText);
             const uuid = jsonContent.uuid;
             const inputUuid = jsonContent.uuid_input_file;
-            const labelUuid = jsonContent.uuid_label_file;
 
             var websocket = new WebSocket('wss://' + location.host);
-            if(initWebsocket(websocket, uuid, inputFile, inputUuid, labelFile, labelUuid) == false) {
+            if(sendAllFiles(websocket, uuid, inputFile, inputUuid) == false) {
                 return false;
             }
 
@@ -461,7 +441,6 @@ limitations under the License. -->
      */
     function createDataset() 
     {
-        console.log("createDataset");
         var modal = document.getElementById("create_modal");
         var acceptButton = document.getElementById("modal_create_accept_button");
         var cancelButton = document.getElementById("modal_create_cancel_button");

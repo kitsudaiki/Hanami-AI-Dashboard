@@ -41,10 +41,14 @@ function deleteAllCookies()
 
 function loginRequest(user, pw)
 {
-    const request = "/control/misaka/v1/token?name=" + user + "&pw=" + pw;
+    const request = "/control/misaka/v1/token";
+
+	var reqContent = "{\"name\":\"" + user;
+	reqContent += "\",\"password\":\"" + pw;
+	reqContent += "\"}";
 
 	var loginConnection = new XMLHttpRequest();
-    loginConnection.open("GET", request, true);
+    loginConnection.open("POST", request, true);
 
 	loginConnection.onload = function(e) 
 	{
@@ -72,7 +76,7 @@ function loginRequest(user, pw)
 		console.log("An error occurred while transferring the file.");
 	};
 
-    loginConnection.send(null);
+    loginConnection.send(reqContent);
 }
 
 function tokenCheckRequest(token)
@@ -133,3 +137,14 @@ function getAndCheckToken()
 getAndCheckToken();
 
 // login("test_user", "poipoi");
+
+// Allow Enter-button to tigger login
+document.getElementById("login_pw_field").addEventListener("keypress", function(event) 
+{
+	if(event.key === "Enter") 
+	{
+		event.preventDefault();
+		document.getElementById("modal_login_button").click();
+	}
+}); 
+

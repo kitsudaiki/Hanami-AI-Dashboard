@@ -31,66 +31,17 @@ limitations under the License. -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>  
     </head>
     <body>
+        <div id="login_div"></div>
+
         <div id="kitsunemimi_top"> </div>
+        
         <div id="content_div"><h1>test</h1></div>
+
         <div id="sidebar_div"></div>
-        <div id="login_modal" class="modal">
-            <div id="login_modal_content" class="modal_content">
-                <div class="modal_header_part">
-                    <svg width="100%" height="70" class="modal_header_position">
-                        <polygon class="hexagon_field header_label_position " points="200,20 185,40 15,40 0,20 15,0 185,0"></polygon>
-                        <text x="75" y="25"  class="header_label_position" font-size="20px">Login</text>
-                    </svg>
-                </div>
-                <div class="modal_content_part">
-                    <center>
-                        <div id="login_modal_input_fields">
-                            <label class="login_modal_label" for="name">Username:</label>
-                            <input type="text" id="login_name_field" class="input_field" name="name">
-                            <br><br>
-                            <label class="login_modal_label" for="password">Password:</label>
-                            <input type="password" id="login_pw_field" class="input_field" name="password">
-                        </div>
-                        <label id="error_message" class="login_modal_label"></label>
-                    </center>
-                </div>
-                <div class="modal_footer_part">
-                    <center>
-                        <img id="modal_login_button" class="generic_svg_button" src="/client/icons/uberprufen.svg">
-                    </center>
-                </div>
-            </form>
-        </div>
-
-        <style>
-            #login_modal {
-                background-color: rgba(0,0,0,1.0); 
-            }
-
-            #login_modal_content { 
-                color: var(--color-text);
-                width: 35rem;
-                height: 13.7rem;
-            }
-
-            #login_modal_input_fields {
-                width: 30rem;
-                margin: auto;
-                margin-top: 2rem;
-                margin-bottom: 2rem;
-            }
-
-            .login_modal_label {
-                white-space: pre-wrap;  /* to allow multi-line lables */
-                display: inline-block;
-                width: 12rem;
-                text-align: left;
-            }
-        </style>
 
         <script>
             $("#sidebar_div").load("/client/sidebar.html"); 
+            $("#login_div").load("/client/login.html"); 
         </script>
-        <script src="/client/scripts/login.js"></script>
     </body>
 </html> 

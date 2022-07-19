@@ -1,0 +1,218 @@
+<!-- Apache License Version 2.0
+
+Copyright 2020 Tobias Anker
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License. -->
+
+<!--=============================================================================-->
+<!--                                 modal                                       -->
+<!--=============================================================================-->
+
+<div id="login_modal" class="modal">
+    <div id="login_modal_content" class="modal_content">
+        <div class="modal_header_part">
+            <svg width="100%" height="70" class="modal_header_position">
+                <polygon class="hexagon_field header_label_position " points="200,20 185,40 15,40 0,20 15,0 185,0"></polygon>
+                <text x="75" y="25"  class="header_label_position" font-size="20px">Login</text>
+            </svg>
+        </div>
+        <div class="modal_content_part">
+            <div id="login_modal_input_fields">
+                <div>
+                    <label class="login_modal_label input_label" for="name">Username</label>
+                    <input type="text" id="login_name_field" name="name" required>
+                </div>
+                <br><br>
+                <div>
+                    <label class="login_modal_label input_label" for="password">Password</label>
+                    <input type="password" id="login_pw_field" name="password" required>
+                </div>
+            </div>
+            <label id="error_message" class="login_modal_label"></label>
+        </div>
+        <div class="modal_footer_part">
+            <center>
+                <img id="modal_login_button" class="generic_svg_button" src="/client/icons/uberprufen.svg">
+            </center>
+        </div>
+    </form>
+</div>
+
+<!--=============================================================================-->
+<!--                                 style                                       -->
+<!--=============================================================================-->
+
+<style>
+    #login_modal {
+        background-color: rgba(0,0,0,1.0); 
+    }
+
+    #login_modal_content { 
+        color: var(--color-text);
+        width: 30rem;
+        height: 23rem;
+    }
+
+    #login_modal_input_fields {
+        width: 25rem;
+        margin-top: 2rem;
+        margin-bottom: 2rem;
+        margin-left: 2.5rem;
+    }
+
+    .login_modal_label {
+        white-space: pre-wrap;  /* to allow multi-line lables */
+        display: inline-block;
+        text-align: left;
+    }
+</style>
+
+<!--=============================================================================-->
+<!--                                 script                                      -->
+<!--=============================================================================-->
+
+<script>
+    function getAuthCookie() 
+    {
+        const cn = "Auth_JWT_Token=";
+        const idx = document.cookie.indexOf(cn)
+
+        if (idx != -1) 
+        {
+            var end = document.cookie.indexOf(";", idx + 1);
+            if (end == -1) end = document.cookie.length;
+            return document.cookie.substring(idx + cn.length, end);
+        } 
+        else 
+        {
+            return "";
+        }
+    }
+
+    function deleteAllCookies() 
+    {
+        const cookies = document.cookie.split(";");
+        for (var i = 0; i < cookies.length; i++) {
+            document.cookie = cookies[i] + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+        }
+    }
+
+    function loginRequest(user, pw)
+    {
+        const request = "/control/misaka/v1/token";
+
+        var reqContent = "{\"name\":\"" + user;
+        reqContent += "\",\"password\":\"" + pw;
+        reqContent += "\"}";
+
+        var loginConnection = new XMLHttpRequest();
+        loginConnection.open("POST", request, true);
+
+        loginConnection.onload = function(e) 
+        {
+            if(loginConnection.status != 200) {
+                return false;
+            }
+        
+            console.log("login successful");
+            const responseJson = JSON.parse(loginConnection.responseText);
+            // TODO: check if json-parsing is successful
+            document.cookie = "Auth_JWT_Token=" + responseJson.token + "; SameSite=Strict; Secure";
+        
+            document.getElementById("login_name_field").value = "";
+            document.getElementById("login_pw_field").value = "";
+        
+            var modal = document.getElementById("login_modal");
+            modal.style.display = "none";
+        };
+        
+        loginConnection.onerror = function(e) 
+        {
+            document.getElementById("login_name_field").value = "";
+            document.getElementById("login_pw_field").value = "";
+        
+            console.log("An error occurred while transferring the file.");
+        };
+
+        loginConnection.send(reqContent);
+    }
+
+    function tokenCheckRequest(token)
+    {
+        const request = "/control/misaka/v1/auth?token=" + token;
+
+        var authConnection = new XMLHttpRequest();
+        authConnection.open("GET", request, true);
+        authConnection.setRequestHeader("X-Auth-Token", token);
+
+        authConnection.onload = function(e) 
+        {
+            if(authConnection.status != 200) 
+            {
+                console.log("token-check failed");
+                login();
+            }
+        };
+        authConnection.onerror = function(e) 
+        {
+            login();
+        };
+
+        authConnection.send(null);
+    }
+
+    function login() 
+    {
+        console.log("login");
+        deleteAllCookies();
+
+        var modal = document.getElementById("login_modal");
+        var loginButton = document.getElementById("modal_login_button");
+
+        // handle login-button
+        loginButton.onclick = function() 
+        {
+            const userName = document.getElementById("login_name_field").value;
+            const pw = document.getElementById("login_pw_field").value;
+            loginRequest(userName, pw);
+        }
+
+        modal.style.display = "block";
+    }
+
+    function getAndCheckToken() 
+    {
+        const authToken = getAuthCookie();
+        if(authToken == "") {
+            login();
+        } else {
+            tokenCheckRequest(authToken);
+        }
+        return authToken;
+    }
+
+    // deleteAllCookies();
+    getAndCheckToken();
+
+    // login("test_user", "poipoi");
+
+    // Allow Enter-button to tigger login
+    document.getElementById("login_pw_field").addEventListener("keypress", function(event) 
+    {
+        if(event.key === "Enter") 
+        {
+            event.preventDefault();
+            document.getElementById("modal_login_button").click();
+        }
+    }); 
+</script>

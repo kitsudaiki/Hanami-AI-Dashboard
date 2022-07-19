@@ -20,11 +20,12 @@ limitations under the License.
     --color-tile: #3b3f42;
     --color-shadow: #292929;
     --color-text: #ffffff;
+    --color-text-light: #8e9396;
     --color-table: #ffffff;
     --color-highlight: rgb(247, 181, 225);
 
-    --text-font-family: Arial, Helvetica, sans-serif;
-    --text-font-size: 0.8rem;
+    --text-font-family: Verdana,sans-serif,Arial, Helvetica, sans-serif;
+    --text-font-size: 1.0rem;
 
     --box-shadow: 0  0.5rem 0.5rem var(--color-shadow);
     --box-shadow-footer: 0 -0.5rem 0.5rem var(--color-shadow);
@@ -47,6 +48,7 @@ body {
     font-size: var(--text-font-size);
     user-select: none;
     overflow-x: hidden;
+    line-height: 1.5;
     
     /* scalse entire page */
     /*transform: scale(1.4);
@@ -63,6 +65,20 @@ button {
 
 h1 {
     font-size: 2.0rem;
+}
+
+input {
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: var(--color-text);
+    border-bottom: 1px solid var(--color-text);
+    padding: 8px;
+    width: 100%;
+}
+
+.input_label {
+    color: var(--color-text-light);
 }
 
 #avatar {

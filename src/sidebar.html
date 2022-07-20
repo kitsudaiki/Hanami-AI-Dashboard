@@ -24,6 +24,9 @@ limitations under the License. -->
         <div class="sidebar_drop_content">
             <a id="sagiri_dataset_list" class="sidebar_dropdown_entry" href="#">Dataset</a>
         </div>
+        <div class="sidebar_drop_content">
+            <a id="sagiri_cluster_snapshot_list" class="sidebar_dropdown_entry" href="#">Cluster Snapshot</a>
+        </div>
 
         <button class="sidebar_drop_down"> 
             <span class="material-icons-sharp">grid_view</span>
@@ -159,6 +162,10 @@ limitations under the License. -->
 
     document.getElementById("sagiri_dataset_list").addEventListener("click", function() {
         $("#content_div").load("/client/subsites/sagiri/dataset.html"); 
+    });
+
+    document.getElementById("sagiri_cluster_snapshot_list").addEventListener("click", function() {
+        $("#content_div").load("/client/subsites/sagiri/cluster_snapshot.html"); 
     });
 
     document.getElementById("misaka_user_list").addEventListener("click", function() {

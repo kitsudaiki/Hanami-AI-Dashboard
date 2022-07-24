@@ -109,7 +109,7 @@ limitations under the License. -->
 
     function loginRequest(user, pw)
     {
-        const request = "/control/misaka/v1/token";
+        const request = "/control/misaki/v1/token";
 
         var reqContent = "{\"name\":\"" + user;
         reqContent += "\",\"password\":\"" + pw;
@@ -149,7 +149,7 @@ limitations under the License. -->
 
     function tokenCheckRequest(token)
     {
-        const request = "/control/misaka/v1/auth?token=" + token;
+        const request = "/control/misaki/v1/auth?token=" + token;
 
         var authConnection = new XMLHttpRequest();
         authConnection.open("GET", request, true);

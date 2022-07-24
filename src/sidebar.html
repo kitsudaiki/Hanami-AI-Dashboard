@@ -19,21 +19,19 @@ limitations under the License. -->
 
         <button class="sidebar_drop_down"> 
             <span class="material-icons-sharp">grid_view</span>
-            Storage
+            <h3>Storage</h3>
         </button>
         <div class="sidebar_drop_content">
             <a id="sagiri_dataset_list" class="sidebar_dropdown_entry" href="#">Dataset</a>
-        </div>
-        <div class="sidebar_drop_content">
             <a id="sagiri_cluster_snapshot_list" class="sidebar_dropdown_entry" href="#">Cluster Snapshot</a>
         </div>
 
         <button class="sidebar_drop_down"> 
             <span class="material-icons-sharp">grid_view</span>
-            Admin
+            <h3>Admin</h3>
         </button>
         <div class="sidebar_drop_content">
-            <a id="misaka_user_list" class="sidebar_dropdown_entry" href="#">User</a>
+            <a id="misaki_user_list" class="sidebar_dropdown_entry" href="#">User</a>
         </div>
     </div>
 </aside>
@@ -168,12 +166,12 @@ limitations under the License. -->
         $("#content_div").load("/client/subsites/sagiri/cluster_snapshot.html"); 
     });
 
-    document.getElementById("misaka_user_list").addEventListener("click", function() {
-        $("#content_div").load("/client/subsites/misaka/user.html"); 
+    document.getElementById("misaki_user_list").addEventListener("click", function() {
+        $("#content_div").load("/client/subsites/misaki/user.html"); 
     });
 
     document.getElementById("download_rest_api_docu_button").addEventListener("click", function() {
-        $("#content_div").load("/client/subsites/misaka/rest_api_docu_download.html"); 
+        $("#content_div").load("/client/subsites/misaki/rest_api_docu_download.html"); 
     });
 
     function DownloadDocumentation_Request()
@@ -183,7 +181,7 @@ limitations under the License. -->
             return;
         }
         
-        const request = "/control/misaka/v1/documentation/api/rest";
+        const request = "/control/misaki/v1/documentation/api/rest";
         var xmlHttp = new XMLHttpRequest();
         xmlHttp.open("GET", request, true);
         xmlHttp.setRequestHeader("X-Auth-Token", token);

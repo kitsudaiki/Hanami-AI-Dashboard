@@ -18,9 +18,9 @@ limitations under the License. -->
 <!--                                content                                      -->
 <!--=============================================================================-->
 
-<svg width="100%" height="70">
-    <polygon class="hexagon_field header_label_position" points="200,20 185,40 15,40 0,20 15,0 185,0"></polygon>
-    <text x="80" y="25"  class="header_label_position" font-size="20px">User</text>
+<svg width="100%" height="68">
+    <polygon class="hexagon_field header_label_position" points="185,0 200,21 185,42 15,42 0,21 15,0"></polygon>
+    <text x="80" y="27"  class="header_label_position" font-size="20px">User</text>
 </svg>
 
 <div class="tile_div">
@@ -113,13 +113,19 @@ limitations under the License. -->
     #create_modal_content { 
         color: var(--color-text);
         width: 35rem;
-        height: 25rem;
+        height: 37rem;
+    }
+
+    /* for users there is no uuid in the firsh column, so override the styling for this special case */
+    td:nth-child(1) {  
+        font-family: var(--text-font-family);
+        width: 20rem;
     }
 
     #delete_modal_content { 
         color: var(--color-text);
-        width: 20rem;
-        height: 17rem;
+        width: 30rem;
+        height: 20rem;
     }
 
     #input_fields {
@@ -139,7 +145,7 @@ limitations under the License. -->
     }
 
     #delete_modal_content_part {
-        height: 10rem;
+        height: 13rem;
     }
 
     #modal_create_accept_button {
@@ -152,6 +158,12 @@ limitations under the License. -->
 
     .modal_error_field {
         color: red;
+        width: 25rem;
+        text-align:center;
+    }
+
+    .header_label_position {
+        transform: translate(calc(50% - 100px), 0%);
     }
 
     label {
@@ -201,7 +213,7 @@ limitations under the License. -->
             return;
         }
 
-        const request = "/control/misaka/v1/user/all";
+        const request = "/control/misaki/v1/user/all";
 
         var userListConnection = new XMLHttpRequest();
         userListConnection.open("GET", request, true);
@@ -283,7 +295,7 @@ limitations under the License. -->
         reqContent += "\",is_admin:" + isAdmin + "}";
 
         // create requeset
-        const request = "/control/misaka/v1/user";
+        const request = "/control/misaki/v1/user";
         var userCreateConnection = new XMLHttpRequest();
         userCreateConnection.open("POST", request, true);
         userCreateConnection.setRequestHeader("X-Auth-Token", token);
@@ -327,7 +339,7 @@ limitations under the License. -->
         }
         
         // create requeset
-        const request = "/control/misaka/v1/user?name=" + name;
+        const request = "/control/misaki/v1/user?name=" + name;
         var userDeleteConnection = new XMLHttpRequest();
         userDeleteConnection.open("DELETE", request, true);
         userDeleteConnection.setRequestHeader("X-Auth-Token", token);

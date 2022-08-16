@@ -16,6 +16,15 @@ limitations under the License. -->
 
 <aside>
     <div class="sidebar">
+        <button class="sidebar_drop_down"> 
+            <span class="material-icons-sharp">grid_view</span>
+            <h3>Cluster</h3>
+        </button>
+        <div class="sidebar_drop_content">
+            <a id="kyouko_cluster_list" class="sidebar_dropdown_entry" href="#">Cluster</a>
+            <a id="kyouko_cluster_template_list" class="sidebar_dropdown_entry" href="#">Cluster Templates</a>
+            <a id="kyouko_segment_template_list" class="sidebar_dropdown_entry" href="#">Segment Templates</a>
+        </div>
 
         <button class="sidebar_drop_down"> 
             <span class="material-icons-sharp">grid_view</span>
@@ -158,10 +167,19 @@ limitations under the License. -->
     initAllDropdowns();
     activateDefaultSideEntry();
 
+    document.getElementById("kyouko_cluster_list").addEventListener("click", function() {
+        $("#content_div").load("/client/subsites/kyouko/cluster.html"); 
+    });
+    document.getElementById("kyouko_cluster_template_list").addEventListener("click", function() {
+        $("#content_div").load("/client/subsites/kyouko/cluster_template.html"); 
+    });
+    document.getElementById("kyouko_segment_template_list").addEventListener("click", function() {
+        $("#content_div").load("/client/subsites/kyouko/segment_template.html"); 
+    });
+
     document.getElementById("sagiri_dataset_list").addEventListener("click", function() {
         $("#content_div").load("/client/subsites/sagiri/dataset.html"); 
     });
-
     document.getElementById("sagiri_cluster_snapshot_list").addEventListener("click", function() {
         $("#content_div").load("/client/subsites/sagiri/cluster_snapshot.html"); 
     });

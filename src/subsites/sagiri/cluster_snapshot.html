@@ -136,12 +136,12 @@ limitations under the License. -->
     headerMapping.set("type", "Type");
 
     // inital creation of the cluster-snapshot-list when open the window
-    listClusterSnapshost_request();
+    listClusterSnapshot_request();
 
     /**
      * Send request to backend to get a list of all cluster-snapshot
      */
-    function listClusterSnapshost_request()
+    function listClusterSnapshot_request()
     {
         const token = getAndCheckToken();
         if(token == "") {

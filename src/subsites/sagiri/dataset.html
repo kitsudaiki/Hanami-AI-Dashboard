@@ -19,13 +19,13 @@ limitations under the License. -->
 <!--=============================================================================-->
 
 <svg width="100%" height="68">
-    <polygon class="hexagon_field header_label_position" points="185,0 200,21 185,42 15,42 0,21 15,0"></polygon>
-    <text x="60" y="27"  class="header_label_position" font-size="20px">Datasets</text>
+    <polygon class="hexagon_field header_label_position_short" points="185,0 200,21 185,42 15,42 0,21 15,0"></polygon>
+    <text x="60" y="27"  class="header_label_position_short" font-size="20px">Datasets</text>
 </svg>
 
 <div class="tile_div">
-    <button id="create_dataset_button">+</button>
-    <table align = "center" id="table" border="1"></table>
+    <button id="create_dataset_button" class="add_button">+</button>
+    <table  id="table" align="center"border="1"></table>
 </div>
 
 <!--=============================================================================-->
@@ -36,17 +36,17 @@ limitations under the License. -->
     <div id="create_modal_content" class="modal_content">
         <div class="modal_header_part">
             <svg width="100%" height="68" class="modal_header_position">
-                <polygon class="hexagon_field create_header_label_position" points="285,0 300,21 285,42 15,42 0,21 15,0"></polygon>
-                <text x="62" y="27" class="create_header_label_position" font-size="20px">Create new dataset</text>
+                <polygon class="hexagon_field header_label_position_long" points="285,0 300,21 285,42 15,42 0,21 15,0"></polygon>
+                <text x="62" y="27" class="header_label_position_long" font-size="20px">Create new dataset</text>
             </svg>
         </div>
         <div class="modal_content_part">
             <center>
                 <div id="input_fields">
-                    <label for="name">Name:</label>
+                    <label class="modal_label" for="name">Name:</label>
                     <input type="text" id="name_field" class="input_field" name="name">
                     <br><br>
-                    <label for="input_file_field">Input-file:</label>
+                    <label class="modal_label" for="input_file_field">Input-file:</label>
                     <input type="file" id="input_file_field" class="input_field" name="input_file"> 
                 </div>
                 <label id="create_modal_error_message" class="modal_error_field"></label>
@@ -70,8 +70,8 @@ limitations under the License. -->
     <div id="delete_modal_content" class="modal_content">
         <div class="modal_header_part">
             <svg width="100%" height="68" class="modal_header_position">
-                <polygon class="hexagon_field header_label_position " points="185,0 200,21 185,42 15,42 0,21 15,0"></polygon>
-                <text x="35" y="27" class="header_label_position" font-size="20px">Delete dataset</text>
+                <polygon class="hexagon_field header_label_position_short " points="185,0 200,21 185,42 15,42 0,21 15,0"></polygon>
+                <text x="35" y="27" class="header_label_position_short" font-size="20px">Delete dataset</text>
             </svg>
         </div>
         <div id="delete_modal_content_part" class="modal_content_part">
@@ -136,38 +136,6 @@ limitations under the License. -->
     #modal_delete_accept_button {
         margin-right: 5rem;
     }
-
-    .modal_error_field {
-        color: red;
-        width: 10rem;
-    }
-
-    .header_label_position {
-        transform: translate(calc(50% - 100px), 0%);
-    }
-
-    .create_header_label_position {
-        transform: translate(calc((50% - 15rem) + 90px), 0%);
-    }
-
-    label {
-        white-space: pre-wrap;  /* to allow multi-line lables */
-        display: inline-block;
-        width: 5rem;
-        text-align: left;
-    }
-
-    #create_dataset_button {
-        color: rgb(0, 0, 0);
-        width: 2.0rem;
-        height: 2.0rem;
-        margin-top: -2rem;
-        float: right;
-        position: relative; /* necessary for the z-index */
-        z-index: 1;
-        box-shadow: var(--box-shadow);
-    }
-
 </style>
 
 <!--=============================================================================-->

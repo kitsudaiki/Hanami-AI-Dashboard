@@ -24,7 +24,7 @@ limitations under the License.
     --color-table: #ffffff;
     --color-highlight: rgb(247, 181, 225);
 
-    --text-font-family: Verdana,sans-serif,Arial, Helvetica, sans-serif;
+    --text-font-family: Verdana, sans-serif, Arial, Helvetica;
     --text-font-size: 1.0rem;
 
     --box-shadow: 0  0.5rem 0.5rem var(--color-shadow);
@@ -72,14 +72,26 @@ input {
     outline: 0;
     background: transparent;
     color: var(--color-text);
-    border-bottom: 1px solid var(--color-text);
+    border-bottom: 1px solid var(--color-text-light);
     padding: 8px;
     width: 100%;
 }
 
-.input_label {
-    color: var(--color-text-light);
+textarea {
+    background: transparent;
+    color: var(--color-text);
+    border: 1px solid var(--color-text-light);
+    padding: 8px;
+    width: 100%;
 }
+
+label {
+    white-space: pre-wrap;  /* to allow multi-line lables */
+    display: inline-block;
+    width: 5rem;
+    text-align: left;
+}
+
 
 #avatar {
     width: 2.0rem;
@@ -175,7 +187,25 @@ input {
     filter: drop-shadow(var(--box-shadow-header));
 }
 
-.header_label_position {
-    /* calculate position: 50% of total window - width of sidebar + some offset where I don't know, why it has to be 140px */
-    transform: translate(calc((50% - 15rem) + 140px), 0%);
+.header_label_position_long {
+    transform: translate(calc(50% - 200px), 0%);
+}
+
+.header_label_position_mid {
+    transform: translate(calc(50% - 150px), 0%);
+}
+
+.header_label_position_short {
+    transform: translate(calc(50% - 100px), 0%);
+}
+
+.add_button {
+    color: rgb(0, 0, 0);
+    width: 2.0rem;
+    height: 2.0rem;
+    margin-top: -2rem;
+    float: right;
+    position: relative; /* necessary for the z-index */
+    z-index: 1;
+    box-shadow: var(--box-shadow);
 }

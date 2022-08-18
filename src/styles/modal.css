@@ -88,6 +88,20 @@ limitations under the License.
     animation-duration: 0.5s;
 }
 
+.modal_error_field {
+    color: red;
+    width: 10rem;
+}
+
+.modal_label {
+    float: left;
+    white-space: pre-wrap;  /* to allow multi-line lables */
+    display: inline-block;
+    text-align: left;
+    margin-bottom: 10px;
+    color: var(--color-text-light);
+}
+
 .close {
     color: #aaa;
     float: right;

@@ -27,18 +27,18 @@ limitations under the License. -->
             </svg>
         </div>
         <div class="modal_content_part">
-            <div id="login_modal_input_fields">
+            <div class="modal_input_fields">
                 <div>
-                    <label class="login_modal_label input_label" for="name">Username</label>
+                    <label class="modal_label" for="name">Username</label>
                     <input type="text" id="login_name_field" name="name" required>
                 </div>
                 <br><br>
                 <div>
-                    <label class="login_modal_label input_label" for="password">Password</label>
+                    <label class="modal_label" for="password">Password</label>
                     <input type="password" id="login_pw_field" name="password" required>
                 </div>
             </div>
-            <label id="error_message" class="login_modal_label"></label>
+            <label id="error_message" class="modal_error_field"></label>
         </div>
         <div class="modal_footer_part">
             <center>
@@ -61,19 +61,6 @@ limitations under the License. -->
         color: var(--color-text);
         width: 30rem;
         height: 23rem;
-    }
-
-    #login_modal_input_fields {
-        width: 25rem;
-        margin-top: 2rem;
-        margin-bottom: 2rem;
-        margin-left: 2.5rem;
-    }
-
-    .login_modal_label {
-        white-space: pre-wrap;  /* to allow multi-line lables */
-        display: inline-block;
-        text-align: left;
     }
 </style>
 

@@ -67,6 +67,15 @@ limitations under the License.
 
 .modal_content_part {
     box-shadow: var(--box-shadow-header);
+    height: calc(100% - 6rem);
+}
+
+.modal_input_fields {
+    width: auto;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    margin-left: 2rem;
+    margin-right: 2rem;
 }
 
 .modal_footer_part {
@@ -90,16 +99,16 @@ limitations under the License.
 
 .modal_error_field {
     color: red;
-    width: 10rem;
+    margin-left: 2rem;
+    margin-right: 2rem;
 }
 
 .modal_label {
-    float: left;
     white-space: pre-wrap;  /* to allow multi-line lables */
     display: inline-block;
     text-align: left;
     margin-bottom: 10px;
-    color: var(--color-text-light);
+    color: var(--color-text);
 }
 
 .close {

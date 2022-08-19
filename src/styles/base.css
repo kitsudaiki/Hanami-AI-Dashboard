@@ -92,7 +92,6 @@ label {
     text-align: left;
 }
 
-
 #avatar {
     width: 2.0rem;
     height: 2.0rem;
@@ -208,4 +207,14 @@ label {
     position: relative; /* necessary for the z-index */
     z-index: 1;
     box-shadow: var(--box-shadow);
+}
+
+.delete_label_text {
+    vertical-align:middle;
+    text-align:center;
+    width: 30rem;
+}
+
+.modal_accept_button {
+    margin-right: 10rem;
 }

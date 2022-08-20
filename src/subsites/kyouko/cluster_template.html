@@ -19,12 +19,48 @@ limitations under the License. -->
 <!--=============================================================================-->
 
 <svg width="100%" height="68">
-    <polygon class="hexagon_field header_label_position" points="285,0 300,21 285,42 15,42 0,21 15,0"></polygon>
-    <text x="70" y="27"  class="header_label_position" font-size="20px">Cluster Template</text>
+    <polygon class="hexagon_field header_label_position_long" points="285,0 300,21 285,42 15,42 0,21 15,0"></polygon>
+    <text x="62" y="27"  class="header_label_position_long" font-size="20px">Cluster Template</text>
 </svg>
 
 <div class="tile_div">
-    <table align = "center" id="table" border="1"></table>
+    <button id="create_cluster_template_button" class="add_button">+</button>
+    <table  id="table" align="center"border="1"></table>
+</div>
+
+<!--=============================================================================-->
+<!--                              create modal                                   -->
+<!--=============================================================================-->
+
+<div id="create_modal" class="modal">
+    <div id="create_modal_content" class="modal_content">
+        <div class="modal_header_part">
+            <svg width="100%" height="68" class="modal_header_position">
+                <polygon class="hexagon_field header_label_position_long" points="385,0 400,21 385,42 15,42 0,21 15,0"></polygon>
+                <text x="55" y="27" class="header_label_position_long" font-size="20px">Create new Cluster Template</text>
+            </svg>
+        </div>
+        <div class="modal_content_part">
+            <div class="modal_input_fields">
+                <div>
+                    <label class="modal_label" for="name">Name:</label>
+                    <input type="text" id="name_field" class="input_field" name="name">
+                </div>
+                <br><br>
+                <div>
+                    <label class="modal_label" for="template_field">Template:</label>
+                    <textarea id="template_field" class="input_field" name="input_file"> </textarea>
+                </div>
+            </div>
+            <label id="create_modal_error_message" class="modal_error_field"></label>
+        </div>
+        <div class="modal_footer_part">
+            <center>
+                <img id="modal_create_accept_button" class="generic_svg_button modal_accept_button" src="/client/icons/uberprufen.svg">
+                <img id="modal_create_cancel_button" class="generic_svg_button" src="/client/icons/kreuzen.svg">
+            </center>
+        </div>
+    </div>
 </div>
 
 <!--=============================================================================-->
@@ -35,21 +71,21 @@ limitations under the License. -->
     <div id="delete_modal_content" class="modal_content">
         <div class="modal_header_part">
             <svg width="100%" height="68" class="modal_header_position">
-                <polygon class="hexagon_field header_label_position " points="285,0 300,21 285,42 15,42 0,21 15,0"></polygon>
-                <text x="35" y="27"  class="header_label_position" font-size="20px">Delete Cluster Template</text>
+                <polygon class="hexagon_field header_label_position_long" points="385,0 400,21 385,42 15,42 0,21 15,0"></polygon>
+                <text x="80" y="27" class="header_label_position_long" font-size="20px">Delete Cluster Template</text>
             </svg>
         </div>
-        <div id="delete_modal_content_part" class="modal_content_part">
+        <div class="modal_content_part">
             <center>
                 <br><br>
                 Do you really want to delete cluster template:
-                <br><br><br>
-                <h2><label id="delete_label_text"></label></h2>
+                <br><br>
+                <h2><label id="delete_label_text" class="delete_label_text"></label></h2>
             </center>
         </div>
         <div class="modal_footer_part">
             <center>
-                <img id="modal_delete_accept_button" class="generic_svg_button" src="/client/icons/uberprufen.svg">
+                <img id="modal_delete_accept_button" class="generic_svg_button modal_accept_button" src="/client/icons/uberprufen.svg">
                 <img id="modal_delete_cancel_button" class="generic_svg_button" src="/client/icons/kreuzen.svg">
             </center>
         </div>
@@ -63,62 +99,19 @@ limitations under the License. -->
 <style>
     #create_modal_content { 
         color: var(--color-text);
-        width: 35rem;
-        height: 15rem;
+        width: 40rem;
+        height: 40rem;
     }
 
     #delete_modal_content { 
         color: var(--color-text);
-        width: 20rem;
+        width: 40rem;
         height: 17rem;
     }
 
-    #input_fields {
-        width: 33rem;
-        margin: auto;
-        margin-top: 2rem;
-        margin-bottom: 2rem;
-    }
-
-    .input_field {
-        width: 20rem;
+    #template_field {
         height: 20rem;
     }
-
-    #delete_label_text {
-        vertical-align:middle;
-        text-align:center;
-        width: 20rem;
-    }
-
-    #delete_modal_content_part {
-        height: 10rem;
-    }
-
-    #modal_create_accept_button {
-        margin-right: 10rem;
-    }
-
-    #modal_delete_accept_button {
-        margin-right: 5rem;
-    }
-
-    .modal_error_field {
-        color: red;
-        width: 10rem;
-    }
-
-    .header_label_position {
-        transform: translate(calc(50% - 150px), 0%);
-    }
-
-    label {
-        white-space: pre-wrap;  /* to allow multi-line lables */
-        display: inline-block;
-        width: 5rem;
-        text-align: left;
-    }
-
 </style>
 
 <!--=============================================================================-->
@@ -127,6 +120,7 @@ limitations under the License. -->
 
 <script src="/client/scripts/table_processing.js"></script>
 <script src="/client/scripts/common.js"></script>
+<script src="/client/scripts/actions.js"></script>
 <script>
     // mapping for cluster-template-table
     var headerMapping = new Map();
@@ -135,104 +129,41 @@ limitations under the License. -->
     headerMapping.set("name", "Name");
     headerMapping.set("type", "Type");
 
+    var deleteRequest = "/control/kyouko/v1/template?type=cluster&uuid=";
+    var listRequest = "/control/kyouko/v1/template/all?type=cluster";
+    var createRequest = "/control/kyouko/v1/template/upload";
+
     // inital creation of the cluster-template-list when open the window
-    listClusterTemplate_request();
+    listObjects_request();
 
     /**
-     * Send request to backend to get a list of all cluster-template
      */
-    function listClusterTemplate_request()
+    function createObject_build()
     {
-        const token = getAndCheckToken();
-        if(token == "") {
+        // clear error-label to remove the error of an old session
+        document.getElementById('create_modal_error_message').innerHTML = "";
+
+        const name = document.getElementById('name_field').value;
+        const templateStr = document.getElementById('template_field').value;
+
+        if(name == "") 
+        {
+            document.getElementById('create_modal_error_message').innerHTML = "Name is missing";
             return;
         }
 
-        const request = "/control/kyouko/v1/template/all?type=cluster";
-
-        var clusterTemplateListConnection = new XMLHttpRequest();
-        clusterTemplateListConnection.open("GET", request, true);
-        clusterTemplateListConnection.setRequestHeader("X-Auth-Token", token);
-
-        clusterTemplateListConnection.onload = function(e) 
+        if(templateStr == "") 
         {
-            if(clusterTemplateListConnection.status != 200) {
-                return false;
-            }
-
-            const jsonContent = JSON.parse(clusterTemplateListConnection.responseText);
-            constructTable(jsonContent, headerMapping, '#table');
-        };
-        clusterTemplateListConnection.onerror = function(e) 
-        {
-            console.log("Failed to load list of cluster-templates.");
-        };
-
-        clusterTemplateListConnection.send(null);
-    }
-
-    function sendFile(websocket, file, uuid, fileUuid)
-    {
-        var segmentSize = 42 * 1024;
-        let counter = 0;
-        var fileSize = (file.size - 1);
-
-        for(let start = 0; start < fileSize; start += segmentSize) 
-        {
-            var reader = new FileReader();
-            var blob = file.slice(start, segmentSize + start);
-
-            reader.onload = function(e) {
-                // get reeader-result and cut unnecessary header of the resulting string
-                const msg = uuid + "," + fileUuid + "," + start + "," + e.target.result.split(',')[1];
-                websocket.send(msg);
-                counter = counter + 1;
-            };
-
-            // read as DataURL instead of array-buffer, because the javascript websocket seems to have problems with plain raw-data
-            reader.readAsDataURL(blob);
-        }
-
-        return true;
-    }
-
-    /**
-     * Create and send request to delete a cluster-template from the list
-     *
-     * @param {name} Name of the cluster-template to delete
-     */
-    function DeleteClusterTemplate_Request(name)
-    {
-        const token = getAndCheckToken();
-        if(token == "") {
+            document.getElementById('create_modal_error_message').innerHTML = "Template is missing";
             return;
         }
-        
-        // create requeset
-        const request = "/control/sagiri/v1/template?uuid=" + name + "&type=cluster";
-        var clusterTemplateDeleteConnection = new XMLHttpRequest();
-        clusterTemplateDeleteConnection.open("DELETE", request, true);
-        clusterTemplateDeleteConnection.setRequestHeader("X-Auth-Token", token);
+       
+        // create request-content
+        var reqContent = "{\"name\":\"" + name;
+        reqContent += "\",\"type\":\"cluster\"";
+        reqContent += ",\"template\":" + templateStr + "}";
 
-        // callback for success
-        clusterTemplateDeleteConnection.onload = function(e) 
-        {
-            if(clusterTemplateDeleteConnection.status != 200) {
-                return;
-            }
-
-            listClusterTemplate_request();
-            var modal = document.getElementById("delete_modal");
-            modal.style.display = "none";
-        };
-
-        // callback for fail
-        clusterTemplateDeleteConnection.onerror = function(e) 
-        {
-            console.log("Failed to delete cluster-template.");
-        };
-
-        clusterTemplateDeleteConnection.send(null);
+        createObject_request(reqContent);
     }
 
     /**
@@ -241,42 +172,9 @@ limitations under the License. -->
     function clearModalFields()
     {
         document.getElementById('name_field').value = "";
+        document.getElementById('template_field').value = "";
     }
 
-    /**
-     * Open cluster-template-delete-modal to ask if cluster-template should really be deleted.
-     * This function is named 'deleteObject' instead of 'cluster-template' because it is triggered
-     * by the genric delete-button of the table, which is generated in a generic way.
-     *
-     * @param {name} Name of the dacluster-templatetaset to delete
-     */
-    function deleteObject(name)
-    {
-        var modal = document.getElementById("delete_modal");
-        var acceptButton = document.getElementById("modal_delete_accept_button");
-        var cancelButton = document.getElementById("modal_delete_cancel_button");
+    document.getElementById("create_cluster_template_button").addEventListener("click", createObject, false);
 
-        document.getElementById('delete_label_text').innerText = name;
-
-        // handle accept-button
-        acceptButton.onclick = function() {
-            DeleteClusterTemplate_Request(name);
-        }
-
-        // handle cancel-button
-        cancelButton.onclick = function() {
-            modal.style.display = "none";
-        } 
-
-        // handle click outside of the window
-        window.onclick = function(event) 
-        {
-            if(event.target == modal) {
-                modal.style.display = "none";
-            }
-        } 
-
-        modal.style.display = "block";
-    }
-    
 </script>

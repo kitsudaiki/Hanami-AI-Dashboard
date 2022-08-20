@@ -19,12 +19,48 @@ limitations under the License. -->
 <!--=============================================================================-->
 
 <svg width="100%" height="68">
-    <polygon class="hexagon_field header_label_position" points="285,0 300,21 285,42 15,42 0,21 15,0"></polygon>
-    <text x="120" y="27"  class="header_label_position" font-size="20px">Cluster</text>
+    <polygon class="hexagon_field header_label_position_mid" points="285,0 300,21 285,42 15,42 0,21 15,0"></polygon>
+    <text x="62" y="27"  class="header_label_position_mid" font-size="20px">Cluster</text>
 </svg>
 
 <div class="tile_div">
-    <table align = "center" id="table" border="1"></table>
+    <button id="create_cluster_button" class="add_button">+</button>
+    <table  id="table" align="center"border="1"></table>
+</div>
+
+<!--=============================================================================-->
+<!--                              create modal                                   -->
+<!--=============================================================================-->
+
+<div id="create_modal" class="modal">
+    <div id="create_modal_content" class="modal_content">
+        <div class="modal_header_part">
+            <svg width="100%" height="68" class="modal_header_position">
+                <polygon class="hexagon_field header_label_position_long" points="385,0 400,21 385,42 15,42 0,21 15,0"></polygon>
+                <text x="55" y="27" class="header_label_position_long" font-size="20px">Create new Cluster</text>
+            </svg>
+        </div>
+        <div class="modal_content_part">
+            <div class="modal_input_fields">
+                <div>
+                    <label class="modal_label" for="name">Name:</label>
+                    <input type="text" id="name_field" name="name">
+                </div>
+                <br><br>
+                <div>
+                    <label class="modal_label" for="template_field">Definition:</label>
+                    <textarea id="template_field" name="input_file"> </textarea>
+                </div>
+            </div>
+            <label id="create_modal_error_message" class="modal_error_field"></label>
+        </div>
+        <div class="modal_footer_part">
+            <center>
+                <img id="modal_create_accept_button" class="generic_svg_button modal_accept_button" src="/icons/uberprufen.svg">
+                <img id="modal_create_cancel_button" class="generic_svg_button" src="/icons/kreuzen.svg">
+            </center>
+        </div>
+    </div>
 </div>
 
 <!--=============================================================================-->
@@ -35,21 +71,21 @@ limitations under the License. -->
     <div id="delete_modal_content" class="modal_content">
         <div class="modal_header_part">
             <svg width="100%" height="68" class="modal_header_position">
-                <polygon class="hexagon_field header_label_position " points="285,0 300,21 285,42 15,42 0,21 15,0"></polygon>
-                <text x="35" y="27"  class="header_label_position" font-size="20px">Delete Cluster Snapshot</text>
+                <polygon class="hexagon_field header_label_position_long" points="385,0 400,21 385,42 15,42 0,21 15,0"></polygon>
+                <text x="80" y="27" class="header_label_position_long" font-size="20px">Delete Cluster</text>
             </svg>
         </div>
-        <div id="delete_modal_content_part" class="modal_content_part">
+        <div class="modal_content_part">
             <center>
                 <br><br>
                 Do you really want to delete cluster:
-                <br><br><br>
-                <h2><label id="delete_label_text"></label></h2>
+                <br><br>
+                <h2><label id="delete_label_text" class="delete_label_text"></label></h2>
             </center>
         </div>
         <div class="modal_footer_part">
             <center>
-                <img id="modal_delete_accept_button" class="generic_svg_button" src="/icons/uberprufen.svg">
+                <img id="modal_delete_accept_button" class="generic_svg_button modal_accept_button" src="/icons/uberprufen.svg">
                 <img id="modal_delete_cancel_button" class="generic_svg_button" src="/icons/kreuzen.svg">
             </center>
         </div>
@@ -63,62 +99,19 @@ limitations under the License. -->
 <style>
     #create_modal_content { 
         color: var(--color-text);
-        width: 35rem;
-        height: 15rem;
+        width: 40rem;
+        height: 40rem;
     }
 
     #delete_modal_content { 
         color: var(--color-text);
-        width: 20rem;
+        width: 40rem;
         height: 17rem;
     }
 
-    #input_fields {
-        width: 33rem;
-        margin: auto;
-        margin-top: 2rem;
-        margin-bottom: 2rem;
-    }
-
-    .input_field {
-        width: 20rem;
+    #template_field {
         height: 20rem;
     }
-
-    #delete_label_text {
-        vertical-align:middle;
-        text-align:center;
-        width: 20rem;
-    }
-
-    #delete_modal_content_part {
-        height: 10rem;
-    }
-
-    #modal_create_accept_button {
-        margin-right: 10rem;
-    }
-
-    #modal_delete_accept_button {
-        margin-right: 5rem;
-    }
-
-    .modal_error_field {
-        color: red;
-        width: 10rem;
-    }
-
-    .header_label_position {
-        transform: translate(calc(50% - 150px), 0%);
-    }
-
-    label {
-        white-space: pre-wrap;  /* to allow multi-line lables */
-        display: inline-block;
-        width: 5rem;
-        text-align: left;
-    }
-
 </style>
 
 <!--=============================================================================-->
@@ -127,156 +120,60 @@ limitations under the License. -->
 
 <script src="/scripts/table_processing.js"></script>
 <script src="/scripts/common.js"></script>
+<script src="/scripts/actions.js"></script>
 <script>
-    // mapping for cluster-table
+    // mapping for segment-template-table
     var headerMapping = new Map();
     headerMapping.set("uuid", "UUID");
     headerMapping.set("visibility", "Visibility");
     headerMapping.set("name", "Name");
-    headerMapping.set("type", "Type");
 
-    // inital creation of the cluster-list when open the window
-    listClusterSnapshost_request();
+    var deleteRequest = "/control/kyouko/v1/cluster?uuid=";
+    var listRequest = "/control/kyouko/v1/cluster/all";
+    var createRequest = "/control/kyouko/v1/cluster";
+
+    // inital creation of the segment-template-list when open the window
+    listObjects_request();
 
     /**
-     * Send request to backend to get a list of all cluster
+     * Send request to backend to create a new segmentTemplate
      */
-    function listClusterSnapshost_request()
+    function createObject_build()
     {
-        const token = getAndCheckToken();
-        if(token == "") {
+        // clear error-label to remove the error of an old session
+        document.getElementById('create_modal_error_message').innerHTML = "";
+
+        const name = document.getElementById('name_field').value;
+        const templateStr = document.getElementById('template_field').value;
+
+        if(name == "") 
+        {
+            document.getElementById('create_modal_error_message').innerHTML = "Name is missing";
             return;
         }
 
-        const request = "/control/kyouko/v1/cluster/all";
-
-        var clusterListConnection = new XMLHttpRequest();
-        clusterListConnection.open("GET", request, true);
-        clusterListConnection.setRequestHeader("X-Auth-Token", token);
-
-        clusterListConnection.onload = function(e) 
+        if(templateStr == "") 
         {
-            if(clusterListConnection.status != 200) {
-                return false;
-            }
-
-            const jsonContent = JSON.parse(clusterListConnection.responseText);
-            constructTable(jsonContent, headerMapping, '#table');
-        };
-        clusterListConnection.onerror = function(e) 
-        {
-            console.log("Failed to load list of cluster.");
-        };
-
-        clusterListConnection.send(null);
-    }
-
-    function sendFile(websocket, file, uuid, fileUuid)
-    {
-        var segmentSize = 42 * 1024;
-        let counter = 0;
-        var fileSize = (file.size - 1);
-
-        for(let start = 0; start < fileSize; start += segmentSize) 
-        {
-            var reader = new FileReader();
-            var blob = file.slice(start, segmentSize + start);
-
-            reader.onload = function(e) {
-                // get reeader-result and cut unnecessary header of the resulting string
-                const msg = uuid + "," + fileUuid + "," + start + "," + e.target.result.split(',')[1];
-                websocket.send(msg);
-                counter = counter + 1;
-            };
-
-            // read as DataURL instead of array-buffer, because the javascript websocket seems to have problems with plain raw-data
-            reader.readAsDataURL(blob);
-        }
-
-        return true;
-    }
-
-    /**
-     * Create and send request to delete a cluster from the list
-     *
-     * @param {name} Name of the cluster to delete
-     */
-    function DeleteClusterSnapshost_Request(name)
-    {
-        const token = getAndCheckToken();
-        if(token == "") {
+            document.getElementById('create_modal_error_message').innerHTML = "Definition is missing";
             return;
         }
-        
-        // create requeset
-        const request = "/control/kyouko/v1/cluster?uuid=" + name;
-        var clusterDeleteConnection = new XMLHttpRequest();
-        clusterDeleteConnection.open("DELETE", request, true);
-        clusterDeleteConnection.setRequestHeader("X-Auth-Token", token);
+       
+        // create request-content
+        var reqContent = "{\"name\":\"" + name;
+        reqContent += "\",\"cluster_definition\":" + templateStr + "}";
 
-        // callback for success
-        clusterDeleteConnection.onload = function(e) 
-        {
-            if(clusterDeleteConnection.status != 200) {
-                return;
-            }
-
-            listCluster_request();
-            var modal = document.getElementById("delete_modal");
-            modal.style.display = "none";
-        };
-
-        // callback for fail
-        clusterDeleteConnection.onerror = function(e) 
-        {
-            console.log("Failed to delete cluster.");
-        };
-
-        clusterDeleteConnection.send(null);
+        createObject_request(reqContent);
     }
 
     /**
-     * Clear all fields of the cluster-create-modal
+     * Clear all fields of the segment-template-create-modal
      */
     function clearModalFields()
     {
         document.getElementById('name_field').value = "";
+        document.getElementById('template_field').value = "";
     }
 
-    /**
-     * Open cluster-delete-modal to ask if cluster should really be deleted.
-     * This function is named 'deleteObject' instead of 'cluster' because it is triggered
-     * by the genric delete-button of the table, which is generated in a generic way.
-     *
-     * @param {name} Name of the cluster to delete
-     */
-    function deleteObject(name)
-    {
-        var modal = document.getElementById("delete_modal");
-        var acceptButton = document.getElementById("modal_delete_accept_button");
-        var cancelButton = document.getElementById("modal_delete_cancel_button");
+    document.getElementById("create_cluster_button").addEventListener("click", createObject, false);
 
-        document.getElementById('delete_label_text').innerText = name;
-
-        // handle accept-button
-        acceptButton.onclick = function() {
-            DeleteClusterSnapshost_Request(name);
-        }
-
-        // handle cancel-button
-        cancelButton.onclick = function() {
-            modal.style.display = "none";
-        } 
-
-        // handle click outside of the window
-        window.onclick = function(event) 
-        {
-            if(event.target == modal) {
-                modal.style.display = "none";
-            }
-        } 
-
-        modal.style.display = "block";
-    }
-    
 </script>

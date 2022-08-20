@@ -111,6 +111,10 @@ limitations under the License.
     color: var(--color-text);
 }
 
+.modal_accept_button {
+    margin-right: 10rem;
+}
+
 .close {
     color: #aaa;
     float: right;

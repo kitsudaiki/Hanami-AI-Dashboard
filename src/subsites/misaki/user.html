@@ -19,12 +19,12 @@ limitations under the License. -->
 <!--=============================================================================-->
 
 <svg width="100%" height="68">
-    <polygon class="hexagon_field header_label_position" points="185,0 200,21 185,42 15,42 0,21 15,0"></polygon>
-    <text x="80" y="27"  class="header_label_position" font-size="20px">User</text>
+    <polygon class="hexagon_field header_label_position_short" points="185,0 200,21 185,42 15,42 0,21 15,0"></polygon>
+    <text x="80" y="27"  class="header_label_position_short" font-size="20px">User</text>
 </svg>
 
 <div class="tile_div">
-    <button id="create_user_button">+</button>
+    <button id="create_user_button" class="add_button">+</button>
     <table align = "center" id="table" border="1"></table>
 </div>
 
@@ -35,41 +35,39 @@ limitations under the License. -->
 <div id="create_modal" class="modal">
     <div id="create_modal_content" class="modal_content">
         <div class="modal_header_part">
-            <svg width="100%" height="70" class="modal_header_position">
-                <polygon class="hexagon_field header_label_position " points="200,20 185,40 15,40 0,20 15,0 185,0"></polygon>
-                <text x="27" y="25"  class="header_label_position" font-size="20px">Create new user</text>
+            <svg width="100%" height="68" class="modal_header_position">
+                <polygon class="hexagon_field header_label_position_mid" points="285,0 300,21 285,42 15,42 0,21 15,0"></polygon>
+                <text x="70" y="25"  class="header_label_position_mid" font-size="20px">Create new user</text>
             </svg>
         </div>
         <div class="modal_content_part">
-            <center>
-                <div id="input_fields">
-                    <label for="name">Name:</label>
-                    <input type="text" id="name_field" class="input_field" name="name">
-                    <br><br>
-                    <label for="roles">Roles:</label>
-                    <input type="text" id="roles_field" class="input_field" name="roles">
-                    <br><br>
-                    <label for="projects">Projects:</label>
-                    <input type="text" id="projects_field" class="input_field" name="projects">
-                    <br><br>
-                    <label for="isAdmin">Is Admin:</label>
-                    <input type="checkbox" id="isAdmin_field" class="input_field" name="isAdmin">
-                    <br><br>
-                    <br><br>
-                    <label for="pass">Password
-(8 characters minimum):</label>
-                    <input type="password" id="pass1" name="password" minlength="8" class="input_field" required>
-                    <br><br>
-                    <label for="pass">Password repeat:</label>
-                    <input type="password" id="pass2" name="password" minlength="8" class="input_field" required>
-                </div>
-                <label id="create_modal_error_message" class="modal_error_field"></label>
+            <div class="modal_input_fields">
+                <label class="modal_label" for="name">Name:</label>
+                <input type="text" id="name_field" name="name">
                 <br><br>
-            </center>
+                <label class="modal_label" for="roles">Roles:</label>
+                <input type="text" id="roles_field" name="roles">
+                <br><br>
+                <label class="modal_label" for="projects">Projects:</label>
+                <input type="text" id="projects_field" name="projects">
+                <br><br>
+                <label class="modal_label">Is Admin:</label>
+                <label class="switch" for="isAdmin_field">
+                    <input type="checkbox" id="isAdmin_field" />
+                    <div class="slider round"></div>
+                </label>
+                <br><br>
+                <label class="modal_label" for="pass">Password (8 characters minimum):</label>
+                <input type="password" id="pass1" name="password" minlength="8" required>
+                <br><br>
+                <label class="modal_label" for="pass">Password repeat:</label>
+                <input type="password" id="pass2" name="password" minlength="8" required>
+            </div>
+            <label id="create_modal_error_message" class="modal_error_field"></label>
         </div>
         <div class="modal_footer_part">
             <center>
-                <img id="modal_create_accept_button" class="generic_svg_button" src="/client/icons/uberprufen.svg">
+                <img id="modal_create_accept_button" class="generic_svg_button modal_accept_button" src="/client/icons/uberprufen.svg">
                 <img id="modal_create_cancel_button" class="generic_svg_button" src="/client/icons/kreuzen.svg">
             </center>
         </div>
@@ -84,21 +82,21 @@ limitations under the License. -->
     <div id="delete_modal_content" class="modal_content">
         <div class="modal_header_part">
             <svg width="100%" height="70" class="modal_header_position">
-                <polygon class="hexagon_field header_label_position " points="200,20 185,40 15,40 0,20 15,0 185,0"></polygon>
-                <text x="50" y="25"  class="header_label_position" font-size="20px">Delete user</text>
+                <polygon class="hexagon_field header_label_position_mid" points="285,0 300,21 285,42 15,42 0,21 15,0"></polygon>
+                <text x="95" y="25"  class="header_label_position_mid" font-size="20px">Delete user</text>
             </svg>
         </div>
-        <div id="delete_modal_content_part" class="modal_content_part">
+        <div class="modal_content_part">
             <center>
                 <br><br>
                 Do you really want to delete user:
-                <br><br><br>
-                <h2><label id="delete_label_text"></label></h2>
+                <br><br>
+                <h2><label id="delete_label_text" class="delete_label_text">></label></h2>
             </center>
         </div>
         <div class="modal_footer_part">
             <center>
-                <img id="modal_delete_accept_button" class="generic_svg_button" src="/client/icons/uberprufen.svg">
+                <img id="modal_delete_accept_button" class="generic_svg_button modal_accept_button" src="/client/icons/uberprufen.svg">
                 <img id="modal_delete_cancel_button" class="generic_svg_button" src="/client/icons/kreuzen.svg">
             </center>
         </div>
@@ -112,8 +110,8 @@ limitations under the License. -->
 <style>
     #create_modal_content { 
         color: var(--color-text);
-        width: 35rem;
-        height: 37rem;
+        width: 40rem;
+        height: 45rem;
     }
 
     /* for users there is no uuid in the firsh column, so override the styling for this special case */
@@ -124,64 +122,8 @@ limitations under the License. -->
 
     #delete_modal_content { 
         color: var(--color-text);
-        width: 30rem;
-        height: 20rem;
-    }
-
-    #input_fields {
-        width: 30rem;
-        margin: auto;
-        margin-top: 2rem;
-        margin-bottom: 2rem;
-    }
-
-    .input_field {
-        width: 15rem;
-    }
-
-    #delete_label_text {
-        vertical-align:middle;
-        text-align:center;
-    }
-
-    #delete_modal_content_part {
-        height: 13rem;
-    }
-
-    #modal_create_accept_button {
-        margin-right: 10rem;
-    }
-
-    #modal_delete_accept_button {
-        margin-right: 5rem;
-    }
-
-    .modal_error_field {
-        color: red;
-        width: 25rem;
-        text-align:center;
-    }
-
-    .header_label_position {
-        transform: translate(calc(50% - 100px), 0%);
-    }
-
-    label {
-        white-space: pre-wrap;  /* to allow multi-line lables */
-        display: inline-block;
-        width: 12rem;
-        text-align: left;
-    }
-
-    #create_user_button {
-        color: rgb(0, 0, 0);
-        width: 2.0rem;
-        height: 2.0rem;
-        margin-top: -2rem;
-        float: right;
-        position: relative; /* necessary for the z-index */
-        z-index: 1;
-        box-shadow: var(--box-shadow);
+        width: 40rem;
+        height: 17rem;
     }
 
 </style>
@@ -191,6 +133,8 @@ limitations under the License. -->
 <!--=============================================================================-->
 
 <script src="/client/scripts/table_processing.js"></script>
+<script src="/client/scripts/common.js"></script>
+<script src="/client/scripts/actions.js"></script>
 <script>
     // mapping for user-table
     var headerMapping = new Map();
@@ -199,54 +143,18 @@ limitations under the License. -->
     headerMapping.set("projects", "Projects");
     headerMapping.set("is_admin", "Is Admin"); 
 
+    var deleteRequest = "/control/misaki/v1/user?name=";
+    var listRequest = "/control/misaki/v1/user/all";
+    var createRequest = "/control/misaki/v1/user";
+
     // inital creation of the user-list when open the window
-    listUser_request();
-
-    /**
-     * Send request to backend to get a list of all user
-     */
-    function listUser_request()
-    {
-        const token = getAndCheckToken();
-        if(token == "") {
-            console.log("FAIL");
-            return;
-        }
-
-        const request = "/control/misaki/v1/user/all";
-
-        var userListConnection = new XMLHttpRequest();
-        userListConnection.open("GET", request, true);
-        userListConnection.setRequestHeader("X-Auth-Token", token);
-
-        userListConnection.onload = function(e) 
-        {
-            if(userListConnection.status != 200) {
-                return false;
-            }
-
-            console.log("listUser_request: " + userListConnection.responseText);
-            const jsonContent = JSON.parse(userListConnection.responseText);
-            constructTable(jsonContent, headerMapping, '#table');
-        };
-        userListConnection.onerror = function(e) 
-        {
-            console.log("Failed to load list of users.");
-        };
-
-        userListConnection.send(null);
-    }
+    listObjects_request();
 
     /**
      * Send request to backend to create a new user
      */
-    function createUser_request()
+    function createObject_build()
     {
-        const token = getAndCheckToken();
-        if(token == "") {
-            return;
-        }
-
         // clear error-label to remove the error of an old session
         document.getElementById('create_modal_error_message').innerHTML = "";
 
@@ -294,75 +202,7 @@ limitations under the License. -->
         reqContent += "\",projects:\"" + projects;
         reqContent += "\",is_admin:" + isAdmin + "}";
 
-        // create requeset
-        const request = "/control/misaki/v1/user";
-        var userCreateConnection = new XMLHttpRequest();
-        userCreateConnection.open("POST", request, true);
-        userCreateConnection.setRequestHeader("X-Auth-Token", token);
-
-        // callback for success
-        userCreateConnection.onload = function(e) 
-        {
-            // check if request was successfully processed by the backend
-            if(userCreateConnection.status != 200) 
-            {
-                document.getElementById('create_modal_error_message').innerHTML = userCreateConnection.responseText;
-                return false;
-            }
-
-            // handle reqponse
-            var modal = document.getElementById("create_modal");
-            clearModalFields();
-            listUser_request();
-            modal.style.display = "none";
-        };
-
-        // callback for fail
-        userCreateConnection.onerror = function(e) 
-        {
-            console.log("Failed to create user.");
-        };
-
-        userCreateConnection.send(reqContent);
-    }
-
-    /**
-     * Create and send request to delete a user from the list
-     *
-     * @param {name} Name of the user to delete
-     */
-    function DeleteUser_Request(name)
-    {
-        const token = getAndCheckToken();
-        if(token == "") {
-            return;
-        }
-        
-        // create requeset
-        const request = "/control/misaki/v1/user?name=" + name;
-        var userDeleteConnection = new XMLHttpRequest();
-        userDeleteConnection.open("DELETE", request, true);
-        userDeleteConnection.setRequestHeader("X-Auth-Token", token);
-
-        // callback for success
-        userDeleteConnection.onload = function(e) 
-        {
-            if(userDeleteConnection.status != 200) {
-                return;
-            }
-
-            listUser_request();
-            var modal = document.getElementById("delete_modal");
-            modal.style.display = "none";
-        };
-
-        // callback for fail
-        userDeleteConnection.onerror = function(e) 
-        {
-            console.log("Failed to delete user.");
-        };
-
-        userDeleteConnection.send(null);
+        createObject_request(reqContent);
     }
 
     /**
@@ -378,73 +218,6 @@ limitations under the License. -->
         document.getElementById('pass2').value = "";
     }
 
-    /**
-     * Open user-create-modal to ask for the parameter of the new user
-     */
-    function createUser() 
-    {
-        console.log("createUser");
-        var modal = document.getElementById("create_modal");
-        var acceptButton = document.getElementById("modal_create_accept_button");
-        var cancelButton = document.getElementById("modal_create_cancel_button");
-
-        // handle accept-button
-        acceptButton.onclick = function() {
-            createUser_request();
-        }
-
-        // handle cancel-button
-        cancelButton.onclick = function() {
-            modal.style.display = "none";
-        } 
-
-        // handle click outside of the window
-        window.onclick = function(event) 
-        {
-            if(event.target == modal) 
-            {
-                clearModalFields();
-                modal.style.display = "none";
-            }
-        } 
-
-        modal.style.display = "block";
-    }
-
-    /**
-     * Open user-delete-modal to ask if user should really be deleted.
-     *
-     * @param {name} Name of the user to delete
-     */
-    function deleteObject(name)
-    {
-        var modal = document.getElementById("delete_modal");
-        var acceptButton = document.getElementById("modal_delete_accept_button");
-        var cancelButton = document.getElementById("modal_delete_cancel_button");
-
-        document.getElementById('delete_label_text').innerText = name;
-
-        // handle accept-button
-        acceptButton.onclick = function() {
-            DeleteUser_Request(name);
-        }
-
-        // handle cancel-button
-        cancelButton.onclick = function() {
-            modal.style.display = "none";
-        } 
-
-        // handle click outside of the window
-        window.onclick = function(event) 
-        {
-            if(event.target == modal) {
-                modal.style.display = "none";
-            }
-        } 
-
-        modal.style.display = "block";
-    }
-
-    document.getElementById("create_user_button").addEventListener("click", createUser, false);
+    document.getElementById("create_user_button").addEventListener("click", createObject, false);
     
 </script>

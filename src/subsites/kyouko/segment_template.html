@@ -127,10 +127,9 @@ limitations under the License. -->
     headerMapping.set("uuid", "UUID");
     headerMapping.set("visibility", "Visibility");
     headerMapping.set("name", "Name");
-    headerMapping.set("type", "Type");
 
-    var deleteRequest = "/control/kyouko/v1/template?type=segment&uuid=";
-    var listRequest = "/control/kyouko/v1/template/all?type=segment";
+    var deleteRequest = "/control/kyouko/v1/template?uuid=";
+    var listRequest = "/control/kyouko/v1/template/all";
     var createRequest = "/control/kyouko/v1/template/upload";
 
     // inital creation of the segment-template-list when open the window
@@ -161,8 +160,7 @@ limitations under the License. -->
        
         // create request-content
         var reqContent = "{\"name\":\"" + name;
-        reqContent += "\",\"type\":\"segment\"";
-        reqContent += ",\"template\":" + templateStr + "}";
+        reqContent += "\",\"template\":" + templateStr + "}";
 
         createObject_request(reqContent);
     }

@@ -19,12 +19,12 @@ limitations under the License. -->
 <!--=============================================================================-->
 
 <svg width="100%" height="68">
-    <polygon class="hexagon_field header_label_position" points="285,0 300,21 285,42 15,42 0,21 15,0"></polygon>
-    <text x="70" y="27"  class="header_label_position" font-size="20px">Cluster Snapshot</text>
+    <polygon class="hexagon_field header_label_position_long" points="285,0 300,21 285,42 15,42 0,21 15,0"></polygon>
+    <text x="62" y="27"  class="header_label_position_long" font-size="20px">Cluster Snapshots</text>
 </svg>
 
 <div class="tile_div">
-    <table align = "center" id="table" border="1"></table>
+    <table  id="table" align="center"border="1"></table>
 </div>
 
 <!--=============================================================================-->
@@ -35,21 +35,21 @@ limitations under the License. -->
     <div id="delete_modal_content" class="modal_content">
         <div class="modal_header_part">
             <svg width="100%" height="68" class="modal_header_position">
-                <polygon class="hexagon_field header_label_position " points="285,0 300,21 285,42 15,42 0,21 15,0"></polygon>
-                <text x="35" y="27"  class="header_label_position" font-size="20px">Delete Cluster Snapshot</text>
+                <polygon class="hexagon_field header_label_position_long" points="385,0 400,21 385,42 15,42 0,21 15,0"></polygon>
+                <text x="80" y="27" class="header_label_position_long" font-size="20px">Delete Cluster Snapshot</text>
             </svg>
         </div>
-        <div id="delete_modal_content_part" class="modal_content_part">
+        <div class="modal_content_part">
             <center>
                 <br><br>
-                Do you really want to delete cluster snapshot:
-                <br><br><br>
-                <h2><label id="delete_label_text"></label></h2>
+                Do you really want to delete segment template:
+                <br><br>
+                <h2><label id="delete_label_text" class="delete_label_text"></label></h2>
             </center>
         </div>
         <div class="modal_footer_part">
             <center>
-                <img id="modal_delete_accept_button" class="generic_svg_button" src="/icons/uberprufen.svg">
+                <img id="modal_delete_accept_button" class="generic_svg_button modal_accept_button" src="/icons/uberprufen.svg">
                 <img id="modal_delete_cancel_button" class="generic_svg_button" src="/icons/kreuzen.svg">
             </center>
         </div>
@@ -63,62 +63,19 @@ limitations under the License. -->
 <style>
     #create_modal_content { 
         color: var(--color-text);
-        width: 35rem;
-        height: 15rem;
+        width: 40rem;
+        height: 40rem;
     }
 
     #delete_modal_content { 
         color: var(--color-text);
-        width: 20rem;
+        width: 40rem;
         height: 17rem;
     }
 
-    #input_fields {
-        width: 33rem;
-        margin: auto;
-        margin-top: 2rem;
-        margin-bottom: 2rem;
-    }
-
-    .input_field {
-        width: 20rem;
+    #template_field {
         height: 20rem;
     }
-
-    #delete_label_text {
-        vertical-align:middle;
-        text-align:center;
-        width: 20rem;
-    }
-
-    #delete_modal_content_part {
-        height: 10rem;
-    }
-
-    #modal_create_accept_button {
-        margin-right: 10rem;
-    }
-
-    #modal_delete_accept_button {
-        margin-right: 5rem;
-    }
-
-    .modal_error_field {
-        color: red;
-        width: 10rem;
-    }
-
-    .header_label_position {
-        transform: translate(calc(50% - 150px), 0%);
-    }
-
-    label {
-        white-space: pre-wrap;  /* to allow multi-line lables */
-        display: inline-block;
-        width: 5rem;
-        text-align: left;
-    }
-
 </style>
 
 <!--=============================================================================-->
@@ -127,156 +84,21 @@ limitations under the License. -->
 
 <script src="/scripts/table_processing.js"></script>
 <script src="/scripts/common.js"></script>
+<script src="/scripts/actions.js"></script>
 <script>
-    // mapping for cluster-snapshot-table
+    // mapping for segment-template-table
     var headerMapping = new Map();
     headerMapping.set("uuid", "UUID");
-    headerMapping.set("visibility", "Visibility");
     headerMapping.set("name", "Name");
     headerMapping.set("type", "Type");
+    headerMapping.set("visibility", "Visibility");
 
-    // inital creation of the cluster-snapshot-list when open the window
-    listClusterSnapshot_request();
+    var deleteRequest = "/control/sagiri/v1/cluster_snapshot?uuid=";
+    var listRequest = "/control/sagiri/v1/cluster_snapshot/all";
 
-    /**
-     * Send request to backend to get a list of all cluster-snapshot
-     */
-    function listClusterSnapshot_request()
-    {
-        const token = getAndCheckToken();
-        if(token == "") {
-            return;
-        }
+    // inital creation of the segment-template-list when open the window
+    listObjects_request();
 
-        const request = "/control/sagiri/v1/cluster_snapshot/all";
+    document.getElementById("create_segment_template_button").addEventListener("click", createObject, false);
 
-        var clusterSnapshotListConnection = new XMLHttpRequest();
-        clusterSnapshotListConnection.open("GET", request, true);
-        clusterSnapshotListConnection.setRequestHeader("X-Auth-Token", token);
-
-        clusterSnapshotListConnection.onload = function(e) 
-        {
-            if(clusterSnapshotListConnection.status != 200) {
-                return false;
-            }
-
-            const jsonContent = JSON.parse(clusterSnapshotListConnection.responseText);
-            constructTable(jsonContent, headerMapping, '#table');
-        };
-        clusterSnapshotListConnection.onerror = function(e) 
-        {
-            console.log("Failed to load list of cluster-snapshots.");
-        };
-
-        clusterSnapshotListConnection.send(null);
-    }
-
-    function sendFile(websocket, file, uuid, fileUuid)
-    {
-        var segmentSize = 42 * 1024;
-        let counter = 0;
-        var fileSize = (file.size - 1);
-
-        for(let start = 0; start < fileSize; start += segmentSize) 
-        {
-            var reader = new FileReader();
-            var blob = file.slice(start, segmentSize + start);
-
-            reader.onload = function(e) {
-                // get reeader-result and cut unnecessary header of the resulting string
-                const msg = uuid + "," + fileUuid + "," + start + "," + e.target.result.split(',')[1];
-                websocket.send(msg);
-                counter = counter + 1;
-            };
-
-            // read as DataURL instead of array-buffer, because the javascript websocket seems to have problems with plain raw-data
-            reader.readAsDataURL(blob);
-        }
-
-        return true;
-    }
-
-    /**
-     * Create and send request to delete a cluster-snapshot from the list
-     *
-     * @param {name} Name of the cluster-snapshot to delete
-     */
-    function DeleteClusterSnapshost_Request(name)
-    {
-        const token = getAndCheckToken();
-        if(token == "") {
-            return;
-        }
-        
-        // create requeset
-        const request = "/control/sagiri/v1/cluster_snapshot?uuid=" + name;
-        var clusterSnapshotDeleteConnection = new XMLHttpRequest();
-        clusterSnapshotDeleteConnection.open("DELETE", request, true);
-        clusterSnapshotDeleteConnection.setRequestHeader("X-Auth-Token", token);
-
-        // callback for success
-        clusterSnapshotDeleteConnection.onload = function(e) 
-        {
-            if(clusterSnapshotDeleteConnection.status != 200) {
-                return;
-            }
-
-            listClusterSnapshot_request();
-            var modal = document.getElementById("delete_modal");
-            modal.style.display = "none";
-        };
-
-        // callback for fail
-        clusterSnapshotDeleteConnection.onerror = function(e) 
-        {
-            console.log("Failed to delete cluster-snapshot.");
-        };
-
-        clusterSnapshotDeleteConnection.send(null);
-    }
-
-    /**
-     * Clear all fields of the cluster-snapshot-create-modal
-     */
-    function clearModalFields()
-    {
-        document.getElementById('name_field').value = "";
-    }
-
-    /**
-     * Open cluster-snapshot-delete-modal to ask if cluster-snapshot should really be deleted.
-     * This function is named 'deleteObject' instead of 'cluster-snapshot' because it is triggered
-     * by the genric delete-button of the table, which is generated in a generic way.
-     *
-     * @param {name} Name of the dacluster-snapshottaset to delete
-     */
-    function deleteObject(name)
-    {
-        var modal = document.getElementById("delete_modal");
-        var acceptButton = document.getElementById("modal_delete_accept_button");
-        var cancelButton = document.getElementById("modal_delete_cancel_button");
-
-        document.getElementById('delete_label_text').innerText = name;
-
-        // handle accept-button
-        acceptButton.onclick = function() {
-            DeleteClusterSnapshost_Request(name);
-        }
-
-        // handle cancel-button
-        cancelButton.onclick = function() {
-            modal.style.display = "none";
-        } 
-
-        // handle click outside of the window
-        window.onclick = function(event) 
-        {
-            if(event.target == modal) {
-                modal.style.display = "none";
-            }
-        } 
-
-        modal.style.display = "block";
-    }
-    
 </script>

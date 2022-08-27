@@ -42,14 +42,11 @@ limitations under the License. -->
         </div>
         <div class="modal_content_part">
             <div class="modal_input_fields">
+                <label class="modal_label" for="id">ID:</label>
+                <input type="text" id="id_field" name="id">
+                <br><br>
                 <label class="modal_label" for="name">Name:</label>
                 <input type="text" id="name_field" name="name">
-                <br><br>
-                <label class="modal_label" for="roles">Roles:</label>
-                <input type="text" id="roles_field" name="roles">
-                <br><br>
-                <label class="modal_label" for="projects">Projects:</label>
-                <input type="text" id="projects_field" name="projects">
                 <br><br>
                 <label class="modal_label">Is Admin:</label>
                 <label class="switch" for="isAdmin_field">
@@ -111,7 +108,7 @@ limitations under the License. -->
     #create_modal_content { 
         color: var(--color-text);
         width: 40rem;
-        height: 45rem;
+        height: 40rem;
     }
 
     /* for users there is no uuid in the firsh column, so override the styling for this special case */
@@ -138,12 +135,12 @@ limitations under the License. -->
 <script>
     // mapping for user-table
     var headerMapping = new Map();
-    headerMapping.set("roles", "Roles");
+    headerMapping.set("id", "ID");
     headerMapping.set("name", "Name");
     headerMapping.set("projects", "Projects");
     headerMapping.set("is_admin", "Is Admin"); 
 
-    var deleteRequest = "/control/misaki/v1/user?name=";
+    var deleteRequest = "/control/misaki/v1/user?id=";
     var listRequest = "/control/misaki/v1/user/all";
     var createRequest = "/control/misaki/v1/user";
 
@@ -158,9 +155,8 @@ limitations under the License. -->
         // clear error-label to remove the error of an old session
         document.getElementById('create_modal_error_message').innerHTML = "";
 
+        const id = document.getElementById('id_field').value;
         const name = document.getElementById('name_field').value;
-        const projects = document.getElementById('projects_field').value;
-        const roles = document.getElementById('roles_field').value;
         const isAdmin = document.getElementById('isAdmin_field').checked;
         const password1 = document.getElementById('pass1').value;
         const password2 = document.getElementById('pass2').value;
@@ -171,21 +167,15 @@ limitations under the License. -->
             return;
         }
 
+        if(id == "") 
+        {
+            document.getElementById('create_modal_error_message').innerHTML = "ID is missing";
+            return;
+        }
+
         if(name == "") 
         {
             document.getElementById('create_modal_error_message').innerHTML = "Name is missing";
-            return;
-        }
-
-        if(projects == "") 
-        {
-            document.getElementById('create_modal_error_message').innerHTML = "Projects are missing";
-            return;
-        }
-
-        if(roles == "") 
-        {
-            document.getElementById('create_modal_error_message').innerHTML = "Roles are missing";
             return;
         }
 
@@ -196,10 +186,9 @@ limitations under the License. -->
         }
 
         // create request-content
-        var reqContent = "{name:\"" + name;
+        var reqContent = "{id:\"" + id;
+        reqContent += "\",name:\"" + name;
         reqContent += "\",password:\"" + password1;
-        reqContent += "\",roles:\"" + roles;
-        reqContent += "\",projects:\"" + projects;
         reqContent += "\",is_admin:" + isAdmin + "}";
 
         createObject_request(reqContent);
@@ -210,9 +199,8 @@ limitations under the License. -->
      */
     function clearModalFields()
     {
+        document.getElementById('id_field').value = "";
         document.getElementById('name_field').value = "";
-        document.getElementById('projects_field').value = "";
-        document.getElementById('roles_field').value = "";
         document.getElementById('isAdmin_field').checked = "";
         document.getElementById('pass1').value = "";
         document.getElementById('pass2').value = "";

@@ -29,8 +29,8 @@ limitations under the License. -->
         <div class="modal_content_part">
             <div class="modal_input_fields">
                 <div>
-                    <label class="modal_label" for="name">Username</label>
-                    <input type="text" id="login_name_field" name="name" required>
+                    <label class="modal_label" for="id">User-ID</label>
+                    <input type="text" id="login_id_field" name="id" required>
                 </div>
                 <br><br>
                 <div>
@@ -98,7 +98,7 @@ limitations under the License. -->
     {
         const request = "/control/misaki/v1/token";
 
-        var reqContent = "{\"name\":\"" + user;
+        var reqContent = "{\"id\":\"" + user;
         reqContent += "\",\"password\":\"" + pw;
         reqContent += "\"}";
 
@@ -116,7 +116,7 @@ limitations under the License. -->
             // TODO: check if json-parsing is successful
             document.cookie = "Auth_JWT_Token=" + responseJson.token + "; SameSite=Strict; Secure";
         
-            document.getElementById("login_name_field").value = "";
+            document.getElementById("login_id_field").value = "";
             document.getElementById("login_pw_field").value = "";
         
             var modal = document.getElementById("login_modal");
@@ -125,7 +125,7 @@ limitations under the License. -->
         
         loginConnection.onerror = function(e) 
         {
-            document.getElementById("login_name_field").value = "";
+            document.getElementById("login_id_field").value = "";
             document.getElementById("login_pw_field").value = "";
         
             console.log("An error occurred while transferring the file.");
@@ -169,9 +169,9 @@ limitations under the License. -->
         // handle login-button
         loginButton.onclick = function() 
         {
-            const userName = document.getElementById("login_name_field").value;
+            const userId = document.getElementById("login_id_field").value;
             const pw = document.getElementById("login_pw_field").value;
-            loginRequest(userName, pw);
+            loginRequest(userId, pw);
         }
 
         modal.style.display = "block";

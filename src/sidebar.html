@@ -40,6 +40,7 @@ limitations under the License. -->
         </button>
         <div class="sidebar_drop_content">
             <a id="misaki_user_list" class="sidebar_dropdown_entry" href="#">User</a>
+            <a id="misaki_project_list" class="sidebar_dropdown_entry" href="#">Project</a>
         </div>
     </div>
 </aside>
@@ -182,6 +183,10 @@ limitations under the License. -->
 
     document.getElementById("misaki_user_list").addEventListener("click", function() {
         $("#content_div").load("/subsites/misaki/user.html"); 
+    });
+
+    document.getElementById("misaki_project_list").addEventListener("click", function() {
+        $("#content_div").load("/subsites/misaki/project.html"); 
     });
 
     document.getElementById("download_rest_api_docu_button").addEventListener("click", function() {

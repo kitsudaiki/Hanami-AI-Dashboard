@@ -58,7 +58,7 @@ function Body(bodyContent, selector, colIds)
         deleteButton += '>Delete</button>'
         var input = $(deleteButton);
 
-        body.append($('<td/>').html(input));
+        body.append($('<td/ style="text-align: right;">').html(input));
         $(selector).append(body);
     }
 } 

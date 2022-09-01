@@ -1,7 +1,0 @@
-syntax = "proto3";
-
-message DataBlob {
-    string uuid = 1;
-    uint64 id = 2;
-    string blob = 3;
-}

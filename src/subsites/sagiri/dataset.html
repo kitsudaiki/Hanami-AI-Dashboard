@@ -36,26 +36,25 @@ limitations under the License. -->
     <div id="create_modal_content" class="modal_content">
         <div class="modal_header_part">
             <svg width="100%" height="68" class="modal_header_position">
-                <polygon class="hexagon_field header_label_position_long" points="285,0 300,21 285,42 15,42 0,21 15,0"></polygon>
-                <text x="62" y="27" class="header_label_position_long" font-size="20px">Create new dataset</text>
+                <polygon class="hexagon_field header_label_position_mid" points="285,0 300,21 285,42 15,42 0,21 15,0"></polygon>
+                <text x="62" y="27" class="header_label_position_mid" font-size="20px">Create new dataset</text>
             </svg>
         </div>
         <div class="modal_content_part">
-            <center>
+            <div class="modal_input_fields">
                 <div id="input_fields">
                     <label class="modal_label" for="name">Name:</label>
-                    <input type="text" id="name_field" class="input_field" name="name">
+                    <input type="text" id="name_field" name="name">
                     <br><br>
-                    <label class="modal_label" for="input_file_field">Input-file:</label>
-                    <input type="file" id="input_file_field" class="input_field" name="input_file"> 
+                    <label class="modal_label" for="input_file">Input-file:</label>
+                    <input type="file" id="input_file_field" name="input_file"> 
                 </div>
-                <label id="create_modal_error_message" class="modal_error_field"></label>
-                <br><br>
-            </center>
+            </div>
+            <label id="create_modal_error_message" class="modal_error_field"></label>
         </div>
         <div class="modal_footer_part">
             <center>
-                <img id="modal_create_accept_button" class="generic_svg_button" src="/icons/uberprufen.svg">
+                <img id="modal_create_accept_button" class="generic_svg_button modal_accept_button" src="/icons/uberprufen.svg">
                 <img id="modal_create_cancel_button" class="generic_svg_button" src="/icons/kreuzen.svg">
             </center>
         </div>
@@ -79,12 +78,12 @@ limitations under the License. -->
                 <br><br>
                 Do you really want to delete dataset:
                 <br><br><br>
-                <h2><label id="delete_label_text"></label></h2>
+                <h2><label id="delete_label_text" class="delete_label_text"></label></h2>
             </center>
         </div>
         <div class="modal_footer_part">
             <center>
-                <img id="modal_delete_accept_button" class="generic_svg_button" src="/icons/uberprufen.svg">
+                <img id="modal_delete_accept_button" class="generic_svg_button modal_accept_button" src="/icons/uberprufen.svg">
                 <img id="modal_delete_cancel_button" class="generic_svg_button" src="/icons/kreuzen.svg">
             </center>
         </div>
@@ -98,43 +97,14 @@ limitations under the License. -->
 <style>
     #create_modal_content { 
         color: var(--color-text);
-        width: 35rem;
+        width: 40rem;
         height: 20rem;
     }
 
     #delete_modal_content { 
         color: var(--color-text);
-        width: 30rem;
+        width: 40rem;
         height: 20rem;
-    }
-
-    #input_fields {
-        width: 33rem;
-        margin: auto;
-        margin-top: 2rem;
-        margin-bottom: 2rem;
-    }
-
-    .input_field {
-        width: 20rem;
-    }
-
-    #delete_label_text {
-        vertical-align:middle;
-        text-align:center;
-        width: 20rem;
-    }
-
-    #delete_modal_content_part {
-        height: 13rem;
-    }
-
-    #modal_create_accept_button {
-        margin-right: 10rem;
-    }
-
-    #modal_delete_accept_button {
-        margin-right: 5rem;
     }
 </style>
 
@@ -144,6 +114,7 @@ limitations under the License. -->
 
 <script src="/scripts/table_processing.js"></script>
 <script src="/scripts/common.js"></script>
+<script src="/scripts/actions.js"></script>
 <script>
     // mapping for dataset-table
     var headerMapping = new Map();
@@ -152,63 +123,62 @@ limitations under the License. -->
     headerMapping.set("type", "Type");
     headerMapping.set("visibility", "Visibility");
 
+    var deleteRequest = "/control/sagiri/v1/data_set?uuid=";
+    var listRequest = "/control/sagiri/v1/data_set/all";
+    var createRequest = "/control/sagiri/v1/csv/data_set";
+
     // inital creation of the dataset-list when open the window
-    listDataset_request();
-
-    /**
-     * Send request to backend to get a list of all dataset
-     */
-    function listDataset_request()
-    {
-        const token = getAndCheckToken();
-        if(token == "") {
-            return;
-        }
-
-        const request = "/control/sagiri/v1/data_set/all";
-
-        var datasetListConnection = new XMLHttpRequest();
-        datasetListConnection.open("GET", request, true);
-        datasetListConnection.setRequestHeader("X-Auth-Token", token);
-
-        datasetListConnection.onload = function(e) 
-        {
-            if(datasetListConnection.status != 200) {
-                return false;
-            }
-
-            const jsonContent = JSON.parse(datasetListConnection.responseText);
-            constructTable(jsonContent, headerMapping, '#table');
-        };
-        datasetListConnection.onerror = function(e) 
-        {
-            console.log("Failed to load list of datasets.");
-        };
-
-        datasetListConnection.send(null);
-    }
+    listObjects_request();
 
     function sendFile(websocket, file, uuid, fileUuid)
     {
-        var segmentSize = 42 * 1024;
-        let counter = 0;
-        var fileSize = (file.size - 1);
-
-        for(let start = 0; start < fileSize; start += segmentSize) 
+        protobuf.load("/protobufs/sagiri_messages.proto3", function(err, root) 
         {
-            var reader = new FileReader();
-            var blob = file.slice(start, segmentSize + start);
+            if(err) {
+                throw err;
+            }
 
-            reader.onload = function(e) {
-                // get reeader-result and cut unnecessary header of the resulting string
-                const msg = uuid + "," + fileUuid + "," + start + "," + e.target.result.split(',')[1];
-                websocket.send(msg);
-                counter = counter + 1;
-            };
+            // Obtain a message type
+            var FileUpload_Message = root.lookupType("FileUpload_Message");
 
-            // read as DataURL instead of array-buffer, because the javascript websocket seems to have problems with plain raw-data
-            reader.readAsDataURL(blob);
-        }
+            var segmentSize = 96 * 1024;
+            var fileSize = file.size;
+
+            for(let start = 0; start < fileSize; start += segmentSize) 
+            {
+                var reader = new FileReader();
+                if(start + segmentSize > fileSize) {
+                    segmentSize = fileSize - start;
+                }
+                var blob = file.slice(start, segmentSize + start);
+                var isLast = start + segmentSize >= fileSize;
+
+                reader.onload = function(e) 
+                {
+                    var payload = { datasetUuid: uuid, 
+                                    fileUuid: fileUuid, 
+                                    isLast: isLast,
+                                    type: 0,
+                                    position: start,
+                                    // get reeader-result and cut unnecessary header of the resulting string
+                                    data: e.target.result.split(',')[1]
+                                };
+                    var errMsg = FileUpload_Message.verify(payload);
+                    if(errMsg) {
+                        throw Error(errMsg);
+                    }
+
+                    // Create a new message and ncode a message to an Uint8Array (browser)
+                    var message = FileUpload_Message.create(payload);
+                    var buffer = FileUpload_Message.encode(message).finish();
+
+                    websocket.send(buffer);
+                };
+
+                // read as DataURL instead of array-buffer, because the javascript websocket seems to have problems with plain raw-data
+                reader.readAsDataURL(blob);
+            }
+        });
 
         return true;
     }
@@ -289,7 +259,7 @@ limitations under the License. -->
     /**
      * Send request to backend to create a new dataset
      */
-    function createDataset_request()
+    function createObject_build()
     {
         const token = getAndCheckToken();
         if(token == "") {
@@ -345,7 +315,7 @@ limitations under the License. -->
             // handle reqponse
             var modal = document.getElementById("create_modal");
             clearModalFields();
-            listDataset_request();
+            listObjects_request();
             modal.style.display = "none";
         };
 
@@ -359,45 +329,6 @@ limitations under the License. -->
     }
 
     /**
-     * Create and send request to delete a dataset from the list
-     *
-     * @param {name} Name of the dataset to delete
-     */
-    function DeleteDataset_Request(name)
-    {
-        const token = getAndCheckToken();
-        if(token == "") {
-            return;
-        }
-        
-        // create requeset
-        const request = "/control/sagiri/v1/data_set?uuid=" + name;
-        var datasetDeleteConnection = new XMLHttpRequest();
-        datasetDeleteConnection.open("DELETE", request, true);
-        datasetDeleteConnection.setRequestHeader("X-Auth-Token", token);
-
-        // callback for success
-        datasetDeleteConnection.onload = function(e) 
-        {
-            if(datasetDeleteConnection.status != 200) {
-                return;
-            }
-
-            listDataset_request();
-            var modal = document.getElementById("delete_modal");
-            modal.style.display = "none";
-        };
-
-        // callback for fail
-        datasetDeleteConnection.onerror = function(e) 
-        {
-            console.log("Failed to delete dataset.");
-        };
-
-        datasetDeleteConnection.send(null);
-    }
-
-    /**
      * Clear all fields of the dataset-create-modal
      */
     function clearModalFields()
@@ -405,74 +336,6 @@ limitations under the License. -->
         document.getElementById('name_field').value = "";
     }
 
-    /**
-     * Open dataset-create-modal to ask for the parameter of the new dataset
-     */
-    function createDataset() 
-    {
-        var modal = document.getElementById("create_modal");
-        var acceptButton = document.getElementById("modal_create_accept_button");
-        var cancelButton = document.getElementById("modal_create_cancel_button");
-
-        // handle accept-button
-        acceptButton.onclick = function() {
-            createDataset_request();
-        }
-
-        // handle cancel-button
-        cancelButton.onclick = function() {
-            modal.style.display = "none";
-        } 
-
-        // handle click outside of the window
-        window.onclick = function(event) 
-        {
-            if(event.target == modal) 
-            {
-                clearModalFields();
-                modal.style.display = "none";
-            }
-        } 
-
-        modal.style.display = "block";
-    }
-
-    /**
-     * Open dataset-delete-modal to ask if dataset should really be deleted.
-     * This function is named 'deleteObject' instead of 'deleteDataset' because it is triggered
-     * by the genric delete-button of the table, which is generated in a generic way.
-     *
-     * @param {name} Name of the dataset to delete
-     */
-    function deleteObject(name)
-    {
-        var modal = document.getElementById("delete_modal");
-        var acceptButton = document.getElementById("modal_delete_accept_button");
-        var cancelButton = document.getElementById("modal_delete_cancel_button");
-
-        document.getElementById('delete_label_text').innerText = name;
-
-        // handle accept-button
-        acceptButton.onclick = function() {
-            DeleteDataset_Request(name);
-        }
-
-        // handle cancel-button
-        cancelButton.onclick = function() {
-            modal.style.display = "none";
-        } 
-
-        // handle click outside of the window
-        window.onclick = function(event) 
-        {
-            if(event.target == modal) {
-                modal.style.display = "none";
-            }
-        } 
-
-        modal.style.display = "block";
-    }
-
-    document.getElementById("create_dataset_button").addEventListener("click", createDataset, false);
+    document.getElementById("create_dataset_button").addEventListener("click", createObject, false);
     
 </script>

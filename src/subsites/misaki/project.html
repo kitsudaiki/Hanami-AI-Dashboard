@@ -20,12 +20,12 @@ limitations under the License. -->
 
 <svg width="100%" height="68">
     <polygon class="hexagon_field header_label_position_short" points="185,0 200,21 185,42 15,42 0,21 15,0"></polygon>
-    <text x="70" y="27"  class="header_label_position_short" font-size="20px">Cluster</text>
+    <text x="80" y="27"  class="header_label_position_short" font-size="20px">Project</text>
 </svg>
 
 <div class="tile_div">
-    <button id="create_cluster_button" class="add_button">+</button>
-    <table  id="table" align="center"border="1"></table>
+    <button id="create_project_button" class="add_button">+</button>
+    <table align = "center" id="table" border="1"></table>
 </div>
 
 <!--=============================================================================-->
@@ -36,21 +36,17 @@ limitations under the License. -->
     <div id="create_modal_content" class="modal_content">
         <div class="modal_header_part">
             <svg width="100%" height="68" class="modal_header_position">
-                <polygon class="hexagon_field header_label_position_long" points="385,0 400,21 385,42 15,42 0,21 15,0"></polygon>
-                <text x="55" y="27" class="header_label_position_long" font-size="20px">Create new Cluster</text>
+                <polygon class="hexagon_field header_label_position_mid" points="285,0 300,21 285,42 15,42 0,21 15,0"></polygon>
+                <text x="70" y="25"  class="header_label_position_mid" font-size="20px">Create new project</text>
             </svg>
         </div>
         <div class="modal_content_part">
             <div class="modal_input_fields">
-                <div>
-                    <label class="modal_label" for="name">Name:</label>
-                    <input type="text" id="name_field" name="name">
-                </div>
+                <label class="modal_label" for="id">ID:</label>
+                <input type="text" id="id_field" name="id">
                 <br><br>
-                <div>
-                    <label class="modal_label" for="template_field">Definition:</label>
-                    <textarea id="template_field" name="input_file"> </textarea>
-                </div>
+                <label class="modal_label" for="name">Name:</label>
+                <input type="text" id="name_field" name="name">
             </div>
             <label id="create_modal_error_message" class="modal_error_field"></label>
         </div>
@@ -70,17 +66,17 @@ limitations under the License. -->
 <div id="delete_modal" class="modal">
     <div id="delete_modal_content" class="modal_content">
         <div class="modal_header_part">
-            <svg width="100%" height="68" class="modal_header_position">
-                <polygon class="hexagon_field header_label_position_long" points="385,0 400,21 385,42 15,42 0,21 15,0"></polygon>
-                <text x="80" y="27" class="header_label_position_long" font-size="20px">Delete Cluster</text>
+            <svg width="100%" height="70" class="modal_header_position">
+                <polygon class="hexagon_field header_label_position_mid" points="285,0 300,21 285,42 15,42 0,21 15,0"></polygon>
+                <text x="95" y="25"  class="header_label_position_mid" font-size="20px">Delete project</text>
             </svg>
         </div>
         <div class="modal_content_part">
             <center>
                 <br><br>
-                Do you really want to delete cluster:
+                Do you really want to delete project:
                 <br><br>
-                <h2><label id="delete_label_text" class="delete_label_text"></label></h2>
+                <h2><label id="delete_label_text" class="delete_label_text">></label></h2>
             </center>
         </div>
         <div class="modal_footer_part">
@@ -100,7 +96,13 @@ limitations under the License. -->
     #create_modal_content { 
         color: var(--color-text);
         width: 40rem;
-        height: 40rem;
+        height: 25rem;
+    }
+
+    /* for users there is no uuid in the firsh column, so override the styling for this special case */
+    td:nth-child(1) {  
+        font-family: var(--text-font-family);
+        width: 20rem;
     }
 
     #delete_modal_content { 
@@ -109,9 +111,6 @@ limitations under the License. -->
         height: 17rem;
     }
 
-    #template_field {
-        height: 20rem;
-    }
 </style>
 
 <!--=============================================================================-->
@@ -122,28 +121,21 @@ limitations under the License. -->
 <script src="/scripts/common.js"></script>
 <script src="/scripts/actions.js"></script>
 <script>
-    // mapping for segment-template-table
+    // mapping for project-table
     var headerMapping = new Map();
-    headerMapping.set("uuid", "UUID");
-    headerMapping.set("visibility", "Visibility");
+    headerMapping.set("id", "ID");
     headerMapping.set("name", "Name");
+    headerMapping.set("creator_id", "Creator-ID");
 
-    var deleteRequest = "/control/kyouko/v1/cluster?uuid=";
-    var listRequest = "/control/kyouko/v1/cluster/all";
-    var createRequest = "/control/kyouko/v1/cluster";
-    var additionalButton = 'onclick="switchToTasks(this.value)">Tasks</button>';
+    var deleteRequest = "/control/misaki/v1/project?id=";
+    var listRequest = "/control/misaki/v1/project/all";
+    var createRequest = "/control/misaki/v1/project";
 
-    function switchToTasks(clusterUuid)
-    {
-        selectedCluster = clusterUuid;
-        $("#content_div").load("/subsites/kyouko/task.html")
-    }
-
-    // inital creation of the segment-template-list when open the window
-    listObjects_request(additionalButton);
+    // inital creation of the project-list when open the window
+    listObjects_request();
 
     /**
-     * Send request to backend to create a new segmentTemplate
+     * Send request to backend to create a new project
      */
     function createObject_build()
     {
@@ -151,36 +143,34 @@ limitations under the License. -->
         document.getElementById('create_modal_error_message').innerHTML = "";
 
         const name = document.getElementById('name_field').value;
-        const templateStr = document.getElementById('template_field').value;
+        const id = document.getElementById('id_field').value;
 
+        if(id == "") 
+        {
+            document.getElementById('create_modal_error_message').innerHTML = "Id is missing";
+            return;
+        }
         if(name == "") 
         {
             document.getElementById('create_modal_error_message').innerHTML = "Name is missing";
             return;
         }
 
-        if(templateStr == "") 
-        {
-            document.getElementById('create_modal_error_message').innerHTML = "Definition is missing";
-            return;
-        }
-       
         // create request-content
-        var reqContent = "{\"name\":\"" + name;
-        reqContent += "\",\"cluster_definition\":" + templateStr + "}";
+        var reqContent = "{id:\"" + id + "\",name:\"" + name + "\"}";
 
         createObject_request(reqContent);
     }
 
     /**
-     * Clear all fields of the segment-template-create-modal
+     * Clear all fields of the user-create-modal
      */
     function clearModalFields()
     {
+        document.getElementById('id_field').value = "";
         document.getElementById('name_field').value = "";
-        document.getElementById('template_field').value = "";
     }
 
-    document.getElementById("create_cluster_button").addEventListener("click", createObject, false);
-
+    document.getElementById("create_project_button").addEventListener("click", createObject, false);
+    
 </script>

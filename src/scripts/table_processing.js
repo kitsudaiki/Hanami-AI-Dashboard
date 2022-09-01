@@ -14,13 +14,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-function constructTable(content, headerMapping, selector) 
+function constructTable(content, headerMapping, selector, additionalButton) 
 {
     // clear old table-content
     $(selector).empty();
 
     const colIds = Headers(content.header, headerMapping, selector); 
-    Body(content.body, selector, colIds); 
+    Body(content.body, selector, colIds, additionalButton); 
 }
     
 function Headers(headerContent, headerMapping, selector) 
@@ -40,7 +40,7 @@ function Headers(headerContent, headerMapping, selector)
     return colIds;
 }     
 
-function Body(bodyContent, selector, colIds) 
+function Body(bodyContent, selector, colIds, additionalButton) 
 {
     for(var row = 0; row < bodyContent.length; row++) 
     {
@@ -53,10 +53,15 @@ function Body(bodyContent, selector, colIds)
         }
 
         // create and add delete-button to the row
-        var deleteButton = '<button class="table_delete_button" value="' + rowContent[0] + '" '
-        deleteButton += 'onclick="deleteObject(this.value)"';
-        deleteButton += '>Delete</button>'
-        var input = $(deleteButton);
+        var buttons = "";
+        if(additionalButton.length !== 0) 
+        {
+            buttons += '<button class="table_side_button" value="' + rowContent[0] + '" ';
+            buttons += additionalButton;
+        }
+        buttons += '<button class="table_side_button" value="' + rowContent[0] + '" ';
+        buttons += 'onclick="deleteObject(this.value)">Delete</button>';
+        var input = $(buttons);
 
         body.append($('<td/ style="text-align: right;">').html(input));
         $(selector).append(body);

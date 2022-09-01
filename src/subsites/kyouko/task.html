@@ -20,11 +20,11 @@ limitations under the License. -->
 
 <svg width="100%" height="68">
     <polygon class="hexagon_field header_label_position_short" points="185,0 200,21 185,42 15,42 0,21 15,0"></polygon>
-    <text x="70" y="27"  class="header_label_position_short" font-size="20px">Cluster</text>
+    <text x="70" y="27"  class="header_label_position_short" font-size="20px">Task</text>
 </svg>
 
 <div class="tile_div">
-    <button id="create_cluster_button" class="add_button">+</button>
+    <button id="create_task_button" class="add_button">+</button>
     <table  id="table" align="center"border="1"></table>
 </div>
 
@@ -37,7 +37,7 @@ limitations under the License. -->
         <div class="modal_header_part">
             <svg width="100%" height="68" class="modal_header_position">
                 <polygon class="hexagon_field header_label_position_long" points="385,0 400,21 385,42 15,42 0,21 15,0"></polygon>
-                <text x="55" y="27" class="header_label_position_long" font-size="20px">Create new Cluster</text>
+                <text x="55" y="27" class="header_label_position_long" font-size="20px">Create new Task</text>
             </svg>
         </div>
         <div class="modal_content_part">
@@ -45,11 +45,6 @@ limitations under the License. -->
                 <div>
                     <label class="modal_label" for="name">Name:</label>
                     <input type="text" id="name_field" name="name">
-                </div>
-                <br><br>
-                <div>
-                    <label class="modal_label" for="template_field">Definition:</label>
-                    <textarea id="template_field" name="input_file"> </textarea>
                 </div>
             </div>
             <label id="create_modal_error_message" class="modal_error_field"></label>
@@ -72,13 +67,13 @@ limitations under the License. -->
         <div class="modal_header_part">
             <svg width="100%" height="68" class="modal_header_position">
                 <polygon class="hexagon_field header_label_position_long" points="385,0 400,21 385,42 15,42 0,21 15,0"></polygon>
-                <text x="80" y="27" class="header_label_position_long" font-size="20px">Delete Cluster</text>
+                <text x="80" y="27" class="header_label_position_long" font-size="20px">Delete Task</text>
             </svg>
         </div>
         <div class="modal_content_part">
             <center>
                 <br><br>
-                Do you really want to delete cluster:
+                Do you really want to delete task:
                 <br><br>
                 <h2><label id="delete_label_text" class="delete_label_text"></label></h2>
             </center>
@@ -108,10 +103,6 @@ limitations under the License. -->
         width: 40rem;
         height: 17rem;
     }
-
-    #template_field {
-        height: 20rem;
-    }
 </style>
 
 <!--=============================================================================-->
@@ -125,22 +116,18 @@ limitations under the License. -->
     // mapping for segment-template-table
     var headerMapping = new Map();
     headerMapping.set("uuid", "UUID");
-    headerMapping.set("visibility", "Visibility");
-    headerMapping.set("name", "Name");
+    headerMapping.set("state", "State");
+    headerMapping.set("percentage", "Progress");
+    headerMapping.set("queued", "Queued-Time");
+    headerMapping.set("start", "Start-Time");
+    headerMapping.set("end", "End-Time");
 
-    var deleteRequest = "/control/kyouko/v1/cluster?uuid=";
-    var listRequest = "/control/kyouko/v1/cluster/all";
-    var createRequest = "/control/kyouko/v1/cluster";
-    var additionalButton = 'onclick="switchToTasks(this.value)">Tasks</button>';
-
-    function switchToTasks(clusterUuid)
-    {
-        selectedCluster = clusterUuid;
-        $("#content_div").load("/subsites/kyouko/task.html")
-    }
+    var deleteRequest = "/control/kyouko/v1/task?cluster_uuid=" + selectedCluster + "&uuid=";
+    var listRequest = "/control/kyouko/v1/task/all?cluster_uuid=" + selectedCluster;
+    var createRequest = "/control/kyouko/v1/task";
 
     // inital creation of the segment-template-list when open the window
-    listObjects_request(additionalButton);
+    listObjects_request();
 
     /**
      * Send request to backend to create a new segmentTemplate
@@ -151,17 +138,10 @@ limitations under the License. -->
         document.getElementById('create_modal_error_message').innerHTML = "";
 
         const name = document.getElementById('name_field').value;
-        const templateStr = document.getElementById('template_field').value;
 
         if(name == "") 
         {
             document.getElementById('create_modal_error_message').innerHTML = "Name is missing";
-            return;
-        }
-
-        if(templateStr == "") 
-        {
-            document.getElementById('create_modal_error_message').innerHTML = "Definition is missing";
             return;
         }
        
@@ -178,9 +158,8 @@ limitations under the License. -->
     function clearModalFields()
     {
         document.getElementById('name_field').value = "";
-        document.getElementById('template_field').value = "";
     }
 
-    document.getElementById("create_cluster_button").addEventListener("click", createObject, false);
+    document.getElementById("create_task_button").addEventListener("click", createObject, false);
 
 </script>

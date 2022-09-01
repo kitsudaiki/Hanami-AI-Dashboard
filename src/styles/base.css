@@ -165,12 +165,13 @@ label {
     height: 2rem;
 }
 
-.table_delete_button {
+.table_side_button {
     color: rgb(0, 0, 0);
     background-color: var(--color-highlight);
     width: 4.0rem;
-    height: 1.2rem;
+    height: 1.5rem;
     box-shadow: var(--box-shadow);
+    margin: 0.5rem 0.5rem 0.5rem 0.5rem;
 }
 
 .tile_div {

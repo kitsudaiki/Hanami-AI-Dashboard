@@ -74,7 +74,7 @@ limitations under the License. -->
         const cn = "Auth_JWT_Token=";
         const idx = document.cookie.indexOf(cn)
 
-        if (idx != -1) 
+        if(idx != -1) 
         {
             var end = document.cookie.indexOf(";", idx + 1);
             if (end == -1) end = document.cookie.length;
@@ -89,7 +89,7 @@ limitations under the License. -->
     function deleteAllCookies() 
     {
         const cookies = document.cookie.split(";");
-        for (var i = 0; i < cookies.length; i++) {
+        for(var i = 0; i < cookies.length; i++) {
             document.cookie = cookies[i] + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
         }
     }
@@ -97,10 +97,7 @@ limitations under the License. -->
     function loginRequest(user, pw)
     {
         const request = "/control/misaki/v1/token";
-
-        var reqContent = "{\"id\":\"" + user;
-        reqContent += "\",\"password\":\"" + pw;
-        reqContent += "\"}";
+        const reqContent = "{\"id\":\"" + user + "\",\"password\":\"" + pw + "\"}";
 
         var loginConnection = new XMLHttpRequest();
         loginConnection.open("POST", request, true);
@@ -190,8 +187,6 @@ limitations under the License. -->
 
     // deleteAllCookies();
     getAndCheckToken();
-
-    // login("test_user", "poipoi");
 
     // Allow Enter-button to tigger login
     document.getElementById("login_pw_field").addEventListener("keypress", function(event) 

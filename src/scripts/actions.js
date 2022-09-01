@@ -92,7 +92,7 @@ function deleteObject_Request(uuid)
 /**
  * Send request to backend to get a list of all segment-template
  */
-function listObjects_request()
+function listObjects_request(additionalButton = "")
 {
     const token = getAndCheckToken();
     if(token == "") {
@@ -110,7 +110,7 @@ function listObjects_request()
         }
 
         const jsonContent = JSON.parse(segmentTemplateListConnection.responseText);
-        constructTable(jsonContent, headerMapping, '#table');
+        constructTable(jsonContent, headerMapping, '#table', additionalButton);
     };
     segmentTemplateListConnection.onerror = function(e) 
     {

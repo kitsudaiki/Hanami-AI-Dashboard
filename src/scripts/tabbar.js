@@ -14,9 +14,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-var defaultTabName = "global_settings";
-var defaultTabIndex = 0;
-
 function resetAllTabs() 
 {
     // Declare all variables
@@ -52,5 +49,3 @@ function activateDefaultTab()
     tablinks = document.getElementsByClassName("tablinks");
     tablinks[defaultTabIndex].className += " active";
 }
-
-activateDefaultTab();

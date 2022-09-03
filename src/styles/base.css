@@ -282,3 +282,10 @@ input:checked + .slider {
 input:checked + .slider:before {
     transform: translateX(26px);
 }
+
+select {
+    width: 100%;
+    height: 2.5rem;
+    margin-bottom: 0.5rem;
+    border: thin solid grey;
+}

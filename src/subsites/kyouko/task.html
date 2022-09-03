@@ -45,6 +45,15 @@ limitations under the License. -->
                 <div>
                     <label class="modal_label" for="name">Name:</label>
                     <input type="text" id="name_field" name="name">
+                    <br><br>
+                    <label class="modal_label" for="datasetDropdown">Task-Type:</label>
+                    <div id="dropdown_taskType_div" name="datasetDropdown"></div>
+                    <br>
+                    <label class="modal_label" for="datasetTypeDropdown">Dataset-Type:</label>
+                    <div id="dropdown_datasetType_div" name="datasetTypeDropdown"></div>
+                    <br>
+                    <label class="modal_label" for="datasetDropdown">Dataset:</label>
+                    <div id="dropdown_div" name="datasetDropdown"></div>
                 </div>
             </div>
             <label id="create_modal_error_message" class="modal_error_field"></label>
@@ -95,7 +104,7 @@ limitations under the License. -->
     #create_modal_content { 
         color: var(--color-text);
         width: 40rem;
-        height: 40rem;
+        height: 35rem;
     }
 
     #delete_modal_content { 
@@ -126,8 +135,15 @@ limitations under the License. -->
     var listRequest = "/control/kyouko/v1/task/all?cluster_uuid=" + selectedCluster;
     var createRequest = "/control/kyouko/v1/task";
 
+    var taskTypes = ["learn", "request"];
+    var taskDatasetTypes = ["image", "graph"];
+
     // inital creation of the segment-template-list when open the window
     listObjects_request();
+
+    fillDropdownList("dropdown_div", "/control/sagiri/v1/data_set/all");
+    fillStaticDropdownList("dropdown_taskType_div", taskTypes);
+    fillStaticDropdownList("dropdown_datasetType_div", taskDatasetTypes);
 
     /**
      * Send request to backend to create a new segmentTemplate

@@ -99,25 +99,25 @@ function listObjects_request(additionalButton = "")
         return;
     }
 
-    var segmentTemplateListConnection = new XMLHttpRequest();
-    segmentTemplateListConnection.open("GET", listRequest, true);
-    segmentTemplateListConnection.setRequestHeader("X-Auth-Token", token);
+    var listRequestConnection = new XMLHttpRequest();
+    listRequestConnection.open("GET", listRequest, true);
+    listRequestConnection.setRequestHeader("X-Auth-Token", token);
 
-    segmentTemplateListConnection.onload = function(e) 
+    listRequestConnection.onload = function(e) 
     {
-        if(segmentTemplateListConnection.status != 200) {
+        if(listRequestConnection.status != 200) {
             return false;
         }
 
-        const jsonContent = JSON.parse(segmentTemplateListConnection.responseText);
+        const jsonContent = JSON.parse(listRequestConnection.responseText);
         constructTable(jsonContent, headerMapping, '#table', additionalButton);
     };
-    segmentTemplateListConnection.onerror = function(e) 
+    listRequestConnection.onerror = function(e) 
     {
         console.log("Failed to load list of segment-templates.");
     };
 
-    segmentTemplateListConnection.send(null);
+    listRequestConnection.send(null);
 }
 
 /**
@@ -189,4 +189,82 @@ function createObject_request(payload)
     };
 
     segmentTemplateCreateConnection.send(payload);
+}
+
+function fillDropdownList(target, dropdownListRequest)
+{     
+    const token = getAndCheckToken();
+    if(token == "") {
+        return;
+    }
+
+    var listRequestConnection = new XMLHttpRequest();
+    listRequestConnection.open("GET", dropdownListRequest, true);
+    listRequestConnection.setRequestHeader("X-Auth-Token", token);
+
+    listRequestConnection.onload = function(e) 
+    {
+        if(listRequestConnection.status != 200) {
+            return false;
+        }
+
+        // prepare container for the dropdown-menu
+        var select = document.createElement("select");
+        select.name = "dropdown_menu";
+        select.id = "dropdown_menu"
+
+        var idPos = 0;
+        var namePos = 0;
+
+        const content = JSON.parse(listRequestConnection.responseText);
+
+        // search for the column, which has the title "name" and get its position
+        const headerContent = content.header;
+        for(var i = 0; i < headerContent.length; i++) 
+        {
+            if(headerContent[i] === "name") 
+            {
+                namePos = i;
+                break;
+            } 
+        }
+
+        // fill menu with name and id of all entries
+        const bodyContent = content.body;
+        for(var row = 0; row < bodyContent.length; row++) 
+        {
+            const id = bodyContent[row][idPos];
+            const name = bodyContent[row][namePos];
+
+            var option = document.createElement("option");
+            option.value = id;
+            option.text = name + "   ( " + id + " )";
+            select.appendChild(option);
+        }
+
+        document.getElementById(target).appendChild(select);
+    };
+    listRequestConnection.onerror = function(e) 
+    {
+        console.log("Failed to load list of segment-templates.");
+    };
+
+    listRequestConnection.send(null);
+}
+
+function fillStaticDropdownList(target, values)
+{     
+    var select = document.createElement("select");
+    select.name = "dropdown_menu_static";
+    select.id = "dropdown_menu_static"
+ 
+    for(const val of values)
+    {
+        var option = document.createElement("option");
+        option.value = val;
+        option.text = val;
+        select.appendChild(option);
+    }
+ 
+    document.getElementById(target).appendChild(select);
 }

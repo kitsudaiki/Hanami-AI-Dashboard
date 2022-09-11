@@ -137,6 +137,16 @@ label {
     min-height: 150;
 }
 
+#header_user_name {
+    color: var(--color-text);
+    font-size: 1.5rem;
+    font-style: italic;
+    text-align: right;
+    padding-top: 0.75rem;
+    padding-right: 2rem;
+    margin: auto;
+}
+
 #sidebar_div {
     background-color: var(--color-tile);
   	height: 50rem; 
@@ -155,7 +165,7 @@ label {
 } 
 
 .create_button {
-    color: rgb(0, 0, 0);
+    color: invert(var(--color-text));
     width: 10.0rem;
     height: 3.0rem;
     padding-top: 0.5rem;
@@ -169,7 +179,7 @@ label {
 }
 
 .generic_button {
-    color: rgb(0, 0, 0);
+    color: invert(var(--color-text));
     width: 10.0rem;
     height: 3.0rem;
     box-shadow: var(--box-shadow);
@@ -184,7 +194,6 @@ label {
 
 .table_side_button {
     color: rgb(0, 0, 0);
-    background-color: var(--color-highlight);
     width: 4.0rem;
     height: 1.5rem;
     box-shadow: var(--box-shadow);

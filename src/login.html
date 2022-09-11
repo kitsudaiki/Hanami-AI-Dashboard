@@ -69,6 +69,23 @@ limitations under the License. -->
 <!--=============================================================================-->
 
 <script>
+    function getUserName() 
+    {
+        const cn = "User_Name=";
+        const idx = document.cookie.indexOf(cn)
+
+        if(idx != -1) 
+        {
+            var end = document.cookie.indexOf(";", idx + 1);
+            if (end == -1) end = document.cookie.length;
+            return document.cookie.substring(idx + cn.length, end);
+        } 
+        else 
+        {
+            return "";
+        }
+    }
+
     function getAuthCookie() 
     {
         const cn = "Auth_JWT_Token=";
@@ -112,10 +129,12 @@ limitations under the License. -->
             const responseJson = JSON.parse(loginConnection.responseText);
             // TODO: check if json-parsing is successful
             document.cookie = "Auth_JWT_Token=" + responseJson.token + "; SameSite=Strict; Secure";
-        
+            document.cookie = "User_Name=" + responseJson.name;
+
             document.getElementById("login_id_field").value = "";
             document.getElementById("login_pw_field").value = "";
-        
+            document.getElementById("header_user_name").innerHTML = responseJson.name;
+
             var modal = document.getElementById("login_modal");
             modal.style.display = "none";
         };
@@ -187,6 +206,9 @@ limitations under the License. -->
 
     // deleteAllCookies();
     getAndCheckToken();
+
+    // read user-name from cookies to keep the name after refreshing the site
+    document.getElementById("header_user_name").innerHTML = getUserName();
 
     // Allow Enter-button to tigger login
     document.getElementById("login_pw_field").addEventListener("keypress", function(event) 

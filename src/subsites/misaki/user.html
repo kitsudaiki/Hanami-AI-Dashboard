@@ -60,7 +60,10 @@ limitations under the License. -->
                 <label class="modal_label" for="pass">Password repeat:</label>
                 <input type="password" id="pass2" name="password" minlength="8" required>
             </div>
-            <label id="create_modal_error_message" class="modal_error_field"></label>
+            <div id="create_alert_box" class="alert">
+                <span class="closebtn" onclick="closeErrorInModal('create');">&times;</span> 
+                <label id="create_alert_text_label"></label>
+            </div>
         </div>
         <div class="modal_footer_part">
             <center>
@@ -90,6 +93,10 @@ limitations under the License. -->
                 <br><br>
                 <h2><label id="delete_label_text" class="delete_label_text">></label></h2>
             </center>
+            <div id="delete_alert_box" class="alert">
+                <span class="closebtn" onclick="closeErrorInModal('delete');">&times;</span> 
+                <label id="delete_alert_text_label"></label>
+            </div>
         </div>
         <div class="modal_footer_part">
             <center>
@@ -108,7 +115,7 @@ limitations under the License. -->
     #create_modal_content { 
         color: var(--color-text);
         width: 40rem;
-        height: 40rem;
+        height: 37rem;
     }
 
     /* for users there is no uuid in the firsh column, so override the styling for this special case */
@@ -147,14 +154,14 @@ limitations under the License. -->
     // inital creation of the user-list when open the window
     listObjects_request();
 
+    clearAlertBox("delete");
+    clearAlertBox("create");
+
     /**
      * Send request to backend to create a new user
      */
     function createObject_build()
     {
-        // clear error-label to remove the error of an old session
-        document.getElementById('create_modal_error_message').innerHTML = "";
-
         const id = document.getElementById('id_field').value;
         const name = document.getElementById('name_field').value;
         const isAdmin = document.getElementById('isAdmin_field').checked;
@@ -163,25 +170,25 @@ limitations under the License. -->
 
         if(password1 != password2) 
         {
-            document.getElementById('create_modal_error_message').innerHTML = "Passwords are not equal";
+            showErrorInModal("create", "Passwords are not equal");
             return;
         }
 
         if(id == "") 
         {
-            document.getElementById('create_modal_error_message').innerHTML = "ID is missing";
+            showErrorInModal("create", "ID is missing");
             return;
         }
 
         if(name == "") 
         {
-            document.getElementById('create_modal_error_message').innerHTML = "Name is missing";
+            showErrorInModal("create", "Name is missing");
             return;
         }
 
         if(password1 == "") 
         {
-            document.getElementById('create_modal_error_message').innerHTML = "Password is missing";
+            showErrorInModal("create", "Password is missing");
             return;
         }
 

@@ -26,7 +26,7 @@ limitations under the License. -->
                 <text x="75" y="25"  class="header_label_position_short" font-size="20px">Login</text>
             </svg>
         </div>
-        <div class="modal_content_part">
+        <div id="modal_content_part" class="modal_content_part">
             <div class="modal_input_fields">
                 <div>
                     <label class="modal_label" for="id">User-ID</label>
@@ -38,7 +38,10 @@ limitations under the License. -->
                     <input type="password" id="login_pw_field" name="password" required>
                 </div>
             </div>
-            <label id="error_message" class="modal_error_field"></label>
+            <div id="login_alert_box" class="alert">
+                <span class="closebtn" onclick="closeErrorInModal('login');">&times;</span> 
+                <label id="login_alert_text_label"></label>
+            </div>
         </div>
         <div class="modal_footer_part">
             <center>
@@ -60,7 +63,7 @@ limitations under the License. -->
     #login_modal_content { 
         color: var(--color-text);
         width: 30rem;
-        height: 23rem;
+        height: 20rem;
     }
 </style>
 
@@ -68,7 +71,10 @@ limitations under the License. -->
 <!--                                 script                                      -->
 <!--=============================================================================-->
 
+<script src="/scripts/common.js"></script>
 <script>
+    clearAlertBox("login");
+
     function getUserName() 
     {
         const cn = "User_Name=";
@@ -121,7 +127,10 @@ limitations under the License. -->
 
         loginConnection.onload = function(e) 
         {
-            if(loginConnection.status != 200) {
+            // handle failed login
+            if(loginConnection.status != 200) 
+            {
+                showErrorInModal("login", loginConnection.responseText);
                 return false;
             }
         
@@ -144,7 +153,7 @@ limitations under the License. -->
             document.getElementById("login_id_field").value = "";
             document.getElementById("login_pw_field").value = "";
         
-            console.log("An error occurred while transferring the file.");
+            alert("Login-connection failed");
         };
 
         loginConnection.send(reqContent);

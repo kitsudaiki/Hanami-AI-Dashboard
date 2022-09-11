@@ -81,7 +81,6 @@ limitations under the License.
 .modal_footer_part {
     background-color: var(--color-tile);
     height: 4rem; 
-    top: 11rem;
     box-shadow:  var(--box-shadow-footer);
 }
 
@@ -95,12 +94,6 @@ limitations under the License.
     -webkit-animation-duration: 0.5s;
     animation-name: modal-animation;
     animation-duration: 0.5s;
-}
-
-.modal_error_field {
-    color: red;
-    margin-left: 2rem;
-    margin-right: 2rem;
 }
 
 .modal_label {

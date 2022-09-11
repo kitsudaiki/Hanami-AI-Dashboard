@@ -71,7 +71,9 @@ function deleteObject_Request(uuid)
     // callback for success
     deleteConnection.onload = function(e) 
     {
-        if(deleteConnection.status != 200) {
+        if(deleteConnection.status != 200) 
+        {
+            showErrorInModal("delete", createRequestConnection.responseText);
             return;
         }
 
@@ -105,7 +107,9 @@ function listObjects_request(additionalButton = "")
 
     listRequestConnection.onload = function(e) 
     {
-        if(listRequestConnection.status != 200) {
+        if(listRequestConnection.status != 200) 
+        {
+            // TODO: error-popup
             return false;
         }
 
@@ -162,16 +166,16 @@ function createObject_request(payload)
     }
 
     // create requeset
-    var segmentTemplateCreateConnection = new XMLHttpRequest();
-    segmentTemplateCreateConnection.open("POST", createRequest, true);
-    segmentTemplateCreateConnection.setRequestHeader("X-Auth-Token", token);
+    var createRequestConnection = new XMLHttpRequest();
+    createRequestConnection.open("POST", createRequest, true);
+    createRequestConnection.setRequestHeader("X-Auth-Token", token);
 
     // callback for success
-    segmentTemplateCreateConnection.onload = function(e) 
+    createRequestConnection.onload = function(e) 
     {
-        if(segmentTemplateCreateConnection.status != 200) 
+        if(createRequestConnection.status != 200) 
         {
-            document.getElementById('create_modal_error_message').innerHTML = segmentTemplateCreateConnection.responseText;
+            showErrorInModal("create", createRequestConnection.responseText);
             return false;
         }
 
@@ -183,12 +187,12 @@ function createObject_request(payload)
     };
 
     // callback for fail
-    segmentTemplateCreateConnection.onerror = function(e) 
+    createRequestConnection.onerror = function(e) 
     {
         console.log("Failed to create segmentTemplate.");
     };
 
-    segmentTemplateCreateConnection.send(payload);
+    createRequestConnection.send(payload);
 }
 
 function fillDropdownList(target, dropdownListRequest)
@@ -204,7 +208,9 @@ function fillDropdownList(target, dropdownListRequest)
 
     listRequestConnection.onload = function(e) 
     {
-        if(listRequestConnection.status != 200) {
+        if(listRequestConnection.status != 200) 
+        {
+            showErrorInModal("create", listRequestConnection.responseText);
             return false;
         }
 

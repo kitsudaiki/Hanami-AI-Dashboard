@@ -32,6 +32,10 @@ limitations under the License.
     --box-shadow-header: 0 0.5rem 0.5rem var(--color-shadow);
 }
 
+/*=================================================
+Generic objects
+=================================================*/
+
 * {
     margin: 0;
     padding: 0;
@@ -117,6 +121,10 @@ label {
     width: 100%;
     text-align: left;
 }
+
+/*=================================================
+Base site
+=================================================*/
 
 #avatar {
     width: 2.0rem;
@@ -251,6 +259,10 @@ label {
     width: 30rem;
 }
 
+/*=================================================
+ON-OFF-Slider of checkboxes
+=================================================*/
+
 .switch {
     display: inline-block;
     height: 34px;
@@ -297,4 +309,29 @@ select {
     height: 2.5rem;
     margin-bottom: 0.5rem;
     border: thin solid grey;
+}
+
+/*=================================================
+ALERTS
+=================================================*/
+
+.alert {
+  padding: 20px;
+  background-color: #f44336;
+  color: white;
+}
+
+.alertCloseBtn {
+  margin-left: 15px;
+  color: white;
+  font-weight: bold;
+  float: right;
+  font-size: 22px;
+  line-height: 20px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.alertCloseBtn:hover {
+  color: black;
 }

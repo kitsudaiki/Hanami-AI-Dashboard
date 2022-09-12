@@ -144,6 +144,9 @@ limitations under the License. -->
             document.getElementById("login_pw_field").value = "";
             document.getElementById("header_user_name").innerHTML = responseJson.name;
 
+            // load cluster-overview as first site
+            $("#content_div").load("/subsites/kyouko/cluster.html"); 
+
             var modal = document.getElementById("login_modal");
             modal.style.display = "none";
         };

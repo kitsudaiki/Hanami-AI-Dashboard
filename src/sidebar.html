@@ -17,7 +17,6 @@ limitations under the License. -->
 <aside>
     <div class="sidebar">
         <button class="sidebar_drop_down"> 
-            <span class="material-icons-sharp">grid_view</span>
             <h3>Cluster</h3>
         </button>
         <div class="sidebar_drop_content">
@@ -26,7 +25,6 @@ limitations under the License. -->
         </div>
 
         <button class="sidebar_drop_down"> 
-            <span class="material-icons-sharp">grid_view</span>
             <h3>Storage</h3>
         </button>
         <div class="sidebar_drop_content">
@@ -34,8 +32,8 @@ limitations under the License. -->
             <a id="sagiri_cluster_snapshot_list" class="sidebar_dropdown_entry" href="#">Cluster Snapshot</a>
         </div>
 
-        <button class="sidebar_drop_down"> 
-            <span class="material-icons-sharp">grid_view</span>
+
+        <button id="sidebar_admin_btn" class="sidebar_drop_down"> 
             <h3>Admin</h3>
         </button>
         <div class="sidebar_drop_content">
@@ -94,11 +92,12 @@ limitations under the License. -->
         height: 2rem;
     }
 
-    aside .sidebar button span {
-        transition: all 200ms;
+    aside .sidebar button.active{
+        background-color: var(--color-highlight);
+        color: invert(var(--color-text))
     }
 
-    aside .sidebar button.active{
+    aside .sidebar a.active{
         background-color: var(--color-highlight);
         color: invert(var(--color-text))
     }
@@ -125,22 +124,23 @@ limitations under the License. -->
 <!--                                 script                                      -->
 <!--=============================================================================-->
 
+<script src="/scripts/common.js"></script>
 <script>
     var defaultDropdownIndex = 0;
 
     function initAllDropdowns() 
     {
+        // initiate all dropdown-menus
         var dropdown = document.getElementsByClassName("sidebar_drop_down");
-        var i;
-
-        for(i = 0; i < dropdown.length; i++) 
+        for(var i = 0; i < dropdown.length; i++) 
         {
             dropdown[i].addEventListener("click", function() 
             {
                 var dropdown = document.getElementsByClassName("sidebar_drop_down");
-                for(i = 0; i < dropdown.length; i++) {
-                    dropdown[i].nextElementSibling.style.maxHeight = "0px"; 
-                    dropdown[i].className = dropdown[i].className.replace(" active", "");
+                for(var j = 0; j < dropdown.length; j++) 
+                {
+                    dropdown[j].nextElementSibling.style.maxHeight = "0px"; 
+                    dropdown[j].className = dropdown[j].className.replace(" active", "");
                 }
 
                 this.className += " active";
@@ -148,13 +148,28 @@ limitations under the License. -->
                 dropdownContent.style.maxHeight = "100px"; 
             });
         }
+
+        // initiate all dropdown-entries
+        var dropdownEntries = document.getElementsByClassName("sidebar_dropdown_entry");
+        for(var i = 0; i < dropdownEntries.length; i++) 
+        {
+            dropdownEntries[i].addEventListener("click", function() 
+            {
+                var dropdownEntries = document.getElementsByClassName("sidebar_dropdown_entry");
+                for(var j = 0; j < dropdownEntries.length; j++) {
+                    dropdownEntries[j].className = dropdownEntries[j].className.replace(" active", "");
+                }
+
+                this.className += " active";
+            });
+        }
     }
 
     function activateDefaultSideEntry() 
     {
+        // mark initial dropdown-menu
         var dropdown = document.getElementsByClassName("sidebar_drop_down");
-
-        for(i = 0; i < dropdown.length; i++) 
+        for(var i = 0; i < dropdown.length; i++) 
         {
             dropdown[i].nextElementSibling.style.maxHeight = "0px"; 
             dropdown[i].className = dropdown[i].className.replace(" active", "");
@@ -162,6 +177,47 @@ limitations under the License. -->
 
         dropdown[defaultDropdownIndex].nextElementSibling.style.maxHeight = "100px"; 
         dropdown[defaultDropdownIndex].className += " active";
+
+        // mark initial dropdown-entry
+        var dropdownEntries = document.getElementsByClassName("sidebar_dropdown_entry");
+        for(var i = 0; i < dropdownEntries.length; i++) {
+            dropdownEntries[i].className = dropdownEntries[i].className.replace(" active", "");
+        }
+
+        dropdownEntries[defaultDropdownIndex].className += " active";
+    }
+
+    function resetAllSidebarEntries() 
+    {
+        // Get all elements with class="tabcontent" and hide them
+        var tabcontent = document.getElementsByClassName("tabcontent");
+        for(var i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+
+        // Get all elements with class="tablinks" and remove the class "active"
+        var tablinks = document.getElementsByClassName("tablinks");
+        for(i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+    }
+
+    function selectSidebarEntry(evt, tableName) 
+    {
+        resetAllTabs();
+
+        // Show the current tab, and add an "active" class to the button that opened the tab
+        document.getElementById(tableName).style.display = "block";
+        evt.currentTarget.className += " active";
+    } 
+
+    function activateDefaultSidebarEntry() 
+    {
+        resetAllSidebarEntries();
+
+        document.getElementById(defaultTabName).style.display = "block";
+        tablinks = document.getElementsByClassName("tablinks");
+        tablinks[defaultTabIndex].className += " active";
     }
 
     initAllDropdowns();
@@ -189,18 +245,14 @@ limitations under the License. -->
         $("#content_div").load("/subsites/misaki/project.html"); 
     });
 
-    document.getElementById("download_rest_api_docu_button").addEventListener("click", function() {
-        $("#content_div").load("/subsites/misaki/rest_api_docu_download.html"); 
-    });
-
-    function DownloadDocumentation_Request()
+    function downloadDocumentation_Request()
     {
         const token = getAndCheckToken();
         if(token == "") {
             return;
         }
         
-        const request = "/control/misaki/v1/documentation/api/rest";
+        const request = "/control/misaki/v1/documentation/api/rest?type=pdf";
         var xmlHttp = new XMLHttpRequest();
         xmlHttp.open("GET", request, true);
         xmlHttp.setRequestHeader("X-Auth-Token", token);
@@ -211,9 +263,10 @@ limitations under the License. -->
                 return "";
             }
 
-            console.log("DownloadDocumentation_Request: " + xmlHttp.responseText);
+            // console.log("DownloadDocumentation_Request: " + xmlHttp.responseText);
             var decodedDocu = atob(JSON.parse(xmlHttp.responseText).documentation);
 
+            // write data to file
             var saveByteArray = (function () {
                 var a = document.createElement("a");
                 document.body.appendChild(a);
@@ -239,6 +292,8 @@ limitations under the License. -->
         xmlHttp.send(null);
     }
 
-    document.getElementById("download_rest_api_docu_button").addEventListener("click", DownloadDocumentation_Request, false);
+    updateSidebar();
+
+    document.getElementById("download_rest_api_docu_button").addEventListener("click", downloadDocumentation_Request, false);
 
 </script>

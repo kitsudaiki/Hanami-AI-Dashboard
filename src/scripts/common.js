@@ -14,6 +14,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
+//================================================
+// value conversion
+//================================================
+
 longToByteArray = function(long) {
     // we want to represent the input as a 8-bytes array
     var byteArray = [0, 0, 0, 0];
@@ -83,4 +88,37 @@ function showErrorInModal(type, message)
     const alertHeight = document.getElementById(type + "_alert_box").clientHeight;
     document.getElementById(type + "_alert_text_label").innerHTML = message;
     document.getElementById(type + "_modal_content").style.height = (modalSize + 20 + alertHeight) + "px";
+}
+
+
+//================================================
+// cookies
+//================================================
+
+function getCookieValue(name) 
+{
+    const cn = name + "=";
+    const idx = document.cookie.indexOf(cn)
+
+    if(idx != -1) 
+    {
+        var end = document.cookie.indexOf(";", idx + 1);
+        if (end == -1) end = document.cookie.length;
+        return document.cookie.substring(idx + cn.length, end);
+    } 
+    else 
+    {
+        return "";
+    }
+}
+
+
+function updateSidebar()
+{
+    // hide or show admin-section based on the Is_Admin-cookie
+    if(getCookieValue("Is_Admin")) {
+        document.getElementById("sidebar_admin_btn").style.display = "flex";
+    } else {
+        document.getElementById("sidebar_admin_btn").style.display = "none";
+    }
 }

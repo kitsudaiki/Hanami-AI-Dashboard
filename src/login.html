@@ -75,40 +75,6 @@ limitations under the License. -->
 <script>
     clearAlertBox("login");
 
-    function getUserName() 
-    {
-        const cn = "User_Name=";
-        const idx = document.cookie.indexOf(cn)
-
-        if(idx != -1) 
-        {
-            var end = document.cookie.indexOf(";", idx + 1);
-            if (end == -1) end = document.cookie.length;
-            return document.cookie.substring(idx + cn.length, end);
-        } 
-        else 
-        {
-            return "";
-        }
-    }
-
-    function getAuthCookie() 
-    {
-        const cn = "Auth_JWT_Token=";
-        const idx = document.cookie.indexOf(cn)
-
-        if(idx != -1) 
-        {
-            var end = document.cookie.indexOf(";", idx + 1);
-            if (end == -1) end = document.cookie.length;
-            return document.cookie.substring(idx + cn.length, end);
-        } 
-        else 
-        {
-            return "";
-        }
-    }
-
     function deleteAllCookies() 
     {
         const cookies = document.cookie.split(";");
@@ -139,6 +105,9 @@ limitations under the License. -->
             // TODO: check if json-parsing is successful
             document.cookie = "Auth_JWT_Token=" + responseJson.token + "; SameSite=Strict; Secure";
             document.cookie = "User_Name=" + responseJson.name;
+            document.cookie = "Is_Admin=" + responseJson.is_admin;
+
+            updateSidebar();
 
             document.getElementById("login_id_field").value = "";
             document.getElementById("login_pw_field").value = "";
@@ -207,7 +176,7 @@ limitations under the License. -->
 
     function getAndCheckToken() 
     {
-        const authToken = getAuthCookie();
+        const authToken = getCookieValue("Auth_JWT_Token");
         if(authToken == "") {
             login();
         } else {
@@ -220,7 +189,7 @@ limitations under the License. -->
     getAndCheckToken();
 
     // read user-name from cookies to keep the name after refreshing the site
-    document.getElementById("header_user_name").innerHTML = getUserName();
+    document.getElementById("header_user_name").innerHTML = getCookieValue("User_Name");
 
     // Allow Enter-button to tigger login
     document.getElementById("login_pw_field").addEventListener("keypress", function(event) 

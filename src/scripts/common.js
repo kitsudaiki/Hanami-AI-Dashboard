@@ -112,13 +112,3 @@ function getCookieValue(name)
     }
 }
 
-
-function updateSidebar()
-{
-    // hide or show admin-section based on the Is_Admin-cookie
-    if(getCookieValue("Is_Admin")) {
-        document.getElementById("sidebar_admin_btn").style.display = "flex";
-    } else {
-        document.getElementById("sidebar_admin_btn").style.display = "none";
-    }
-}

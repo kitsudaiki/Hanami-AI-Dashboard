@@ -32,7 +32,7 @@ function resetAllTabs()
     }
 }
 
-function selectTable(evt, tableName) 
+function selectTabbarEntry(evt, tableName) 
 {
     resetAllTabs();
 

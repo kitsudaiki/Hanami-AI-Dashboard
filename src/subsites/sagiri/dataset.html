@@ -43,17 +43,17 @@ limitations under the License. -->
         <div class="modal_content_part">
             <div class="modal_input_fields">
                 <div class="tab">
-                    <button class="tablinks" onclick="selectTabbarEntry(event, 'csv_upload_div')">CSV</button>
-                    <button class="tablinks" onclick="selectTabbarEntry(event, 'mnist_upload_div')">MNIST</button>
+                    <button class="tablinks" onclick="selectTab(event, 'csv')">CSV</button>
+                    <button class="tablinks" onclick="selectTab(event, 'mnist')">MNIST</button>
                 </div>
                 <div id="csv_upload_div" class="tabcontent">
                     <div id="input_fields">
                         <br>
                         <label class="modal_label" for="name">Name:</label>
-                        <input type="text" id="name_field" name="name">
+                        <input type="text" id="name_field_csv" name="name">
                         <br><br>
                         <label class="modal_label" for="input_file">Input-file:</label>
-                        <input type="file" id="input_file_field" name="input_file"> 
+                        <input type="file" id="input_file_field_csv" name="input_file"> 
                     </div>
                     <label id="create_modal_error_message" class="modal_error_field"></label>
                 </div>
@@ -61,13 +61,13 @@ limitations under the License. -->
                     <div id="input_fields">
                         <br>
                         <label class="modal_label" for="name">Name:</label>
-                        <input type="text" id="name_field" name="name">
+                        <input type="text" id="name_field_mnist" name="name">
                         <br><br>
                         <label class="modal_label" for="input_file">Input-file:</label>
-                        <input type="file" id="input_file_field" name="input_file">
+                        <input type="file" id="input_file_field_mnist" name="input_file">
                         <br><br>
                         <label class="modal_label" for="label_file">Label-file:</label>
-                        <input type="file" id="label_file_field" name="label_file">
+                        <input type="file" id="label_file_field_mnist" name="label_file">
                     </div>
                     <label id="create_modal_error_message" class="modal_error_field"></label>
                 </div>
@@ -127,7 +127,7 @@ limitations under the License. -->
     #create_modal_content { 
         color: var(--color-text);
         width: 40rem;
-        height: 30rem;
+        height: 32rem;
     }
 
     #delete_modal_content { 
@@ -144,6 +144,7 @@ limitations under the License. -->
 <script src="/scripts/table_processing.js"></script>
 <script src="/scripts/common.js"></script>
 <script src="/scripts/actions.js"></script>
+<script src="/scripts/dataset_upload.js"></script>
 <script>
     // mapping for dataset-table
     var headerMapping = new Map();
@@ -157,6 +158,7 @@ limitations under the License. -->
     var createRequest = "/control/sagiri/v1/csv/data_set";
     var defaultTabName = "csv_upload_div";
     var defaultTabIndex = 0;
+    var selectedModalTab = "csv";
 
     // inital creation of the dataset-list when open the window
     listObjects_request();
@@ -164,134 +166,16 @@ limitations under the License. -->
     // activate default-tab in the dataset-create window
     activateDefaultTab();
 
-    function sendFile(websocket, file, uuid, fileUuid)
+    function selectTab(event, name)
     {
-        protobuf.load("/protobufs/sagiri_messages.proto3", function(err, root) 
-        {
-            if(err) {
-                throw err;
-            }
-
-            // Obtain a message type
-            var FileUpload_Message = root.lookupType("FileUpload_Message");
-
-            var segmentSize = 96 * 1024;
-            var fileSize = file.size;
-
-            for(let start = 0; start < fileSize; start += segmentSize) 
-            {
-                var reader = new FileReader();
-                if(start + segmentSize > fileSize) {
-                    segmentSize = fileSize - start;
-                }
-                var blob = file.slice(start, segmentSize + start);
-                var isLast = start + segmentSize >= fileSize;
-
-                reader.onload = function(e) 
-                {
-                    var payload = { 
-                        datasetUuid: uuid, 
-                        fileUuid: fileUuid, 
-                        isLast: isLast,
-                        type: 0,
-                        position: start,
-                        // get reeader-result and cut unnecessary  header of the resulting string
-                        data: e.target.result.split(',')[1]
-                    };
-                    var errMsg = FileUpload_Message.verify(payload);
-                    if(errMsg) {
-                        throw Error(errMsg);
-                    }
-
-                    // Create a new message and ncode a message to an Uint8Array (browser)
-                    var message = FileUpload_Message.create(payload);
-                    var buffer = FileUpload_Message.encode(message).finish();
-
-                    websocket.send(buffer);
-                };
-
-                // read as DataURL instead of array-buffer, 
-                // because the javascript websocket seems to have problems with plain raw-data
-                reader.readAsDataURL(blob);
-            }
-        });
-
-        return true;
-    }
-
-    function sleep(ms) {
-        var start = new Date().getTime(), expire = start + ms;
-        while (new Date().getTime() < expire) { }
-        return;
-    }
-
-    function sendAllFiles(websocket, uuid, inputFile, inputUuid)
-    {
-        const token = getAndCheckToken();
-        if(token == "") {
-            return false;
+        if(name === "csv") {
+            selectTabbarEntry(event, 'csv_upload_div');
         }
-        
-        websocket.onopen = function () {
-            console.log("WebSocket open")
-            const initialMsg = "{\"token\":\"" + token + "\",\"target\":\"sagiri\"}";
-            websocket.send(initialMsg);
-        };
-        
-        websocket.onerror = function () {
-            console.log("WebSocket failed!");
-        };
-        
-        websocket.onmessage = function(event) {
-            var reader = new FileReader();
-            reader.onload = function() {
-                console.log("Data received from server: " + reader.result);
-            }
-            reader.readAsText(event.data);
-             
-            console.log("send input: " + inputUuid);
-            if(sendFile(websocket, inputFile, uuid, inputUuid) == false) {
-                return false;
-            }
-        };
-
-        // wait until upload completed
-        var completeUploaded = false;
-        while(completeUploaded == false)
-        {
-            sleep(500);  // wait 500ms
-            var request = new XMLHttpRequest();
-            // `false` makes the request synchronous
-            request.open('GET', '/control/sagiri/v1/data_set/progress?uuid=' + uuid, false); 
-            request.setRequestHeader("X-Auth-Token", token);
-            request.send(null);
-
-            console.log(request.responseText);
-
-            if(request.status !== 200) {
-                return false;
-            }
-
-            const jsonContent = JSON.parse(request.responseText);
-            completeUploaded = jsonContent.complete;
+        if(name === "mnist") {
+            selectTabbarEntry(event, 'mnist_upload_div');
         }
 
-        // finish upload
-        var request = new XMLHttpRequest();
-        // `false` makes the request synchronous
-        request.open('PUT', '/control/sagiri/v1/csv/data_set', false);  
-        request.setRequestHeader("X-Auth-Token", token);
-        var jsonBody = "{\"uuid\":\"" + uuid + "\",\"uuid_input_file\":\"" + inputUuid + "\"}";
-        request.send(jsonBody);
-
-        if(request.status !== 200) {
-            return false;
-        }
-
-        const jsonContent = JSON.parse(request.responseText);
-        completeUploaded = jsonContent.complete;
-
-        return true;
+        selectedModalTab = name;
     }
 
     /**
@@ -304,67 +188,13 @@ limitations under the License. -->
             return;
         }
 
-        // clear error-label to remove the error of an old session
-        document.getElementById('create_modal_error_message').innerHTML = "";
-
-        const name = document.getElementById('name_field').value;
-        const inputFile = document.getElementById('input_file_field').files[0];
-
-        if(name == "") 
-        {
-            document.getElementById('create_modal_error_message').innerHTML = "Name is missing";
-            return;
+        console.log("selectedModalTab: " + selectedModalTab);
+        if(selectedModalTab === "csv") {
+            uploadCsvDataset(token);
         }
-
-        if(inputFile.name == "") 
-        {
-            document.getElementById('create_modal_error_message').innerHTML = "Input-file is missing";
-            return;
+        if(selectedModalTab === "mnist") {
+            uploadMnistDataset(token);
         }
-       
-        // create request-content
-        var reqContent = "{name:\"" + name;
-        reqContent += "\",input_data_size:" + inputFile.size + "}";
-
-        // create requeset
-        const request = "/control/sagiri/v1/csv/data_set";
-        var datasetCreateConnection = new XMLHttpRequest();
-        datasetCreateConnection.open("POST", request, true);
-        datasetCreateConnection.setRequestHeader("X-Auth-Token", token);
-
-        // callback for success
-        datasetCreateConnection.onload = function(e) 
-        {
-            if(datasetCreateConnection.status != 200) 
-            {
-                document.getElementById('create_modal_error_message').innerHTML 
-                    = datasetCreateConnection.responseText;
-                return false;
-            }
-
-            const jsonContent = JSON.parse(datasetCreateConnection.responseText);
-            const uuid = jsonContent.uuid;
-            const inputUuid = jsonContent.uuid_input_file;
-
-            var websocket = new WebSocket('wss://' + location.host);
-            if(sendAllFiles(websocket, uuid, inputFile, inputUuid) == false) {
-                return false;
-            }
-
-            // handle reqponse
-            var modal = document.getElementById("create_modal");
-            clearModalFields();
-            listObjects_request();
-            modal.style.display = "none";
-        };
-
-        // callback for fail
-        datasetCreateConnection.onerror = function(e) 
-        {
-            console.log("Failed to create dataset.");
-        };
-
-        datasetCreateConnection.send(reqContent);
     }
 
     /**
@@ -372,7 +202,8 @@ limitations under the License. -->
      */
     function clearModalFields()
     {
-        document.getElementById('name_field').value = "";
+        document.getElementById('name_field_mnist').value = "";
+        document.getElementById('name_field_csv').value = "";
     }
 
     document.getElementById("create_dataset_button").addEventListener("click", createObject, false);

@@ -216,8 +216,8 @@ function fillDropdownList(target, dropdownListRequest)
 
         // prepare container for the dropdown-menu
         var select = document.createElement("select");
-        select.name = "dropdown_menu";
-        select.id = "dropdown_menu"
+        select.name = target + "_select";
+        select.id = target + "_select";
 
         var idPos = 0;
         var namePos = 0;
@@ -261,8 +261,8 @@ function fillDropdownList(target, dropdownListRequest)
 function fillStaticDropdownList(target, values)
 {     
     var select = document.createElement("select");
-    select.name = "dropdown_menu_static";
-    select.id = "dropdown_menu_static"
+    select.name = target + "_select";
+    select.id = target + "_select";
  
     for(const val of values)
     {
@@ -273,4 +273,10 @@ function fillStaticDropdownList(target, values)
     }
  
     document.getElementById(target).appendChild(select);
+}
+
+function getDropdownValue(target)
+{
+    var e = document.getElementById(target + "_select");
+    return e.options[e.selectedIndex].value;
 }

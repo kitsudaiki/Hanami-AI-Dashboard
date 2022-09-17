@@ -168,11 +168,15 @@ limitations under the License. -->
             document.getElementById('create_modal_error_message').innerHTML = "Name is missing";
             return;
         }
-       
-        // create request-content
-        var reqContent = "{\"name\":\"" + name;
-        reqContent += "\",\"cluster_definition\":" + templateStr + "}";
 
+        createRequest = "/control/kyouko/v1/task";
+        createRequest += "/" + getDropdownValue("dropdown_datasetType_div");
+        createRequest += "/" + getDropdownValue("dropdown_taskType_div");
+
+        // create request-content
+        var reqContent = "{\"cluster_uuid\":\"" + selectedCluster
+                         + "\",\"data_set_uuid\":\"" + getDropdownValue("dropdown_div") + "\"}";
+                         
         createObject_request(reqContent);
     }
 

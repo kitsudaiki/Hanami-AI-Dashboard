@@ -1,5 +1,24 @@
+// Apache License Version 2.0
+
+// Copyright 2020 Tobias Anker
+
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+
+//     http://www.apache.org/licenses/LICENSE-2.0
+
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 var defaultDropdownIndex = 0;
 
+/**
+ * Initialize all entries of the sidebar by attaching all of them a click-event to switch selection
+ */
 function initAllDropdowns() 
 {
     // initiate all dropdown-menus
@@ -37,6 +56,9 @@ function initAllDropdowns()
     }
 }
 
+/**
+ * Mark the first section and its first entry as marked default within the sidebar
+ */
 function activateDefaultSideEntry() 
 {
     // mark initial dropdown-menu
@@ -59,6 +81,9 @@ function activateDefaultSideEntry()
     dropdownEntries[defaultDropdownIndex].className += " active";
 }
 
+/**
+ * Reset all entries within the sidebar to be unmarked
+ */
 function resetAllSidebarEntries() 
 {
     // Get all elements with class="tabcontent" and hide them
@@ -74,6 +99,9 @@ function resetAllSidebarEntries()
     }
 }
 
+/**
+ * Download REST-API-documentation. At the moment only pdf-version
+ */
 function downloadDocumentation_Request()
 {
     const token = getAndCheckToken();
@@ -92,7 +120,6 @@ function downloadDocumentation_Request()
             return "";
         }
 
-        // console.log("DownloadDocumentation_Request: " + xmlHttp.responseText);
         var decodedDocu = atob(JSON.parse(xmlHttp.responseText).documentation);
 
         // write data to file
@@ -108,7 +135,6 @@ function downloadDocumentation_Request()
                 a.click();
                 window.URL.revokeObjectURL(url);
             };
-            
         }());
 
         saveByteArray([decodedDocu], 'rest_api_documentation.pdf');
@@ -121,6 +147,9 @@ function downloadDocumentation_Request()
     xmlHttp.send(null);
 }
 
+/**
+ * Switch between admin- and non-admin-view in the sidebar based on the cookies
+ */
 function updateSidebar()
 {
     // hide or show admin-section based on the Is_Admin-cookie

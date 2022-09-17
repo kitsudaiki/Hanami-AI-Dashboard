@@ -19,8 +19,8 @@ limitations under the License. -->
 <!--=============================================================================-->
 
 <svg width="100%" height="68">
-    <polygon class="hexagon_field header_label_position_long" points="285,0 300,21 285,42 15,42 0,21 15,0"></polygon>
-    <text x="62" y="27"  class="header_label_position_long" font-size="20px">Cluster Snapshots</text>
+    <polygon class="hexagon_field header_label_position_mid" points="285,0 300,21 285,42 15,42 0,21 15,0"></polygon>
+    <text x="62" y="27"  class="header_label_position_mid" font-size="20px">Cluster Snapshots</text>
 </svg>
 
 <div class="tile_div">
@@ -49,8 +49,12 @@ limitations under the License. -->
         </div>
         <div class="modal_footer_part">
             <center>
-                <img id="modal_delete_accept_button" class="generic_svg_button modal_accept_button" src="/icons/uberprufen.svg">
-                <img id="modal_delete_cancel_button" class="generic_svg_button" src="/icons/kreuzen.svg">
+                <button id="modal_delete_accept_button" class="generic_svg_button modal_accept_button">
+                    <img class="generic_svg_on_button" src="/icons/check-lg.svg">
+                </button>
+                <button id="modal_delete_cancel_button" class="generic_svg_button">
+                    <img class="generic_svg_on_button" src="/icons/x-lg.svg">
+                </button>
             </center>
         </div>
     </div>

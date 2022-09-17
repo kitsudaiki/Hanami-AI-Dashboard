@@ -43,8 +43,8 @@ limitations under the License. -->
         <div class="modal_content_part">
             <div class="modal_input_fields">
                 <div class="tab">
-                    <button class="tablinks" onclick="selectTable(event, 'csv_upload_div')">CSV</button>
-                    <button class="tablinks" onclick="selectTable(event, 'mnist_upload_div')">MNIST</button>
+                    <button class="tablinks" onclick="selectTabbarEntry(event, 'csv_upload_div')">CSV</button>
+                    <button class="tablinks" onclick="selectTabbarEntry(event, 'mnist_upload_div')">MNIST</button>
                 </div>
                 <div id="csv_upload_div" class="tabcontent">
                     <div id="input_fields">
@@ -75,8 +75,12 @@ limitations under the License. -->
         </div>
         <div class="modal_footer_part">
             <center>
-                <img id="modal_create_accept_button" class="generic_svg_button modal_accept_button" src="/icons/uberprufen.svg">
-                <img id="modal_create_cancel_button" class="generic_svg_button" src="/icons/kreuzen.svg">
+                <button id="modal_create_accept_button" class="generic_svg_button modal_accept_button">
+                    <img class="generic_svg_on_button" src="/icons/check-lg.svg">
+                </button>
+                <button id="modal_create_cancel_button" class="generic_svg_button">
+                    <img class="generic_svg_on_button" src="/icons/x-lg.svg">
+                </button>
             </center>
         </div>
     </div>
@@ -104,8 +108,12 @@ limitations under the License. -->
         </div>
         <div class="modal_footer_part">
             <center>
-                <img id="modal_delete_accept_button" class="generic_svg_button modal_accept_button" src="/icons/uberprufen.svg">
-                <img id="modal_delete_cancel_button" class="generic_svg_button" src="/icons/kreuzen.svg">
+                <button id="modal_delete_accept_button" class="generic_svg_button modal_accept_button">
+                    <img class="generic_svg_on_button" src="/icons/check-lg.svg">
+                </button>
+                <button id="modal_delete_cancel_button" class="generic_svg_button">
+                    <img class="generic_svg_on_button" src="/icons/x-lg.svg">
+                </button>
             </center>
         </div>
     </div>
@@ -181,14 +189,15 @@ limitations under the License. -->
 
                 reader.onload = function(e) 
                 {
-                    var payload = { datasetUuid: uuid, 
-                                    fileUuid: fileUuid, 
-                                    isLast: isLast,
-                                    type: 0,
-                                    position: start,
-                                    // get reeader-result and cut unnecessary header of the resulting string
-                                    data: e.target.result.split(',')[1]
-                                };
+                    var payload = { 
+                        datasetUuid: uuid, 
+                        fileUuid: fileUuid, 
+                        isLast: isLast,
+                        type: 0,
+                        position: start,
+                        // get reeader-result and cut unnecessary  header of the resulting string
+                        data: e.target.result.split(',')[1]
+                    };
                     var errMsg = FileUpload_Message.verify(payload);
                     if(errMsg) {
                         throw Error(errMsg);
@@ -201,7 +210,8 @@ limitations under the License. -->
                     websocket.send(buffer);
                 };
 
-                // read as DataURL instead of array-buffer, because the javascript websocket seems to have problems with plain raw-data
+                // read as DataURL instead of array-buffer, 
+                // because the javascript websocket seems to have problems with plain raw-data
                 reader.readAsDataURL(blob);
             }
         });
@@ -251,7 +261,8 @@ limitations under the License. -->
         {
             sleep(500);  // wait 500ms
             var request = new XMLHttpRequest();
-            request.open('GET', '/control/sagiri/v1/data_set/progress?uuid=' + uuid, false);  // `false` makes the request synchronous
+            // `false` makes the request synchronous
+            request.open('GET', '/control/sagiri/v1/data_set/progress?uuid=' + uuid, false); 
             request.setRequestHeader("X-Auth-Token", token);
             request.send(null);
 
@@ -267,7 +278,8 @@ limitations under the License. -->
 
         // finish upload
         var request = new XMLHttpRequest();
-        request.open('PUT', '/control/sagiri/v1/csv/data_set', false);  // `false` makes the request synchronous
+        // `false` makes the request synchronous
+        request.open('PUT', '/control/sagiri/v1/csv/data_set', false);  
         request.setRequestHeader("X-Auth-Token", token);
         var jsonBody = "{\"uuid\":\"" + uuid + "\",\"uuid_input_file\":\"" + inputUuid + "\"}";
         request.send(jsonBody);
@@ -325,7 +337,8 @@ limitations under the License. -->
         {
             if(datasetCreateConnection.status != 200) 
             {
-                document.getElementById('create_modal_error_message').innerHTML = datasetCreateConnection.responseText;
+                document.getElementById('create_modal_error_message').innerHTML 
+                    = datasetCreateConnection.responseText;
                 return false;
             }
 

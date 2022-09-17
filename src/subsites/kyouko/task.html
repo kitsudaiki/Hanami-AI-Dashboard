@@ -20,7 +20,7 @@ limitations under the License. -->
 
 <svg width="100%" height="68">
     <polygon class="hexagon_field header_label_position_short" points="185,0 200,21 185,42 15,42 0,21 15,0"></polygon>
-    <text x="70" y="27"  class="header_label_position_short" font-size="20px">Task</text>
+    <text x="75" y="27"  class="header_label_position_short" font-size="20px">Task</text>
 </svg>
 
 <div class="tile_div">
@@ -60,8 +60,12 @@ limitations under the License. -->
         </div>
         <div class="modal_footer_part">
             <center>
-                <img id="modal_create_accept_button" class="generic_svg_button modal_accept_button" src="/icons/uberprufen.svg">
-                <img id="modal_create_cancel_button" class="generic_svg_button" src="/icons/kreuzen.svg">
+                <button id="modal_create_accept_button" class="generic_svg_button modal_accept_button">
+                    <img class="generic_svg_on_button" src="/icons/check-lg.svg">
+                </button>
+                <button id="modal_create_cancel_button" class="generic_svg_button">
+                    <img class="generic_svg_on_button" src="/icons/x-lg.svg">
+                </button>
             </center>
         </div>
     </div>
@@ -89,8 +93,12 @@ limitations under the License. -->
         </div>
         <div class="modal_footer_part">
             <center>
-                <img id="modal_delete_accept_button" class="generic_svg_button modal_accept_button" src="/icons/uberprufen.svg">
-                <img id="modal_delete_cancel_button" class="generic_svg_button" src="/icons/kreuzen.svg">
+                <button id="modal_delete_accept_button" class="generic_svg_button modal_accept_button">
+                    <img class="generic_svg_on_button" src="/icons/check-lg.svg">
+                </button>
+                <button id="modal_delete_cancel_button" class="generic_svg_button">
+                    <img class="generic_svg_on_button" src="/icons/x-lg.svg">
+                </button>
             </center>
         </div>
     </div>
@@ -136,7 +144,7 @@ limitations under the License. -->
     var createRequest = "/control/kyouko/v1/task";
 
     var taskTypes = ["learn", "request"];
-    var taskDatasetTypes = ["image", "graph"];
+    var taskDatasetTypes = ["image", "table"];
 
     // inital creation of the segment-template-list when open the window
     listObjects_request();

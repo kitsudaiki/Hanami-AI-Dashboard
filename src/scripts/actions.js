@@ -158,7 +158,7 @@ function createObject()
 /**
  * Send request to backend to create a new segmentTemplate
  */
-function createObject_request(payload)
+function createObject_request(payload, createRequestOverride = "", modalOverride = "")
 {
     const token = getAndCheckToken();
     if(token == "") {
@@ -167,7 +167,11 @@ function createObject_request(payload)
 
     // create requeset
     var createRequestConnection = new XMLHttpRequest();
-    createRequestConnection.open("POST", createRequest, true);
+    if(createRequestOverride.length === 0) {
+        createRequestConnection.open("POST", createRequest, true);
+    } else {
+        createRequestConnection.open("POST", createRequestOverride, true);
+    }
     createRequestConnection.setRequestHeader("X-Auth-Token", token);
 
     // callback for success
@@ -180,10 +184,19 @@ function createObject_request(payload)
         }
 
         // handle reqponse
-        var modal = document.getElementById("create_modal");
         clearModalFields();
         listObjects_request();
-        modal.style.display = "none";
+
+        if(modalOverride.length === 0) 
+        {
+            var modal = document.getElementById("create_modal");
+            modal.style.display = "none";
+        } 
+        else 
+        {
+            var modal = document.getElementById(modalOverride);
+            modal.style.display = "none";
+        }
     };
 
     // callback for fail

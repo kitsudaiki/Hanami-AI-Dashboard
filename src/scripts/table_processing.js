@@ -54,10 +54,10 @@ function Body(bodyContent, selector, colIds, additionalButton)
 
         // create and add delete-button to the row
         var buttons = "";
-        if(additionalButton.length !== 0) 
+        for(var i = 0; i < additionalButton.length; i++)
         {
             buttons += '<button class="table_side_button" value="' + rowContent[0] + '" ';
-            buttons += additionalButton;
+            buttons += additionalButton[i];
         }
         buttons += '<button class="table_side_button" value="' + rowContent[0] + '" ';
         buttons += 'onclick="deleteObject(this.value)">Delete</button>';

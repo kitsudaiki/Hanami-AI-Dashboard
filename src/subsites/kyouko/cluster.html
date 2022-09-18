@@ -101,6 +101,40 @@ limitations under the License. -->
 </div>
 
 <!--=============================================================================-->
+<!--                          snapshot create modal                              -->
+<!--=============================================================================-->
+
+<div id="create_snapshot_modal" class="modal">
+    <div id="create_snapshot_modal_content" class="modal_content">
+        <div class="modal_header_part">
+            <svg width="100%" height="68" class="modal_header_position">
+                <polygon class="hexagon_field header_label_position_long" points="385,0 400,21 385,42 15,42 0,21 15,0"></polygon>
+                <text x="55" y="27" class="header_label_position_long" font-size="20px">Create new Segment Template</text>
+            </svg>
+        </div>
+        <div class="modal_content_part">
+            <div class="modal_input_fields">
+                <div>
+                    <label class="modal_label" for="name">Name:</label>
+                    <input type="text" id="snapshot_name_field" name="name">
+                </div>
+            </div>
+            <label id="create_snapshot_modal_error_message" class="modal_error_field"></label>
+        </div>
+        <div class="modal_footer_part">
+            <center>
+                <button id="modal_create_snapshot_accept_button" class="generic_svg_button modal_accept_button">
+                    <img class="generic_svg_on_button" src="/icons/check-lg.svg">
+                </button>
+                <button id="modal_create_snapshot_cancel_button" class="generic_svg_button">
+                    <img class="generic_svg_on_button" src="/icons/x-lg.svg">
+                </button>
+            </center>
+        </div>
+    </div>
+</div>
+
+<!--=============================================================================-->
 <!--                                 style                                       -->
 <!--=============================================================================-->
 
@@ -139,7 +173,8 @@ limitations under the License. -->
     var deleteRequest = "/control/kyouko/v1/cluster?uuid=";
     var listRequest = "/control/kyouko/v1/cluster/all";
     var createRequest = "/control/kyouko/v1/cluster";
-    var additionalButton = 'onclick="switchToTasks(this.value)">Tasks</button>';
+    var additionalButton = [ 'onclick="switchToTasks(this.value)">Tasks</button>',
+                             'onclick="createClusterSnapshot(this.value)">Snapshot</button>'];
 
     function switchToTasks(clusterUuid)
     {
@@ -180,6 +215,59 @@ limitations under the License. -->
         createObject_request(reqContent);
     }
 
+    function createClusterSnaphost_build()
+    {
+        // clear error-label to remove the error of an old session
+        document.getElementById('create_snapshot_modal_error_message').innerHTML = "";
+
+        const name = document.getElementById('snapshot_name_field').value;
+
+        if(name == "") 
+        {
+            document.getElementById('create_snapshot_modal_error_message').innerHTML = "Name is missing";
+            return;
+        }
+       
+        // create request-content
+        var reqContent = "{\"name\":\"" + name;
+        reqContent += "\",\"cluster_uuid\":" + selectedCluster + "}";
+        const clusterSnapshotCreateReq = "/control/kyouko/v1/cluster/save";
+
+        createObject_request(reqContent, clusterSnapshotCreateReq, "create_snapshot_modal");
+    }
+
+    /**
+     */
+    function createClusterSnapshot(clusterUuid) 
+    {
+        selectedCluster = clusterUuid;
+        var modal = document.getElementById("create_snapshot_modal");
+        var acceptButton = document.getElementById("modal_create_snapshot_accept_button");
+        var cancelButton = document.getElementById("modal_create_snapshot_cancel_button");
+
+        // handle accept-button
+        acceptButton.onclick = function() {
+            createClusterSnaphost_build();
+        }
+
+        // handle cancel-button
+        cancelButton.onclick = function() {
+            modal.style.display = "none";
+        } 
+
+        // handle click outside of the window
+        window.onclick = function(event) 
+        {
+            if(event.target == modal) 
+            {
+                clearModalFields();
+                modal.style.display = "none";
+            }
+        } 
+
+        modal.style.display = "block";
+    }
+
     /**
      * Clear all fields of the segment-template-create-modal
      */
@@ -187,6 +275,7 @@ limitations under the License. -->
     {
         document.getElementById('name_field').value = "";
         document.getElementById('template_field').value = "";
+        document.getElementById('snapshot_name_field').value = "";
     }
 
     document.getElementById("create_cluster_button").addEventListener("click", createObject, false);

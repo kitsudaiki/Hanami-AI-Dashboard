@@ -174,9 +174,10 @@ limitations under the License. -->
         createRequest += "/" + getDropdownValue("dropdown_taskType_div");
 
         // create request-content
-        var reqContent = "{\"cluster_uuid\":\"" + selectedCluster
+        var reqContent = "{\"name\":\"" + name
+                         + "\",\"cluster_uuid\":\"" + selectedCluster
                          + "\",\"data_set_uuid\":\"" + getDropdownValue("dropdown_div") + "\"}";
-                         
+
         createObject_request(reqContent);
     }
 

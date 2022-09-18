@@ -16,6 +16,7 @@ limitations under the License. -->
 
 <aside>
     <div class="sidebar">
+
         <button class="sidebar_drop_down"> 
             <h3>Cluster</h3>
         </button>
@@ -24,12 +25,14 @@ limitations under the License. -->
             <a id="kyouko_segment_template_list" class="sidebar_dropdown_entry" href="#">Segment Templates</a>
         </div>
 
+
         <button class="sidebar_drop_down"> 
             <h3>Storage</h3>
         </button>
         <div class="sidebar_drop_content">
-            <a id="sagiri_dataset_list" class="sidebar_dropdown_entry" href="#">Dataset</a>
-            <a id="sagiri_cluster_snapshot_list" class="sidebar_dropdown_entry" href="#">Cluster Snapshot</a>
+            <a id="sagiri_dataset_list" class="sidebar_dropdown_entry" href="#">Datasets</a>
+            <a id="sagiri_cluster_snapshot_list" class="sidebar_dropdown_entry" href="#">Cluster Snapshots</a>
+            <a id="sagiri_request_result_list" class="sidebar_dropdown_entry" href="#">Request Results</a>
         </div>
 
 
@@ -40,6 +43,7 @@ limitations under the License. -->
             <a id="misaki_user_list" class="sidebar_dropdown_entry" href="#">User</a>
             <a id="misaki_project_list" class="sidebar_dropdown_entry" href="#">Project</a>
         </div>
+        
     </div>
 </aside>
 <br>
@@ -79,17 +83,21 @@ limitations under the License. -->
         $("#content_div").load("/subsites/kyouko/segment_template.html"); 
     });
 
+
     document.getElementById("sagiri_dataset_list").addEventListener("click", function() {
         $("#content_div").load("/subsites/sagiri/dataset.html"); 
     });
     document.getElementById("sagiri_cluster_snapshot_list").addEventListener("click", function() {
         $("#content_div").load("/subsites/sagiri/cluster_snapshot.html"); 
     });
+    document.getElementById("sagiri_request_result_list").addEventListener("click", function() {
+        $("#content_div").load("/subsites/sagiri/request_result.html"); 
+    });
+
 
     document.getElementById("misaki_user_list").addEventListener("click", function() {
         $("#content_div").load("/subsites/misaki/user.html"); 
     });
-
     document.getElementById("misaki_project_list").addEventListener("click", function() {
         $("#content_div").load("/subsites/misaki/project.html"); 
     });

@@ -224,10 +224,10 @@ Base site
     margin: 0.5rem 0.5rem 0.5rem 0.5rem;
 }
 
-.tile_div {
+.tile_content_div {
     background-color: var(--color-tile);
     padding-top: 2.5rem;
-    padding-bottom: 3rem;
+    padding-bottom: 2.5rem;
     padding-left: 0.5rem;
     padding-right: 0.5rem;
     margin-bottom: 1.0rem;
@@ -237,6 +237,10 @@ Base site
     margin-bottom: -20px;
     align-items: center;
     box-shadow: var(--box-shadow);
+}
+
+.tile_div {
+    margin-bottom: 3rem;
 }
 
 .hexagon_field {
@@ -351,4 +355,25 @@ ALERTS
 
 .alertCloseBtn:hover {
   color: black;
+}
+
+/*=================================================
+Diagramms
+=================================================*/
+
+.diagram_axis{
+    color: var(--color-text);
+}  
+
+.diagram_axis_text{
+    fill: var(--color-text);
+    font-family: var(--text-font-family);
+} 
+
+.diagram_title{
+    fill: var(--color-text);
+}   
+
+.diagram_path {
+    stroke: var(--color-highlight);
 }

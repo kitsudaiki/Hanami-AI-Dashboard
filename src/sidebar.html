@@ -35,6 +35,12 @@ limitations under the License. -->
             <a id="sagiri_request_result_list" class="sidebar_dropdown_entry" href="#">Request Results</a>
         </div>
 
+        <button class="sidebar_drop_down"> 
+            <h3>Measurements</h3>
+        </button>
+        <div class="sidebar_drop_content">
+            <a id="azuki_power_overview" class="sidebar_dropdown_entry" href="#">Power</a>
+        </div>
 
         <button id="sidebar_admin_btn" class="sidebar_drop_down"> 
             <h3>Admin</h3>
@@ -94,6 +100,11 @@ limitations under the License. -->
         $("#content_div").load("/subsites/sagiri/request_result.html"); 
     });
 
+
+    document.getElementById("azuki_power_overview").addEventListener("click", function() {
+        $("#content_div").load("/subsites/azuki/power.html"); 
+    });
+    
 
     document.getElementById("misaki_user_list").addEventListener("click", function() {
         $("#content_div").load("/subsites/misaki/user.html"); 

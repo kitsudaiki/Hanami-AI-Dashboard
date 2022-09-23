@@ -40,6 +40,7 @@ limitations under the License. -->
         </button>
         <div class="sidebar_drop_content">
             <a id="azuki_power_overview" class="sidebar_dropdown_entry" href="#">Power</a>
+            <a id="azuki_temperature_overview" class="sidebar_dropdown_entry" href="#">Temperature</a>
         </div>
 
         <button id="sidebar_admin_btn" class="sidebar_drop_down"> 
@@ -103,6 +104,9 @@ limitations under the License. -->
 
     document.getElementById("azuki_power_overview").addEventListener("click", function() {
         $("#content_div").load("/subsites/azuki/power.html"); 
+    });
+    document.getElementById("azuki_temperature_overview").addEventListener("click", function() {
+        $("#content_div").load("/subsites/azuki/temperature.html"); 
     });
     
 

@@ -85,8 +85,8 @@ limitations under the License. -->
     headerMapping.set("uuid", "UUID");
     headerMapping.set("name", "Name");
 
-    var deleteRequest = "/control/sagiri/v1/request_result?uuid=";
-    var listRequest = "/control/sagiri/v1/request_result/all";
+    var deleteRequest = "/control/shiori/v1/request_result?uuid=";
+    var listRequest = "/control/shiori/v1/request_result/all";
 
     var additionalButton = [ 'onclick="downloadResult(this.value)">Download</button>' ];
 
@@ -97,7 +97,7 @@ limitations under the License. -->
             return;
         }
         
-        const request = "/control/sagiri/v1/request_result?uuid=" + requestResultUuid;
+        const request = "/control/shiori/v1/request_result?uuid=" + requestResultUuid;
         var xmlHttp = new XMLHttpRequest();
         xmlHttp.open("GET", request, true);
         xmlHttp.setRequestHeader("X-Auth-Token", token);

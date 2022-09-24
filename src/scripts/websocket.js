@@ -25,7 +25,7 @@ function sendFile(file)
     websocket.onopen = function () 
     {
         console.log("WebSocket open")
-        const initialMsg = "{\"token\":\"" + token + "\",\"target\":\"sagiri\"}";
+        const initialMsg = "{\"token\":\"" + token + "\",\"target\":\"shiori\"}";
         websocket.send(initialMsg);
     };
     

@@ -16,7 +16,7 @@
 
 function sendFile(websocket, file, uuid, fileUuid)
 {
-    protobuf.load("/protobufs/sagiri_messages.proto3", function(err, root) 
+    protobuf.load("/protobufs/shiori_messages.proto3", function(err, root) 
     {
         if(err) {
             throw err;
@@ -85,7 +85,7 @@ function waitUntilUploadComplete(uuid, token)
         sleep(500);  
         var request = new XMLHttpRequest();
         // `false` makes the request synchronous
-        request.open('GET', '/control/sagiri/v1/data_set/progress?uuid=' + uuid, false); 
+        request.open('GET', '/control/shiori/v1/data_set/progress?uuid=' + uuid, false); 
         request.setRequestHeader("X-Auth-Token", token);
         request.send(null);
 
@@ -112,7 +112,7 @@ function sendCsvFiles(websocket, uuid, file, fileUuid)
     
     websocket.onopen = function () {
         console.log("WebSocket open")
-        const initialMsg = "{\"token\":\"" + token + "\",\"target\":\"sagiri\"}";
+        const initialMsg = "{\"token\":\"" + token + "\",\"target\":\"shiori\"}";
         websocket.send(initialMsg);
     };
     
@@ -144,7 +144,7 @@ function finishCsvUpload(uuid, inputUuid, token)
     // finish upload
     var request = new XMLHttpRequest();
     // `false` makes the request synchronous
-    request.open('PUT', '/control/sagiri/v1/csv/data_set', false);  
+    request.open('PUT', '/control/shiori/v1/csv/data_set', false);  
     request.setRequestHeader("X-Auth-Token", token);
     var jsonBody = "{\"uuid\":\"" + uuid 
                    + "\",\"uuid_input_file\":\"" + inputUuid + "\"}";
@@ -182,7 +182,7 @@ function uploadCsvDataset(token)
     reqContent += "\",input_data_size:" + inputFile.size + "}";
 
     // create requeset
-    const request = "/control/sagiri/v1/csv/data_set";
+    const request = "/control/shiori/v1/csv/data_set";
     var datasetCreateConnection = new XMLHttpRequest();
     datasetCreateConnection.open("POST", request, true);
     datasetCreateConnection.setRequestHeader("X-Auth-Token", token);
@@ -235,7 +235,7 @@ function sendMnistFiles(websocket, uuid, inputFile, labelFile, inputFileUuid, la
     
     websocket.onopen = function () {
         console.log("WebSocket open")
-        const initialMsg = "{\"token\":\"" + token + "\",\"target\":\"sagiri\"}";
+        const initialMsg = "{\"token\":\"" + token + "\",\"target\":\"shiori\"}";
         websocket.send(initialMsg);
     };
     
@@ -270,7 +270,7 @@ function finishMnistUpload(uuid, inputUuid, labelUuid, token)
     // finish upload
     var request = new XMLHttpRequest();
     // `false` makes the request synchronous
-    request.open('PUT', '/control/sagiri/v1/mnist/data_set', false);  
+    request.open('PUT', '/control/shiori/v1/mnist/data_set', false);  
     request.setRequestHeader("X-Auth-Token", token);
     var jsonBody = "{\"uuid\":\"" + uuid 
                    + "\",\"uuid_input_file\":\"" + inputUuid 
@@ -317,7 +317,7 @@ function uploadMnistDataset(token)
                      + ",\"label_data_size\":" + labelFile.size + "}";
 
     // create requeset
-    const request = "/control/sagiri/v1/mnist/data_set";
+    const request = "/control/shiori/v1/mnist/data_set";
     var datasetCreateConnection = new XMLHttpRequest();
     datasetCreateConnection.open("POST", request, true);
     datasetCreateConnection.setRequestHeader("X-Auth-Token", token);

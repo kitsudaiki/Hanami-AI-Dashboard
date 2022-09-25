@@ -116,6 +116,82 @@ limitations under the License. -->
 </div>
 
 <!--=============================================================================-->
+<!--                         add project to user modal                           -->
+<!--=============================================================================-->
+
+<div id="add_project_modal" class="modal">
+    <div id="add_project_modal_content" class="modal_content">
+        <div class="modal_header_part">
+            <svg width="100%" height="68" class="modal_header_position">
+                <polygon class="hexagon_field header_label_position_long" points="385,0 400,21 385,42 15,42 0,21 15,0"></polygon>
+                <text x="65" y="27" class="header_label_position_long" font-size="20px">Add project to user</text>
+            </svg>
+        </div>
+        <div class="modal_content_part">
+            <div class="modal_input_fields">
+                <label class="modal_label" for="projectDropdown">Project:</label>
+                <div id="dropdown_project_div" name="projectDropdown"></div>
+                <br>
+                <label class="modal_label" for="userRoleDropdown">Role:</label>
+                <div id="dropdown_userRole_div" name="userRoleDatasetDropdown"></div>
+                <br>
+                <label class="modal_label">Is Project-Admin:</label>
+                <label class="switch" for="isProjectAdmin_field">
+                    <input type="checkbox" id="isProjectAdmin_field" />
+                    <div class="slider round"></div>
+                </label>
+            </div>
+            <label id="add_project_modal_error_message" class="modal_error_field"></label>
+        </div>
+        <div class="modal_footer_part">
+            <center>
+                <button id="modal_add_project_accept_button" class="generic_svg_button modal_accept_button">
+                    <img class="generic_svg_on_button" src="/icons/check-lg.svg">
+                </button>
+                <button id="modal_add_project_cancel_button" class="generic_svg_button">
+                    <img class="generic_svg_on_button" src="/icons/x-lg.svg">
+                </button>
+            </center>
+        </div>
+    </div>
+</div>
+
+
+<!--=============================================================================-->
+<!--                      remove project from user modal                         -->
+<!--=============================================================================-->
+
+<div id="remove_project_modal" class="modal">
+    <div id="remove_project_modal_content" class="modal_content">
+        <div class="modal_header_part">
+            <svg width="100%" height="68" class="modal_header_position">
+                <polygon class="hexagon_field header_label_position_long" points="385,0 400,21 385,42 15,42 0,21 15,0"></polygon>
+                <text x="65" y="27" class="header_label_position_long" font-size="20px">Remove project from user</text>
+            </svg>
+        </div>
+        <div class="modal_content_part">
+            <div class="modal_input_fields">
+                <div>
+                    <label class="modal_label" for="userProjectDropdown">Projects of user:</label>
+                    <div id="dropdown_user_project_div" name="userProjectDropdown"></div>
+                </div>
+            </div>
+            <label id="remove_project_modal_error_message" class="modal_error_field"></label>
+        </div>
+        <div class="modal_footer_part">
+            <center>
+                <button id="modal_remove_project_accept_button" class="generic_svg_button modal_accept_button">
+                    <img class="generic_svg_on_button" src="/icons/check-lg.svg">
+                </button>
+                <button id="modal_remove_project_cancel_button" class="generic_svg_button">
+                    <img class="generic_svg_on_button" src="/icons/x-lg.svg">
+                </button>
+            </center>
+        </div>
+    </div>
+</div>
+
+<!--=============================================================================-->
 <!--                                 style                                       -->
 <!--=============================================================================-->
 
@@ -138,6 +214,18 @@ limitations under the License. -->
         height: 17rem;
     }
 
+    #add_project_modal_content {
+        color: var(--color-text);
+        width: 40rem;
+        height: 30rem;
+    }
+
+    #remove_project_modal_content {
+        color: var(--color-text);
+        width: 40rem;
+        height: 20rem;
+    }
+
 </style>
 
 <!--=============================================================================-->
@@ -154,13 +242,17 @@ limitations under the License. -->
     headerMapping.set("name", "Name");
     headerMapping.set("projects", "Projects");
     headerMapping.set("is_admin", "Is Admin"); 
+    var availableRoles = ["admin", "member"];
 
     var deleteRequest = "/control/misaki/v1/user?id=";
     var listRequest = "/control/misaki/v1/user/all";
     var createRequest = "/control/misaki/v1/user";
+    var additionalButton = [ 'onclick="addProjectToUser(this.value)">Add Project</button>',
+                             'onclick="removeProjectToUser(this.value)">Remove Project</button>'];
 
     // inital creation of the user-list when open the window
-    listObjects_request();
+    listObjects_request(additionalButton);
+    fillStaticDropdownList("dropdown_userRole_div", availableRoles);
 
     clearAlertBox("delete");
     clearAlertBox("create");
@@ -219,6 +311,144 @@ limitations under the License. -->
         document.getElementById('isAdmin_field').checked = "";
         document.getElementById('pass1').value = "";
         document.getElementById('pass2').value = "";
+    }
+
+    function addProjectToUser_request(userId)
+    {
+        const token = getAndCheckToken();
+        if(token == "") {
+            return;
+        }
+
+        // create requeset
+        var reqContent = "{id:\"" + userId;
+        reqContent += "\",project_id:\"" + getDropdownValue("dropdown_project_div");
+        reqContent += "\",role:\"" + getDropdownValue("dropdown_userRole_div");
+        reqContent += "\",is_project_admin:" + document.getElementById('isProjectAdmin_field').checked + "}";
+        console.log(reqContent);
+        var switchProjectConnection = new XMLHttpRequest();
+        switchProjectConnection.open("POST", "/control/misaki/v1/user/project", true);
+        switchProjectConnection.setRequestHeader("X-Auth-Token", token);
+
+        // callback for success
+        switchProjectConnection.onload = function(e) 
+        {
+            if(switchProjectConnection.status != 200) 
+            {
+                //showErrorInModal("switch_project", switchProjectConnection.responseText);
+                return false;
+            }
+
+            var modal = document.getElementById("add_project_modal");
+            modal.style.display = "none";
+        };
+
+        // callback for fail
+        switchProjectConnection.onerror = function(e) 
+        {
+            console.log("Failed to create segmentTemplate.");
+        };
+
+        switchProjectConnection.send(reqContent);
+    }
+
+    /**
+     */
+    function addProjectToUser(userId) 
+    {
+        fillDropdownList("dropdown_project_div", "/control/misaki/v1/project/all");
+
+        var modal = document.getElementById("add_project_modal");
+        var acceptButton = document.getElementById("modal_add_project_accept_button");
+        var cancelButton = document.getElementById("modal_add_project_cancel_button");
+
+        // handle accept-button
+        acceptButton.onclick = function() {
+            addProjectToUser_request(userId);
+        }
+
+        // handle cancel-button
+        cancelButton.onclick = function() {
+            modal.style.display = "none";
+        } 
+
+        // handle click outside of the window
+        window.onclick = function(event) 
+        {
+            if(event.target == modal) {
+                modal.style.display = "none";
+            }
+        } 
+
+        modal.style.display = "block";
+    }
+
+    function removeProjectToUser_request(userId)
+    {
+        const token = getAndCheckToken();
+        if(token == "") {
+            return;
+        }
+
+        // create requeset
+        var request = "/control/misaki/v1/user/project"
+        request += "?project_id=" + getDropdownValue("dropdown_user_project_div");
+        request += "&id=" + userId;
+        var switchProjectConnection = new XMLHttpRequest();
+        switchProjectConnection.open("DELETE", request, true);
+        switchProjectConnection.setRequestHeader("X-Auth-Token", token);
+
+        // callback for success
+        switchProjectConnection.onload = function(e) 
+        {
+            if(switchProjectConnection.status != 200) 
+            {
+                //showErrorInModal("switch_project", switchProjectConnection.responseText);
+                return false;
+            }
+
+            var modal = document.getElementById("remove_project_modal");
+            modal.style.display = "none";
+        };
+
+        // callback for fail
+        switchProjectConnection.onerror = function(e) 
+        {
+            console.log("Failed to create segmentTemplate.");
+        };
+
+        switchProjectConnection.send(null);
+    }
+
+    /**
+     */
+    function removeProjectToUser(userId) 
+    {
+        fillUserProjectDropdownList("dropdown_user_project_div"); 
+
+        var modal = document.getElementById("remove_project_modal");
+        var acceptButton = document.getElementById("modal_remove_project_accept_button");
+        var cancelButton = document.getElementById("modal_remove_project_cancel_button");
+
+        // handle accept-button
+        acceptButton.onclick = function() {
+            removeProjectToUser_request(userId);
+        }
+
+        // handle cancel-button
+        cancelButton.onclick = function() {
+            modal.style.display = "none";
+        } 
+
+        // handle click outside of the window
+        window.onclick = function(event) 
+        {
+            if(event.target == modal) {
+                modal.style.display = "none";
+            }
+        } 
+
+        modal.style.display = "block";
     }
 
     document.getElementById("create_user_button").addEventListener("click", createObject, false);

@@ -113,6 +113,7 @@ function listObjects_request(additionalButton = "")
             return false;
         }
 
+        console.log(listRequestConnection.responseText);
         const jsonContent = JSON.parse(listRequestConnection.responseText);
         constructTable(jsonContent, headerMapping, '#table', additionalButton);
     };
@@ -208,7 +209,7 @@ function createObject_request(payload, createRequestOverride = "", modalOverride
     createRequestConnection.send(payload);
 }
 
-function fillDropdownList(target, dropdownListRequest)
+function fillDropdownList(dropdownDiv, dropdownListRequest)
 {     
     const token = getAndCheckToken();
     if(token == "") {
@@ -227,10 +228,14 @@ function fillDropdownList(target, dropdownListRequest)
             return false;
         }
 
+        // remove the old dropdown-list to create a new one
+        const dropdownNode = document.getElementById(dropdownDiv);
+        dropdownNode.innerHTML = '';
+
         // prepare container for the dropdown-menu
         var select = document.createElement("select");
-        select.name = target + "_select";
-        select.id = target + "_select";
+        select.name = dropdownDiv + "_select";
+        select.id = dropdownDiv + "_select";
 
         var idPos = 0;
         var namePos = 0;
@@ -261,7 +266,7 @@ function fillDropdownList(target, dropdownListRequest)
             select.appendChild(option);
         }
 
-        document.getElementById(target).appendChild(select);
+        document.getElementById(dropdownDiv).appendChild(select);
     };
     listRequestConnection.onerror = function(e) 
     {
@@ -271,11 +276,15 @@ function fillDropdownList(target, dropdownListRequest)
     listRequestConnection.send(null);
 }
 
-function fillStaticDropdownList(target, values)
+function fillStaticDropdownList(dropdownDiv, values)
 {     
+    // remove the old dropdown-list to create a new one
+    const dropdownNode = document.getElementById(dropdownDiv);
+    dropdownNode.innerHTML = '';
+
     var select = document.createElement("select");
-    select.name = target + "_select";
-    select.id = target + "_select";
+    select.name = dropdownDiv + "_select";
+    select.id = dropdownDiv + "_select";
  
     for(const val of values)
     {
@@ -285,11 +294,76 @@ function fillStaticDropdownList(target, values)
         select.appendChild(option);
     }
  
-    document.getElementById(target).appendChild(select);
+    document.getElementById(dropdownDiv).appendChild(select);
 }
 
-function getDropdownValue(target)
+function getDropdownValue(dropdownDiv)
 {
-    var e = document.getElementById(target + "_select");
+    var e = document.getElementById(dropdownDiv + "_select");
     return e.options[e.selectedIndex].value;
+}
+
+
+function fillUserProjectDropdownList(dropdownDiv)
+{
+    const authToken = getCookieValue("Auth_JWT_Token");
+    if(authToken == "") {
+        return;
+    }
+
+    var listRequestConnection = new XMLHttpRequest();
+    listRequestConnection.open("GET", "/control/misaki/v1/project/user", true);
+    listRequestConnection.setRequestHeader("X-Auth-Token", authToken);
+
+    listRequestConnection.onload = function(e) 
+    {
+        if(listRequestConnection.status != 200) 
+        {
+            showErrorInModal("create", listRequestConnection.responseText);
+            return false;
+        }
+
+        // remove the old dropdown-list to create a new one
+        const dropdownNode = document.getElementById(dropdownDiv);
+        dropdownNode.innerHTML = '';
+
+        console.log(listRequestConnection.responseText);
+
+        // prepare container for the dropdown-menu
+        var select = document.createElement("select");
+        select.name = dropdownDiv + "_select";
+        select.id = dropdownDiv + "_select";
+
+        const content = JSON.parse(listRequestConnection.responseText);
+
+        // fill menu with name and id of all entries
+        const projectList = content.projects;
+        for(var row = 0; row < projectList.length; row++) 
+        {
+            const id = projectList[row].project_id;
+            const role = projectList[row].role
+            const isProjectAdmin = projectList[row].is_project_admin
+
+            var option = document.createElement("option");
+            option.value = id;
+            option.text = id;
+
+            if(isProjectAdmin) {
+                option.text += "  ( " + role + " (Admin) )"
+            } else {
+                option.text += "  ( " + role + " )"
+            }
+
+            select.appendChild(option);
+        }
+
+        document.getElementById(dropdownDiv).appendChild(select);
+
+    };
+    listRequestConnection.onerror = function(e) 
+    {
+        console.log("Failed to load list of segment-templates.");
+    };
+
+    listRequestConnection.send(null);
 }

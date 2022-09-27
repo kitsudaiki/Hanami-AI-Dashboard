@@ -55,10 +55,48 @@ limitations under the License. -->
 </aside>
 <br>
 <center>
-  <button id="download_rest_api_docu_button" class="create_button">
-    Download Rest-API-documentation
-  </button>
+    <button id="switch_project_button" class="create_button">Switch Project</button>
+    <button id="logout_button" class="create_button">Logout</button>
+    <button id="download_rest_api_docu_button" class="create_button">Download Rest-API-documentation</button>
 </center>
+
+
+<!--=============================================================================-->
+<!--                              select project                                 -->
+<!--=============================================================================-->
+
+<div id="switch_project_modal" class="modal">
+    <div id="switch_project_modal_content" class="modal_content">
+        <div class="modal_header_part">
+            <svg width="100%" height="68" class="modal_header_position">
+                <polygon class="hexagon_field header_label_position_mid" points="285,0 300,21 285,42 15,42 0,21 15,0"></polygon>
+                <text x="80" y="27" class="header_label_position_mid" font-size="20px">Switch Project-Scope</text>
+            </svg>
+        </div>
+        <div id="modal_content_part" class="modal_content_part">
+            <div class="modal_input_fields">
+                <div>
+                    <label class="modal_label" for="selectProjectDropdown">Select Project:</label>
+                    <div id="select_project_dropdown_div" name="selectProjectDropdown"></div>
+                </div>
+            </div>
+            <div id="switch_project_alert_box" class="alert">
+                <span class="closebtn" onclick="closeErrorInModal('switch_project');">&times;</span> 
+                <label id="switch_project_alert_text_label"></label>
+            </div>
+        </div>
+        <div class="modal_footer_part">
+            <center>
+                <button id="modal_switch_project_accept_button" class="generic_svg_button modal_accept_button">
+                    <img class="generic_svg_on_button" src="/icons/check-lg.svg">
+                </button>
+                <button id="modal_switch_project_cancel_button" class="generic_svg_button">
+                    <img class="generic_svg_on_button" src="/icons/x-lg.svg">
+                </button>
+            </center>
+        </div>
+    </div>
+</div>
 
 <!--=============================================================================-->
 <!--                                 style                                       -->
@@ -71,6 +109,26 @@ limitations under the License. -->
         height: 3.5rem;
         margin-bottom: 0.5rem;
     }
+
+    #logout_button { 
+        color: invert(var(--color-text));
+        width: 10rem;
+        height: 3.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    #switch_project_button { 
+        color: invert(var(--color-text));
+        width: 10rem;
+        height: 3.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    #switch_project_modal_content { 
+        color: var(--color-text);
+        width: 40rem;
+        height: 20rem;
+    }
 </style>
 
 <!--=============================================================================-->
@@ -78,7 +136,10 @@ limitations under the License. -->
 <!--=============================================================================-->
 
 <script src="/scripts/common.js"></script>
+<script src="/scripts/login.js"></script>
 <script>
+
+    clearAlertBox("switch_project");
 
     initAllDropdowns();
     activateDefaultSideEntry();
@@ -120,5 +181,7 @@ limitations under the License. -->
     updateSidebar();
 
     document.getElementById("download_rest_api_docu_button").addEventListener("click", downloadDocumentation_Request, false);
+    document.getElementById("logout_button").addEventListener("click", logout, false);
+    document.getElementById("switch_project_button").addEventListener("click", switchProject, false);
 
 </script>

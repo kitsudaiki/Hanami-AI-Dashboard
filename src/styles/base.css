@@ -167,7 +167,7 @@ Base site
 
 #sidebar_div {
     background-color: var(--color-tile);
-  	height: 50rem; 
+  	height: 40rem; 
   	width: 15rem; 
   	left: 0.8rem; 
   	top: 5.5rem; 
@@ -218,9 +218,11 @@ Base site
 
 .table_side_button {
     color: rgb(0, 0, 0);
-    width: 4.0rem;
+    width: auto;
     height: 1.5rem;
     box-shadow: var(--box-shadow);
+    padding-left: 0.3rem;
+    padding-right: 0.3rem;
     margin: 0.5rem 0.5rem 0.5rem 0.5rem;
 }
 

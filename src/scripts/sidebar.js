@@ -159,3 +159,74 @@ function updateSidebar()
         document.getElementById("sidebar_admin_btn").style.display = "none";
     }
 }
+
+/**
+ * Send request to backend to create a new segmentTemplate
+ */
+function switchProject_request(projectId)
+{
+    const token = getAndCheckToken();
+    if(token == "") {
+        return;
+    }
+
+    // create requeset
+    var payload = "{\"project_id\":\"" + projectId + "\"}";
+    var switchProjectConnection = new XMLHttpRequest();
+    switchProjectConnection.open("PUT", "/control/misaki/v1/token", true);
+    switchProjectConnection.setRequestHeader("X-Auth-Token", token);
+
+    // callback for success
+    switchProjectConnection.onload = function(e) 
+    {
+        if(switchProjectConnection.status != 200) 
+        {
+            showErrorInModal("switch_project", switchProjectConnection.responseText);
+            return false;
+        }
+
+        $("#content_div").load("/subsites/kyouko/cluster.html"); 
+
+        var modal = document.getElementById("switch_project_modal");
+        modal.style.display = "none";
+    };
+
+    // callback for fail
+    switchProjectConnection.onerror = function(e) 
+    {
+        console.log("Failed to create segmentTemplate.");
+    };
+
+    switchProjectConnection.send(payload);
+}
+
+/**
+ */
+function switchProject() 
+{
+    fillUserProjectDropdownList("select_project_dropdown_div"); 
+
+    var modal = document.getElementById("switch_project_modal");
+    var acceptButton = document.getElementById("modal_switch_project_accept_button");
+    var cancelButton = document.getElementById("modal_switch_project_cancel_button");
+
+    // handle accept-button
+    acceptButton.onclick = function() {
+        switchProject_request(getDropdownValue("select_project_dropdown_div"));
+    }
+
+    // handle cancel-button
+    cancelButton.onclick = function() {
+        modal.style.display = "none";
+    } 
+
+    // handle click outside of the window
+    window.onclick = function(event) 
+    {
+        if(event.target == modal) {
+            modal.style.display = "none";
+        }
+    } 
+
+    modal.style.display = "block";
+}

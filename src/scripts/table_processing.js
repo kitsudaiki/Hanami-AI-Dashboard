@@ -14,6 +14,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+function isJson(str) {
+    try {
+        JSON.parse(str);
+    } catch (e) {
+        return false;
+    }
+    return true;
+}
+
 function constructTable(content, headerMapping, selector, additionalButton) 
 {
     // clear old table-content
@@ -48,8 +57,12 @@ function Body(bodyContent, selector, colIds, additionalButton)
 
         // add textual values to the row
         const rowContent = bodyContent[row];   
-        for(var i = 0; i < colIds.length; i++) {
-            body.append($('<td/>').html(rowContent[colIds[i]]));
+        for(var i = 0; i < colIds.length; i++) 
+        {
+            var cell = JSON.stringify(rowContent[colIds[i]]);
+            cell.replaceAll(",", ",\n");
+            console.log("cell: " + cell);
+            body.append($('<td/>').html(cell));
         }
 
         // create and add delete-button to the row

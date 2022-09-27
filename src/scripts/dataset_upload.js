@@ -89,8 +89,6 @@ function waitUntilUploadComplete(uuid, token)
         request.setRequestHeader("X-Auth-Token", token);
         request.send(null);
 
-        console.log(request.responseText);
-
         if(request.status !== 200) {
             return false;
         }
@@ -104,7 +102,6 @@ function waitUntilUploadComplete(uuid, token)
 
 function sendCsvFiles(websocket, uuid, file, fileUuid)
 {
-    console.log("################ FILE_UUID: " + fileUuid);
     const token = getAndCheckToken();
     if(token == "") {
         return false;

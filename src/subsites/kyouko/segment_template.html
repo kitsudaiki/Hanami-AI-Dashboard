@@ -139,6 +139,7 @@ limitations under the License. -->
     var deleteRequest = "/control/kyouko/v1/template?uuid=";
     var listRequest = "/control/kyouko/v1/template/all";
     var createRequest = "/control/kyouko/v1/template/upload";
+    var additionalButtons = [];
 
     // inital creation of the segment-template-list when open the window
     listObjects_request();
@@ -170,7 +171,7 @@ limitations under the License. -->
         var reqContent = "{\"name\":\"" + name;
         reqContent += "\",\"template\":" + templateStr + "}";
 
-        createObject_request(reqContent);
+        createObject_request(reqContent, createRequest, "create_modal");
     }
 
     /**

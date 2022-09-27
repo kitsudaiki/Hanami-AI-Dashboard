@@ -159,6 +159,7 @@ limitations under the License. -->
     var defaultTabName = "csv_upload_div";
     var defaultTabIndex = 0;
     var selectedModalTab = "csv";
+    var additionalButtons = [];
 
     // inital creation of the dataset-list when open the window
     listObjects_request();
@@ -188,7 +189,6 @@ limitations under the License. -->
             return;
         }
 
-        console.log("selectedModalTab: " + selectedModalTab);
         if(selectedModalTab === "csv") {
             uploadCsvDataset(token);
         }

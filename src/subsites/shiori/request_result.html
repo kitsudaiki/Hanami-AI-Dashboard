@@ -87,8 +87,7 @@ limitations under the License. -->
 
     var deleteRequest = "/control/shiori/v1/request_result?uuid=";
     var listRequest = "/control/shiori/v1/request_result/all";
-
-    var additionalButton = [ 'onclick="downloadResult(this.value)">Download</button>' ];
+    var additionalButtons = [ 'onclick="downloadResult(this.value)">Download</button>' ];
 
     function downloadResult(requestResultUuid)
     {
@@ -136,6 +135,6 @@ limitations under the License. -->
     }
 
     // inital creation of the segment-template-list when open the window
-    listObjects_request(additionalButton);
+    listObjects_request();
 
 </script>

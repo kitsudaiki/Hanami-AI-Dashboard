@@ -15,11 +15,9 @@
 // limitations under the License.
 
 /**
- * Open segment-template-delete-modal to ask if segment-template should really be deleted.
- * This function is named 'deleteObject' instead of 'segment-template' because it is triggered
- * by the genric delete-button of the table, which is generated in a generic way.
+ * Generic function to open and handle the 
  *
- * @param {identifier} UUID for the segment-template to delete
+ * @param {identifier} ID or UUID of the entry, which should be deleted
  */
 function deleteObject(identifier)
 {
@@ -31,7 +29,7 @@ function deleteObject(identifier)
 
     // handle accept-button
     acceptButton.onclick = function() {
-        deleteObject_Request(identifier);
+        deleteObject_request(identifier);
     }
 
     // handle cancel-button
@@ -55,8 +53,9 @@ function deleteObject(identifier)
  *
  * @param {uuid} UUID of the segment-template to delete
  */
-function deleteObject_Request(uuid)
+function deleteObject_request(uuid)
 {
+    // get and check token
     const token = getAndCheckToken();
     if(token == "") {
         return;
@@ -94,17 +93,20 @@ function deleteObject_Request(uuid)
 /**
  * Send request to backend to get a list of all segment-template
  */
-function listObjects_request(additionalButton = "")
+function listObjects_request()
 {
+    // get and check token
     const token = getAndCheckToken();
     if(token == "") {
         return;
     }
 
+    // create requeset
     var listRequestConnection = new XMLHttpRequest();
     listRequestConnection.open("GET", listRequest, true);
     listRequestConnection.setRequestHeader("X-Auth-Token", token);
 
+    // callback for success
     listRequestConnection.onload = function(e) 
     {
         if(listRequestConnection.status != 200) 
@@ -113,10 +115,11 @@ function listObjects_request(additionalButton = "")
             return false;
         }
 
-        console.log(listRequestConnection.responseText);
         const jsonContent = JSON.parse(listRequestConnection.responseText);
-        constructTable(jsonContent, headerMapping, '#table', additionalButton);
+        constructTable(jsonContent, headerMapping, '#table', additionalButtons);
     };
+
+    // callback for fail
     listRequestConnection.onerror = function(e) 
     {
         console.log("Failed to load list of segment-templates.");
@@ -126,6 +129,7 @@ function listObjects_request(additionalButton = "")
 }
 
 /**
+ * handle modal to create object
  */
 function createObject() 
 {
@@ -159,7 +163,7 @@ function createObject()
 /**
  * Send request to backend to create a new segmentTemplate
  */
-function createObject_request(payload, createRequestOverride = "", modalOverride = "")
+function createObject_request(payload, requestPath, modalDiv)
 {
     const token = getAndCheckToken();
     if(token == "") {
@@ -168,11 +172,7 @@ function createObject_request(payload, createRequestOverride = "", modalOverride
 
     // create requeset
     var createRequestConnection = new XMLHttpRequest();
-    if(createRequestOverride.length === 0) {
-        createRequestConnection.open("POST", createRequest, true);
-    } else {
-        createRequestConnection.open("POST", createRequestOverride, true);
-    }
+    createRequestConnection.open("POST", requestPath, true);
     createRequestConnection.setRequestHeader("X-Auth-Token", token);
 
     // callback for success
@@ -188,16 +188,8 @@ function createObject_request(payload, createRequestOverride = "", modalOverride
         clearModalFields();
         listObjects_request();
 
-        if(modalOverride.length === 0) 
-        {
-            var modal = document.getElementById("create_modal");
-            modal.style.display = "none";
-        } 
-        else 
-        {
-            var modal = document.getElementById(modalOverride);
-            modal.style.display = "none";
-        }
+        var modal = document.getElementById(modalDiv);
+        modal.style.display = "none";
     };
 
     // callback for fail
@@ -211,15 +203,18 @@ function createObject_request(payload, createRequestOverride = "", modalOverride
 
 function fillDropdownList(dropdownDiv, dropdownListRequest)
 {     
+    // get and check token
     const token = getAndCheckToken();
     if(token == "") {
         return;
     }
 
+    // create requeset
     var listRequestConnection = new XMLHttpRequest();
     listRequestConnection.open("GET", dropdownListRequest, true);
     listRequestConnection.setRequestHeader("X-Auth-Token", token);
 
+    // callback for success
     listRequestConnection.onload = function(e) 
     {
         if(listRequestConnection.status != 200) 
@@ -268,6 +263,8 @@ function fillDropdownList(dropdownDiv, dropdownListRequest)
 
         document.getElementById(dropdownDiv).appendChild(select);
     };
+
+    // callback for fail
     listRequestConnection.onerror = function(e) 
     {
         console.log("Failed to load list of segment-templates.");
@@ -282,10 +279,12 @@ function fillStaticDropdownList(dropdownDiv, values)
     const dropdownNode = document.getElementById(dropdownDiv);
     dropdownNode.innerHTML = '';
 
+    // prepare container for the dropdown-menu
     var select = document.createElement("select");
     select.name = dropdownDiv + "_select";
     select.id = dropdownDiv + "_select";
  
+    // fill static values into dropdown-menu
     for(const val of values)
     {
         var option = document.createElement("option");
@@ -297,24 +296,25 @@ function fillStaticDropdownList(dropdownDiv, values)
     document.getElementById(dropdownDiv).appendChild(select);
 }
 
-function getDropdownValue(dropdownDiv)
-{
-    var e = document.getElementById(dropdownDiv + "_select");
-    return e.options[e.selectedIndex].value;
-}
-
-
+/**
+ * Fill dropdown-menu with all projects, which are assigned to the actual user
+ *
+ * @param {dropdownDiv} ID of the dev, which should be filled with projects of the user
+ */
 function fillUserProjectDropdownList(dropdownDiv)
 {
+    // get and check token
     const authToken = getCookieValue("Auth_JWT_Token");
     if(authToken == "") {
         return;
     }
 
+    // create requeset
     var listRequestConnection = new XMLHttpRequest();
     listRequestConnection.open("GET", "/control/misaki/v1/project/user", true);
     listRequestConnection.setRequestHeader("X-Auth-Token", authToken);
 
+    // callback for success
     listRequestConnection.onload = function(e) 
     {
         if(listRequestConnection.status != 200) 
@@ -326,8 +326,6 @@ function fillUserProjectDropdownList(dropdownDiv)
         // remove the old dropdown-list to create a new one
         const dropdownNode = document.getElementById(dropdownDiv);
         dropdownNode.innerHTML = '';
-
-        console.log(listRequestConnection.responseText);
 
         // prepare container for the dropdown-menu
         var select = document.createElement("select");
@@ -346,12 +344,10 @@ function fillUserProjectDropdownList(dropdownDiv)
 
             var option = document.createElement("option");
             option.value = id;
-            option.text = id;
+            option.text = id + " | " + role ;
 
             if(isProjectAdmin) {
-                option.text += "  ( " + role + " (Admin) )"
-            } else {
-                option.text += "  ( " + role + " )"
+                option.text += "  (Project-Admin)"
             }
 
             select.appendChild(option);
@@ -360,10 +356,23 @@ function fillUserProjectDropdownList(dropdownDiv)
         document.getElementById(dropdownDiv).appendChild(select);
 
     };
+
+    // callback for fail
     listRequestConnection.onerror = function(e) 
     {
-        console.log("Failed to load list of segment-templates.");
+        console.log("Failed to load projects of user.");
     };
 
     listRequestConnection.send(null);
+}
+
+/**
+ * Get selected value of a specific dropdown-menu
+ *
+ * @param {dropdownDiv} ID of the dev, which contains the requested dropdown-menu
+ */
+function getDropdownValue(dropdownDiv)
+{
+    var e = document.getElementById(dropdownDiv + "_select");
+    return e.options[e.selectedIndex].value;
 }

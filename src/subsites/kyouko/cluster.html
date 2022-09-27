@@ -219,9 +219,9 @@ limitations under the License. -->
     var deleteRequest = "/control/kyouko/v1/cluster?uuid=";
     var listRequest = "/control/kyouko/v1/cluster/all";
     var createRequest = "/control/kyouko/v1/cluster";
-    var additionalButton = [ 'onclick="switchToTasks(this.value)">Tasks</button>',
-                             'onclick="createClusterSnapshot(this.value)">Snapshot</button>',
-                             'onclick="restoreClusterSnapshot(this.value)">Restore</button>'];
+    var additionalButtons = [ 'onclick="switchToTasks(this.value)">Tasks</button>',
+                              'onclick="createClusterSnapshot(this.value)">Snapshot</button>',
+                              'onclick="restoreClusterSnapshot(this.value)">Restore</button>'];
 
     function switchToTasks(clusterUuid)
     {
@@ -230,7 +230,7 @@ limitations under the License. -->
     }
     
     // inital creation of the segment-template-list when open the window
-    listObjects_request(additionalButton);
+    listObjects_request();
     fillDropdownList("dropdown_snapshot_div", "/control/shiori/v1/cluster_snapshot/all");
 
     /**
@@ -260,7 +260,7 @@ limitations under the License. -->
         var reqContent = "{\"name\":\"" + name;
         reqContent += "\",\"cluster_definition\":" + templateStr + "}";
 
-        createObject_request(reqContent);
+        createObject_request(reqContent, createRequest, "create_modal");
     }
 
     function createClusterSnaphost_build()

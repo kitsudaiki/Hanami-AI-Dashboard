@@ -247,11 +247,11 @@ limitations under the License. -->
     var deleteRequest = "/control/misaki/v1/user?id=";
     var listRequest = "/control/misaki/v1/user/all";
     var createRequest = "/control/misaki/v1/user";
-    var additionalButton = [ 'onclick="addProjectToUser(this.value)">Add Project</button>',
-                             'onclick="removeProjectToUser(this.value)">Remove Project</button>'];
+    var additionalButtons = [ 'onclick="addProjectToUser(this.value)">Add Project</button>',
+                              'onclick="removeProjectToUser(this.value)">Remove Project</button>'];
 
     // inital creation of the user-list when open the window
-    listObjects_request(additionalButton);
+    listObjects_request();
     fillStaticDropdownList("dropdown_userRole_div", availableRoles);
 
     clearAlertBox("delete");
@@ -298,7 +298,7 @@ limitations under the License. -->
         reqContent += "\",password:\"" + password1;
         reqContent += "\",is_admin:" + isAdmin + "}";
 
-        createObject_request(reqContent);
+        createObject_request(reqContent, createRequest, "create_modal");
     }
 
     /**

@@ -14,87 +14,72 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
-//================================================
-// value conversion
-//================================================
-
-longToByteArray = function(long) {
-    // we want to represent the input as a 8-bytes array
-    var byteArray = [0, 0, 0, 0];
-
-    for ( var index = 0; index < byteArray.length; index ++ ) {
-        var byte = long & 0xff;
-        byteArray [ index ] = byte;
-        long = (long - byte) / 256 ;
-    }
-
-    return byteArray;
-};
-
-byteArrayToLong = function(byteArray) {
-    var value = 0;
-    for ( var i = byteArray.length - 1; i >= 0; i--) {
-        value = (value * 256) + byteArray[i];
-    }
-
-    return value;
-};
-
-function bin2String(array) 
-{
-    var result = "";
-    for(var i = 0; i < array.length; i++) {
-        result += String.fromCharCode(array[i]);
-    }
-    return result;
-}
-
 //================================================
 // Alerting
 //================================================
 
-function clearAlertBox(type)
+/**
+ * Hide error-message block from the modal. Is necessary for initializing 
+ * to avoid an empty error-message block inside of the modal.
+ *
+ * @param {target} base-name of the modal, where the error-message belongs to
+ */
+function clearAlertBox(target)
 {
-    var modal = document.getElementById(type + "_alert_box");
+    var modal = document.getElementById(target + "_alert_box");
     modal.style.display = "none";
-    document.getElementById(type + "_alert_text_label").innerHTML = "";
+    document.getElementById(target + "_alert_text_label").innerHTML = "";
 }
 
-function closeErrorInModal(type)
+/**
+ * Remove error-message block from the modal
+ *
+ * @param {target} base-name of the modal, where the error-message belongs to
+ */
+function closeErrorInModal(target)
 {
-    const modalSize = document.getElementById(type + "_modal_content").clientHeight;
+    // calculate and update the size of the modal, to reduce the size of the modal to its original size
+    const modalSize = document.getElementById(target + "_modal_content").clientHeight;
+    const alertHeight = document.getElementById(target + "_alert_box").clientHeight;
+    document.getElementById(target + "_alert_text_label").innerHTML = "";
+    document.getElementById(target + "_modal_content").style.height = (modalSize - 20 - alertHeight) + "px";
 
-    const alertHeight = document.getElementById(type + "_alert_box").clientHeight;
-    document.getElementById(type + "_alert_text_label").innerHTML = "";
-    document.getElementById(type + "_modal_content").style.height = (modalSize - 20 - alertHeight) + "px";
-
-    var modal = document.getElementById(type + "_alert_box");
-    modal.style.display = "none";
+    clearAlertBox(target);
 }
 
-function showErrorInModal(type, message)
+/**
+ * Show error-message within a specific modal
+ *
+ * @param {target} base-name of the modal, where the error-message belongs to
+ * @param {message} message, which should be printed
+ */
+function showErrorInModal(target, message)
 {
-    var modal = document.getElementById(type + "_alert_box");
+    var modal = document.getElementById(target + "_alert_box");
 
     // in an old error-message is already shown, then close this first
     if(modal.style.display === "block") {
-        closeErrorInModal(type);
+        closeErrorInModal(target);
     }
 
     modal.style.display = "block";
 
-    const modalSize = document.getElementById(type + "_modal_content").clientHeight;
-    const alertHeight = document.getElementById(type + "_alert_box").clientHeight;
-    document.getElementById(type + "_alert_text_label").innerHTML = message;
-    document.getElementById(type + "_modal_content").style.height = (modalSize + 20 + alertHeight) + "px";
+    // calculate and update the size of the modal, to have enough space to insert the error-message
+    const modalSize = document.getElementById(target + "_modal_content").clientHeight;
+    const alertHeight = document.getElementById(target + "_alert_box").clientHeight;
+    document.getElementById(target + "_alert_text_label").innerHTML = message;
+    document.getElementById(target + "_modal_content").style.height = (modalSize + 20 + alertHeight) + "px";
 }
-
 
 //================================================
 // cookies
 //================================================
 
+/**
+ * Get value of a specific cookie
+ *
+ * @param {name} name of the cookie
+ */
 function getCookieValue(name) 
 {
     const cn = name + "=";

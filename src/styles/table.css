@@ -45,4 +45,7 @@ table tr th {
 table tr td {
     padding-left: 0.5rem;
     padding-right: 0.5rem;
+    
+    word-wrap: break-word;
+    overflow-wrap: break-word; 
 }

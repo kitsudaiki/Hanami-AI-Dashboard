@@ -142,6 +142,7 @@ limitations under the License. -->
     var deleteRequest = "/control/kyouko/v1/task?cluster_uuid=" + selectedCluster + "&uuid=";
     var listRequest = "/control/kyouko/v1/task/all?cluster_uuid=" + selectedCluster;
     var createRequest = "/control/kyouko/v1/task";
+    var additionalButtons = [];
 
     var taskTypes = ["learn", "request"];
     var taskDatasetTypes = ["image", "table"];
@@ -169,6 +170,7 @@ limitations under the License. -->
             return;
         }
 
+        // update create-request-path, because different tasks have a different path
         createRequest = "/control/kyouko/v1/task";
         createRequest += "/" + getDropdownValue("dropdown_datasetType_div");
         createRequest += "/" + getDropdownValue("dropdown_taskType_div");
@@ -178,7 +180,7 @@ limitations under the License. -->
                          + "\",\"cluster_uuid\":\"" + selectedCluster
                          + "\",\"data_set_uuid\":\"" + getDropdownValue("dropdown_div") + "\"}";
 
-        createObject_request(reqContent);
+        createObject_request(reqContent, createRequest, "create_modal");
     }
 
     /**

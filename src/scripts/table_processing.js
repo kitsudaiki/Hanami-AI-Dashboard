@@ -23,13 +23,13 @@ function isJson(str) {
     return true;
 }
 
-function constructTable(content, headerMapping, selector, additionalButton) 
+function constructTable(content, headerMapping, selector, additionalButtons) 
 {
     // clear old table-content
     $(selector).empty();
 
     const colIds = Headers(content.header, headerMapping, selector); 
-    Body(content.body, selector, colIds, additionalButton); 
+    Body(content.body, selector, colIds, additionalButtons); 
 }
     
 function Headers(headerContent, headerMapping, selector) 
@@ -49,7 +49,7 @@ function Headers(headerContent, headerMapping, selector)
     return colIds;
 }     
 
-function Body(bodyContent, selector, colIds, additionalButton) 
+function Body(bodyContent, selector, colIds, additionalButtons) 
 {
     for(var row = 0; row < bodyContent.length; row++) 
     {
@@ -60,22 +60,29 @@ function Body(bodyContent, selector, colIds, additionalButton)
         for(var i = 0; i < colIds.length; i++) 
         {
             var cell = JSON.stringify(rowContent[colIds[i]]);
-            cell.replaceAll(",", ",\n");
-            console.log("cell: " + cell);
+            cell = cell.replaceAll(":", ": ");
+            cell = cell.replaceAll("},", "},<br/>");
+            cell = cell.replaceAll(",", "<br/>");
+            cell = cell.replaceAll("[", "");
+            cell = cell.replaceAll("\"", "");
+            cell = cell.replaceAll("]", "");
+            cell = cell.replaceAll("{", "");
+            cell = cell.replaceAll("}", "");
             body.append($('<td/>').html(cell));
         }
 
-        // create and add delete-button to the row
+        // add additional buttons to each row of the table
         var buttons = "";
-        for(var i = 0; i < additionalButton.length; i++)
+        for(var i = 0; i < additionalButtons.length; i++)
         {
             buttons += '<button class="table_side_button" value="' + rowContent[0] + '" ';
-            buttons += additionalButton[i];
+            buttons += additionalButtons[i];
         }
         buttons += '<button class="table_side_button" value="' + rowContent[0] + '" ';
         buttons += 'onclick="deleteObject(this.value)">Delete</button>';
         var input = $(buttons);
 
+        // additional buttons should be aligned at the right side
         body.append($('<td/ style="text-align: right;">').html(input));
         $(selector).append(body);
     }

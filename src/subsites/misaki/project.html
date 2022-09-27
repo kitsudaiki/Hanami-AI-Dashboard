@@ -138,6 +138,7 @@ limitations under the License. -->
     var deleteRequest = "/control/misaki/v1/project?id=";
     var listRequest = "/control/misaki/v1/project/all";
     var createRequest = "/control/misaki/v1/project";
+    var additionalButtons = [];
 
     // inital creation of the project-list when open the window
     listObjects_request();
@@ -165,9 +166,9 @@ limitations under the License. -->
         }
 
         // create request-content
-        var reqContent = "{id:\"" + id + "\",name:\"" + name + "\"}";
+        const reqContent = "{id:\"" + id + "\",name:\"" + name + "\"}";
 
-        createObject_request(reqContent);
+        createObject_request(reqContent, createRequest, "create_modal");
     }
 
     /**

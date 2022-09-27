@@ -107,7 +107,6 @@ function drawHexagons(contextObj)
 
 function updateCanvas() 
 {
-    //console.log("poi");
     var contentCanvas = document.getElementById("contentCanvas");
     var ctx = contentCanvas.getContext("2d");
     var hex_view_div = document.getElementById("hex_view_div");

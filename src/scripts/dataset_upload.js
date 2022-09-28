@@ -16,7 +16,7 @@
 
 function sendFile(websocket, file, uuid, fileUuid)
 {
-    protobuf.load("/protobufs/shiori_messages.proto3", function(err, root) 
+    protobuf.load("/libKitsunemimiHanamiMessages/protobuffers/shiori_messages.proto3", function(err, root) 
     {
         if(err) {
             throw err;

@@ -36,7 +36,7 @@ function initAllDropdowns()
 
             this.className += " active";
             var dropdownContent = this.nextElementSibling;
-            dropdownContent.style.maxHeight = "100px"; 
+            dropdownContent.style.maxHeight = "200px"; 
         });
     }
 
@@ -69,7 +69,7 @@ function activateDefaultSideEntry()
         dropdown[i].className = dropdown[i].className.replace(" active", "");
     }
 
-    dropdown[defaultDropdownIndex].nextElementSibling.style.maxHeight = "100px"; 
+    dropdown[defaultDropdownIndex].nextElementSibling.style.maxHeight = "200px"; 
     dropdown[defaultDropdownIndex].className += " active";
 
     // mark initial dropdown-entry

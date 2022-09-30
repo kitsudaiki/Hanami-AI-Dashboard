@@ -228,6 +228,7 @@ Base site
 
 .tile_content_div {
     background-color: var(--color-tile);
+    color: var(--color-text);
     padding-top: 2.5rem;
     padding-bottom: 2.5rem;
     padding-left: 0.5rem;
@@ -239,6 +240,11 @@ Base site
     margin-bottom: -20px;
     align-items: center;
     box-shadow: var(--box-shadow);
+}
+
+.plain_text_div {
+    overflow-wrap: break-word;
+    white-space: pre-wrap;
 }
 
 .tile_div {

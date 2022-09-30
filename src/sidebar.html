@@ -25,7 +25,6 @@ limitations under the License. -->
             <a id="kyouko_segment_template_list" class="sidebar_dropdown_entry" href="#">Segment Templates</a>
         </div>
 
-
         <button class="sidebar_drop_down"> 
             <h3>Storage</h3>
         </button>
@@ -36,9 +35,11 @@ limitations under the License. -->
         </div>
 
         <button class="sidebar_drop_down"> 
-            <h3>Measurements</h3>
+            <h3>System</h3>
         </button>
         <div class="sidebar_drop_content">
+            <a id="azuki_system_info" class="sidebar_dropdown_entry" href="#">System-Info</a>
+            <a id="azuki_thread_mapping" class="sidebar_dropdown_entry" href="#">Thread-Mapping</a>
             <a id="azuki_power_overview" class="sidebar_dropdown_entry" href="#">Power</a>
             <a id="azuki_temperature_overview" class="sidebar_dropdown_entry" href="#">Temperature</a>
         </div>
@@ -163,6 +164,12 @@ limitations under the License. -->
     });
 
 
+    document.getElementById("azuki_system_info").addEventListener("click", function() {
+        $("#content_div").load("/subsites/azuki/system_info.html"); 
+    });
+    document.getElementById("azuki_thread_mapping").addEventListener("click", function() {
+        $("#content_div").load("/subsites/azuki/thread_mapping.html"); 
+    });
     document.getElementById("azuki_power_overview").addEventListener("click", function() {
         $("#content_div").load("/subsites/azuki/power.html"); 
     });

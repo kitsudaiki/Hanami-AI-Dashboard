@@ -14,10 +14,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/**
+ * Initialize all tables by setting them in inactive-state
+ */
 function resetAllTabs() 
 {
-    // Declare all variables
-    var i, tabcontent, tablinks;
+    let i, tabcontent, tablinks;
 
     // Get all elements with class="tabcontent" and hide them
     tabcontent = document.getElementsByClassName("tabcontent");
@@ -32,15 +34,24 @@ function resetAllTabs()
     }
 }
 
-function selectTabbarEntry(evt, tableName) 
+/**
+ * Select a tab in a tabbbar
+ *
+ * @param {evt} click-event
+ * @param {tabName} name of the tab to selet
+ */
+function selectTabbarEntry(evt, tabName) 
 {
     resetAllTabs();
 
     // Show the current tab, and add an "active" class to the button that opened the tab
-    document.getElementById(tableName).style.display = "block";
+    document.getElementById(tabName).style.display = "block";
     evt.currentTarget.className += " active";
 } 
 
+/**
+ * Select the default-tab of a tabbar for initializing
+ */
 function activateDefaultTab() 
 {
     resetAllTabs();

@@ -34,7 +34,7 @@ limitations under the License. -->
 getSystemInfo_request();
 
 /**
- * Send request to backend to get a list of all segment-template
+ * Request system-information from azuki
  */
 function getSystemInfo_request()
 {
@@ -43,31 +43,35 @@ function getSystemInfo_request()
         return;
     }
 
-    var systemInfoRequestConnection = new XMLHttpRequest();
-    systemInfoRequestConnection.open("GET", "/control/azuki/v1/system_info", true);
-    systemInfoRequestConnection.setRequestHeader("X-Auth-Token", token);
+    // create request
+    let requestConnection = new XMLHttpRequest();
+    requestConnection.open("GET", "/control/azuki/v1/system_info", true);
+    requestConnection.setRequestHeader("X-Auth-Token", token);
 
-    systemInfoRequestConnection.onload = function(e) 
+    // callback for success
+    requestConnection.onload = function(e) 
     {
-        if(systemInfoRequestConnection.status != 200) 
+        if(requestConnection.status != 200) 
         {
             // TODO: error-popup
-            return false;
+            console.log("Failed to request system-info from azuki with response-code: " 
+                        + requestConnection.status);
+            return;
         }
 
-        const jsonContent = JSON.parse(systemInfoRequestConnection.responseText);
-        var str = JSON.stringify(jsonContent, null, 4);
-        console.log(str);
+        const jsonContent = JSON.parse(requestConnection.responseText);
+        const str = JSON.stringify(jsonContent, null, 4);
         document.getElementById("system_info_div").innerHTML = str;
-
-
     };
-    systemInfoRequestConnection.onerror = function(e) 
+
+    // callback for fail
+    requestConnection.onerror = function(e) 
     {
-        console.log("Failed to load list of segment-templates.");
+        // TODO: error-popup
+        console.log("Failed to request system-info from azuki.");
     };
 
-    systemInfoRequestConnection.send(null);
+    requestConnection.send(null);
 }
 
 </script>

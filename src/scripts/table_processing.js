@@ -14,15 +14,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-function isJson(str) {
-    try {
-        JSON.parse(str);
-    } catch (e) {
-        return false;
-    }
-    return true;
-}
-
+/**
+ * convert json-object of a list-request into a table
+ *
+ * @param {content} json-content with the data for the table
+ * @param {headerMapping} map to filter and replace names in header
+ * @param {selector} id of the div, where the table should be printed
+ * @param {additionalButtons} additional buttons for each row
+ */
 function constructTable(content, headerMapping, selector, additionalButtons) 
 {
     // clear old table-content
@@ -31,12 +30,19 @@ function constructTable(content, headerMapping, selector, additionalButtons)
     const colIds = Headers(content.header, headerMapping, selector); 
     Body(content.body, selector, colIds, additionalButtons); 
 }
-    
+   
+/**
+ * convert json-object of a list-request into a table-header
+ *
+ * @param {headerContent} json-content with the header for the table
+ * @param {headerMapping} map to filter and replace names in header
+ * @param {selector} id of the div, where the table should be printed
+ */
 function Headers(headerContent, headerMapping, selector) 
 {
-    var colIds = [];
-    var header = $('<tr/>');             
-    for(var i = 0; i < headerContent.length; i++) 
+    let colIds = [];
+    let header = $('<tr/>');             
+    for(let i = 0; i < headerContent.length; i++) 
     {
         if(headerMapping.has(headerContent[i])) 
         {
@@ -49,17 +55,26 @@ function Headers(headerContent, headerMapping, selector)
     return colIds;
 }     
 
+/**
+ * convert json-object of a list-request into a table-content
+ *
+ * @param {bodyContent} json-content with the content for the table
+ * @param {selector} id of the div, where the table should be printed
+ * @param {colIds} list of column-ids to filter the content
+ * @param {additionalButtons} additional buttons for each row
+ */
 function Body(bodyContent, selector, colIds, additionalButtons) 
 {
-    for(var row = 0; row < bodyContent.length; row++) 
+    for(let row = 0; row < bodyContent.length; row++) 
     {
-        var body = $('<tr/>');  
+        let body = $('<tr/>');  
 
         // add textual values to the row
-        const rowContent = bodyContent[row];   
-        for(var i = 0; i < colIds.length; i++) 
+        let rowContent = bodyContent[row];   
+        for(let i = 0; i < colIds.length; i++) 
         {
-            var cell = JSON.stringify(rowContent[colIds[i]]);
+            // if cell is a json-object, then transform it into a better readable version by replacing special characters
+            let cell = JSON.stringify(rowContent[colIds[i]]);
             cell = cell.replaceAll(":", ": ");
             cell = cell.replaceAll("},", "},<br/>");
             cell = cell.replaceAll(",", "<br/>");
@@ -72,15 +87,15 @@ function Body(bodyContent, selector, colIds, additionalButtons)
         }
 
         // add additional buttons to each row of the table
-        var buttons = "";
-        for(var i = 0; i < additionalButtons.length; i++)
+        let buttons = "";
+        for(let i = 0; i < additionalButtons.length; i++)
         {
             buttons += '<button class="table_side_button" value="' + rowContent[0] + '" ';
             buttons += additionalButtons[i];
         }
         buttons += '<button class="table_side_button" value="' + rowContent[0] + '" ';
         buttons += 'onclick="deleteObject(this.value)">Delete</button>';
-        var input = $(buttons);
+        let input = $(buttons);
 
         // additional buttons should be aligned at the right side
         body.append($('<td/ style="text-align: right;">').html(input));

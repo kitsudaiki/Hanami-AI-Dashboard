@@ -61,7 +61,7 @@ limitations under the License. -->
                 <input type="password" id="pass2" name="password" minlength="8" required>
             </div>
             <div id="create_alert_box" class="alert">
-                <span class="closebtn" onclick="closeErrorInModal('create');">&times;</span> 
+                <span class="closebtn" onclick="clearAlertBox('create');">&times;</span> 
                 <label id="create_alert_text_label"></label>
             </div>
         </div>
@@ -98,7 +98,7 @@ limitations under the License. -->
                 <h2><label id="delete_label_text" class="delete_label_text">></label></h2>
             </center>
             <div id="delete_alert_box" class="alert">
-                <span class="closebtn" onclick="closeErrorInModal('delete');">&times;</span> 
+                <span class="closebtn" onclick="clearAlertBox('delete');">&times;</span> 
                 <label id="delete_alert_text_label"></label>
             </div>
         </div>
@@ -141,7 +141,10 @@ limitations under the License. -->
                     <div class="slider round"></div>
                 </label>
             </div>
-            <label id="add_project_modal_error_message" class="modal_error_field"></label>
+            <div id="add_project_alert_box" class="alert">
+                <span class="closebtn" onclick="clearAlertBox('add_project');">&times;</span> 
+                <label id="add_project_alert_text_label"></label>
+            </div>
         </div>
         <div class="modal_footer_part">
             <center>
@@ -176,7 +179,10 @@ limitations under the License. -->
                     <div id="dropdown_user_project_div" name="userProjectDropdown"></div>
                 </div>
             </div>
-            <label id="remove_project_modal_error_message" class="modal_error_field"></label>
+            <div id="remove_project_alert_box" class="alert">
+                <span class="closebtn" onclick="clearAlertBox('remove_project');">&times;</span> 
+                <label id="remove_project_alert_text_label"></label>
+            </div>
         </div>
         <div class="modal_footer_part">
             <center>
@@ -248,14 +254,12 @@ limitations under the License. -->
     var listRequest = "/control/misaki/v1/user/all";
     var createRequest = "/control/misaki/v1/user";
     var additionalButtons = [ 'onclick="addProjectToUser(this.value)">Add Project</button>',
-                              'onclick="removeProjectToUser(this.value)">Remove Project</button>'];
+                              'onclick="removeProjectFromUser(this.value)">Remove Project</button>'];
 
     // inital creation of the user-list when open the window
     listObjects_request();
+    clearModalFields();
     fillStaticDropdownList("dropdown_userRole_div", availableRoles);
-
-    clearAlertBox("delete");
-    clearAlertBox("create");
 
     /**
      * Send request to backend to create a new user
@@ -306,6 +310,11 @@ limitations under the License. -->
      */
     function clearModalFields()
     {
+        clearAlertBox("delete");
+        clearAlertBox("create");
+        clearAlertBox("add_project");
+        clearAlertBox("remove_project");
+
         document.getElementById('id_field').value = "";
         document.getElementById('name_field').value = "";
         document.getElementById('isAdmin_field').checked = "";
@@ -383,7 +392,7 @@ limitations under the License. -->
         modal.style.display = "block";
     }
 
-    function removeProjectToUser_request(userId)
+    function removeProjectFromUser_request(userId)
     {
         const token = getAndCheckToken();
         if(token == "") {
@@ -422,7 +431,7 @@ limitations under the License. -->
 
     /**
      */
-    function removeProjectToUser(userId) 
+    function removeProjectFromUser(userId) 
     {
         fillUserProjectDropdownList("dropdown_user_project_div"); 
 
@@ -432,7 +441,7 @@ limitations under the License. -->
 
         // handle accept-button
         acceptButton.onclick = function() {
-            removeProjectToUser_request(userId);
+            removeProjectFromUser_request(userId);
         }
 
         // handle cancel-button

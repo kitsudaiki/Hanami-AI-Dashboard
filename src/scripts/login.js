@@ -14,6 +14,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/**
+ * Remove all cookies of the side
+ */
 function deleteAllCookies() 
 {
     const cookies = document.cookie.split(";");
@@ -22,14 +25,21 @@ function deleteAllCookies()
     }
 }
 
+/**
+ * Login by requesting a jwt-token and store it as cookie
+ *
+ * @param {user} user-id for login
+ * @param {pw} password of the suer
+ */
 function loginRequest(user, pw)
 {
+    // create request    
     const request = "/control/misaki/v1/token";
     const reqContent = "{\"id\":\"" + user + "\",\"password\":\"" + pw + "\"}";
-
-    var loginConnection = new XMLHttpRequest();
+    let loginConnection = new XMLHttpRequest();
     loginConnection.open("POST", request, true);
 
+    // callback for success
     loginConnection.onload = function(e) 
     {
         // handle failed login
@@ -56,29 +66,36 @@ function loginRequest(user, pw)
         // load cluster-overview as first site
         $("#content_div").load("/subsites/kyouko/cluster.html"); 
 
-        var modal = document.getElementById("login_modal");
+        let modal = document.getElementById("login_modal");
         modal.style.display = "none";
     };
     
+    // callback for fail
     loginConnection.onerror = function(e) 
     {
         document.getElementById("login_id_field").value = "";
         document.getElementById("login_pw_field").value = "";
-    
-        alert("Login-connection failed");
+
+        showErrorInModal("login", "Login failed for unknown reason");
     };
 
     loginConnection.send(reqContent);
 }
 
+/**
+ * Check if token is still valid. If expired or invalid, return to login
+ *
+ * @param {token} token to check
+ */
 function tokenCheckRequest(token)
 {
+    // create request
     const request = "/control/misaki/v1/auth?token=" + token;
-
-    var authConnection = new XMLHttpRequest();
+    let authConnection = new XMLHttpRequest();
     authConnection.open("GET", request, true);
     authConnection.setRequestHeader("X-Auth-Token", token);
 
+    // callback for success
     authConnection.onload = function(e) 
     {
         if(authConnection.status != 200) 
@@ -87,6 +104,8 @@ function tokenCheckRequest(token)
             login();
         }
     };
+
+    // callback for fail
     authConnection.onerror = function(e) 
     {
         login();
@@ -95,13 +114,14 @@ function tokenCheckRequest(token)
     authConnection.send(null);
 }
 
+/**
+ * Trigger login-modal
+ */
 function login() 
 {
-    console.log("login");
     deleteAllCookies();
-
-    var modal = document.getElementById("login_modal");
-    var loginButton = document.getElementById("modal_login_button");
+    let modal = document.getElementById("login_modal");
+    let loginButton = document.getElementById("modal_login_button");
 
     // handle login-button
     loginButton.onclick = function() 
@@ -114,6 +134,9 @@ function login()
     modal.style.display = "block";
 }
 
+/**
+ * Check if token is still valid. If expired or invalid, return to login
+ */
 function getAndCheckToken() 
 {
     const authToken = getCookieValue("Auth_JWT_Token");
@@ -125,6 +148,9 @@ function getAndCheckToken()
     return authToken;
 }
 
+/**
+ * Delete cookies and return to login
+ */
 function logout()
 {
     deleteAllCookies() 

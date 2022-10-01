@@ -46,6 +46,10 @@ limitations under the License. -->
                 <br><br>
                 <h2><label id="delete_label_text" class="delete_label_text"></label></h2>
             </center>
+            <div id="delete_alert_box" class="alert">
+                <span class="closebtn" onclick="clearAlertBox('delete');">&times;</span> 
+                <label id="delete_alert_text_label"></label>
+            </div>
         </div>
         <div class="modal_footer_part">
             <center>
@@ -90,7 +94,6 @@ limitations under the License. -->
 <script src="/scripts/common.js"></script>
 <script src="/scripts/actions.js"></script>
 <script>
-    // mapping for segment-template-table
     var headerMapping = new Map();
     headerMapping.set("uuid", "UUID");
     headerMapping.set("name", "Name");
@@ -101,7 +104,7 @@ limitations under the License. -->
     var listRequest = "/control/shiori/v1/cluster_snapshot/all";
     var additionalButtons = [];
 
-    // inital creation of the segment-template-list when open the window
+    clearAlertBox("delete");
     listObjects_request();
 
 </script>

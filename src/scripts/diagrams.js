@@ -14,7 +14,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-function showData(data, divId, xAxisText)
+/**
+ * Print values in a line-chart with the help of the d3-library
+ *
+ * @param {data} list with values to print
+ * @param {divId} div-id where the diagram should be printed
+ * @param {xAxisText} text for the x-axis
+ * @param {yAxisText} text for the y-axis
+ */
+function showData(data, divId, xAxisText, yAxisText)
 {
     const box = document.querySelector("#" + divId);
 
@@ -31,22 +39,39 @@ function showData(data, divId, xAxisText)
         .append("g")
         .attr("transform", `translate(${margin.left},${margin.top})`);
 
-    // add x-axis
-    const x = d3.scaleLinear()
+    // get scaling
+    const xScale = d3.scaleLinear()
         .domain([0, data.length])
         .range([ 0, width ]);
+    const yScale = d3.scaleLinear()
+       .domain([0, d3.max(data, function(d) { return +d; }) ])
+        .range([ height, 0 ]);
+
+    // Create grid x-axis.
+    const xAxisGrid = d3.axisBottom(xScale).tickSize(-height).tickFormat('').ticks(10);
+    svg.append('g')
+        .attr('class', 'diagram_grid')
+        .style("stroke-dasharray", ("3, 3"))
+        .attr('transform', 'translate(0,' + height + ')')
+        .call(xAxisGrid);
+
+    // Create grid y-axis.
+    const yAxisGrid = d3.axisLeft(yScale).tickSize(-width).tickFormat('').ticks(10);
+    svg.append('g')
+        .style("stroke-dasharray", ("3, 3"))
+        .attr('class', 'diagram_grid')
+        .call(yAxisGrid);
+
+    // add x-axis
     svg.append("g")
         .attr("class", "diagram_axis")
         .attr("transform", `translate(0, ${height})`)
-        .call(d3.axisBottom(x));
+        .call(d3.axisBottom(xScale));
 
     // add y-axis
-    const y = d3.scaleLinear()
-       .domain([0, d3.max(data, function(d) { return +d; }) ])
-        .range([ height, 0 ]);
     svg.append("g")
         .attr("class", "diagram_axis")
-        .call(d3.axisLeft(y));
+        .call(d3.axisLeft(yScale));
 
     // draw line
     svg.append("path")
@@ -55,8 +80,8 @@ function showData(data, divId, xAxisText)
         .attr("fill", "none")
         .attr("stroke-width", 2.5)
         .attr("d", d3.line()
-            .x(function(d,i) { return x(i) })
-            .y(function(d,i) { return y(d) })
+            .x(function(d,i) { return xScale(i) })
+            .y(function(d,i) { return yScale(d) })
         )
 
     // add text to x-axis
@@ -73,5 +98,5 @@ function showData(data, divId, xAxisText)
         .attr("y", -40)
         .attr("x", -(height / 2))
         .attr("transform", "rotate(-90)")
-        .text("Temperature production in C");
+        .text(yAxisText);
 }

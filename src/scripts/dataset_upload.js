@@ -14,6 +14,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/**
+ * Send a file over the websocket in form of protobuffer-messages
+ *
+ * @param {websocket} Websocket over which the file should be send
+ * @param {file} File to send
+ * @param {uuid} UUID of the data-set, where the file belongs to
+ * @param {fileUuid} UUID of the temporary-file, which handle the data
+ */
 function sendFile(websocket, file, uuid, fileUuid)
 {
     protobuf.load("/libKitsunemimiHanamiMessages/protobuffers/shiori_messages.proto3", function(err, root) 
@@ -23,20 +31,21 @@ function sendFile(websocket, file, uuid, fileUuid)
         }
 
         // Obtain a message type
-        var FileUpload_Message = root.lookupType("FileUpload_Message");
+        let FileUpload_Message = root.lookupType("FileUpload_Message");
 
-        var segmentSize = 96 * 1024;
-        var fileSize = file.size;
+        let segmentSize = 96 * 1024;
+        let fileSize = file.size;
 
         for(let start = 0; start < fileSize; start += segmentSize) 
         {
-            var reader = new FileReader();
+            let reader = new FileReader();
             if(start + segmentSize > fileSize) {
                 segmentSize = fileSize - start;
             }
-            var blob = file.slice(start, segmentSize + start);
-            var isLast = start + segmentSize >= fileSize;
+            let blob = file.slice(start, segmentSize + start);
+            let isLast = start + segmentSize >= fileSize;
 
+            // read part of the file and send id as new message
             reader.onload = function(e) 
             {
                 var payload = { 
@@ -54,8 +63,8 @@ function sendFile(websocket, file, uuid, fileUuid)
                 }
 
                 // Create a new message and ncode a message to an Uint8Array (browser)
-                var message = FileUpload_Message.create(payload);
-                var buffer = FileUpload_Message.encode(message).finish();
+                let message = FileUpload_Message.create(payload);
+                let buffer = FileUpload_Message.encode(message).finish();
 
                 websocket.send(buffer);
             };
@@ -69,12 +78,23 @@ function sendFile(websocket, file, uuid, fileUuid)
     return true;
 }
 
+/**
+ * wait for a specific amount of time
+ *
+ * @param {ms} number of milliseconds to sleep
+ */
 function sleep(ms) {
     var start = new Date().getTime(), expire = start + ms;
     while (new Date().getTime() < expire) { }
     return;
 }
 
+/**
+ * wait until a data-set is fully uploaded
+ *
+ * @param {uuid} uuid of the dataset to check
+ * @param {token} access jwt-token
+ */
 function waitUntilUploadComplete(uuid, token)
 {
     // wait until upload completed
@@ -100,6 +120,14 @@ function waitUntilUploadComplete(uuid, token)
     return true;
 }
 
+/**
+ * wait until a data-set is fully uploaded
+ *
+ * @param {websocket} uuid of the dataset to check
+ * @param {uuid} access jwt-token
+ * @param {file} uuid of the dataset to check
+ * @param {fileUuid} access jwt-token
+ */
 function sendCsvFiles(websocket, uuid, file, fileUuid)
 {
     const token = getAndCheckToken();
@@ -136,6 +164,13 @@ function sendCsvFiles(websocket, uuid, file, fileUuid)
     return true;
 }
 
+/**
+ * upload finalize the upload of the csv-dataset
+ *
+ * @param {uuid} uuid of the data-set
+ * @param {inputUuid} uuid of the temporary file for the input-data
+ * @param {token} access jwt-token
+ */
 function finishCsvUpload(uuid, inputUuid, token)
 {
     // finish upload
@@ -154,23 +189,25 @@ function finishCsvUpload(uuid, inputUuid, token)
     return true;
 }
 
+/**
+ * upload csv-data-set with information added to the modal
+ *
+ * @param {token} access jwt-token
+ */
 function uploadCsvDataset(token)
 {
-    // clear error-label to remove the error of an old session
-    document.getElementById('create_modal_error_message').innerHTML = "";
-
     const name = document.getElementById('name_field_csv').value;
     const inputFile = document.getElementById('input_file_field_csv').files[0];
 
     if(name == "") 
     {
-        document.getElementById('create_modal_error_message').innerHTML = "Name is missing";
+        showErrorInModal("create_csv", "Name is missing");
         return;
     }
 
     if(inputFile.name == "") 
     {
-        document.getElementById('create_modal_error_message').innerHTML = "Input-file is missing";
+        showErrorInModal("create_csv", "Input-file is missing");
         return;
     }
    
@@ -223,6 +260,16 @@ function uploadCsvDataset(token)
     datasetCreateConnection.send(reqContent);
 }
 
+/**
+ * send mnist-files over a websocket
+ *
+ * @param {websocket} websocket where the data should be send
+ * @param {uuid} uuid of the data-set
+ * @param {inputFile} file with input-data
+ * @param {labelFile} file with label-data
+ * @param {inputFileUuid} uuid of the temporary file for the input-data
+ * @param {labelFileUuid} uuid of the temporary file for the label-data
+ */
 function sendMnistFiles(websocket, uuid, inputFile, labelFile, inputFileUuid, labelFileUuid)
 {
     const token = getAndCheckToken();
@@ -262,6 +309,14 @@ function sendMnistFiles(websocket, uuid, inputFile, labelFile, inputFileUuid, la
     return true;
 }
 
+/**
+ * upload finalize the upload of the mnist-dataset
+ *
+ * @param {uuid} uuid of the data-set
+ * @param {inputUuid} uuid of the temporary file for the input-data
+ * @param {labelUuid} uuid of the temporary file for the label-data
+ * @param {token} access jwt-token
+ */
 function finishMnistUpload(uuid, inputUuid, labelUuid, token)
 {
     // finish upload
@@ -281,30 +336,32 @@ function finishMnistUpload(uuid, inputUuid, labelUuid, token)
     return true;
 }
 
+/**
+ * upload mnist-data-set with information added to the modal
+ *
+ * @param {token} access jwt-token
+ */
 function uploadMnistDataset(token)
 {
-    // clear error-label to remove the error of an old session
-    document.getElementById('create_modal_error_message').innerHTML = "";
-
     const name = document.getElementById('name_field_mnist').value;
     const inputFile = document.getElementById('input_file_field_mnist').files[0];
     const labelFile = document.getElementById('label_file_field_mnist').files[0];
 
     if(name == "") 
     {
-        document.getElementById('create_modal_error_message').innerHTML = "Name is missing";
+        showErrorInModal("create_mnist", "Name is missing");
         return;
     }
 
     if(inputFile.name == "") 
     {
-        document.getElementById('create_modal_error_message').innerHTML = "Input-file is missing";
+        showErrorInModal("create_mnist", "Input-file is missing");
         return;
     }
    
     if(labelFile.name == "") 
-    {
-        document.getElementById('create_modal_error_message').innerHTML = "Label-file is missing";
+    {   
+        showErrorInModal("create_mnist", "Label-file is missing");
         return;
     }
 
@@ -324,9 +381,8 @@ function uploadMnistDataset(token)
     {
         if(datasetCreateConnection.status != 200) 
         {
-            document.getElementById('create_modal_error_message').innerHTML 
-                = datasetCreateConnection.responseText;
-            return false;
+            // TODO: popup-message
+            return;
         }
 
         const jsonContent = JSON.parse(datasetCreateConnection.responseText);
@@ -336,11 +392,11 @@ function uploadMnistDataset(token)
 
         var websocket = new WebSocket('wss://' + location.host);
         if(sendMnistFiles(websocket, uuid, inputFile, labelFile, inputFileUuid, labelFileUuid) == false) {
-            return false;
+            return;
         }
 
         if(finishMnistUpload(uuid, inputFileUuid, labelFileUuid, token) == false) {
-            return false;
+            return;
         }
 
         // handle reqponse

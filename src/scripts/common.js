@@ -27,24 +27,17 @@
 function clearAlertBox(target)
 {
     var modal = document.getElementById(target + "_alert_box");
+
+    if(modal.style.display === "block") 
+    {
+        const modalSize = document.getElementById(target + "_modal_content").clientHeight;
+        const alertHeight = document.getElementById(target + "_alert_box").clientHeight;
+        document.getElementById(target + "_alert_text_label").innerHTML = "";
+        document.getElementById(target + "_modal_content").style.height = (modalSize - 20 - alertHeight) + "px";
+    }
+
     modal.style.display = "none";
     document.getElementById(target + "_alert_text_label").innerHTML = "";
-}
-
-/**
- * Remove error-message block from the modal
- *
- * @param {target} base-name of the modal, where the error-message belongs to
- */
-function closeErrorInModal(target)
-{
-    // calculate and update the size of the modal, to reduce the size of the modal to its original size
-    const modalSize = document.getElementById(target + "_modal_content").clientHeight;
-    const alertHeight = document.getElementById(target + "_alert_box").clientHeight;
-    document.getElementById(target + "_alert_text_label").innerHTML = "";
-    document.getElementById(target + "_modal_content").style.height = (modalSize - 20 - alertHeight) + "px";
-
-    clearAlertBox(target);
 }
 
 /**
@@ -59,7 +52,7 @@ function showErrorInModal(target, message)
 
     // in an old error-message is already shown, then close this first
     if(modal.style.display === "block") {
-        closeErrorInModal(target);
+        clearAlertBox(target);
     }
 
     modal.style.display = "block";

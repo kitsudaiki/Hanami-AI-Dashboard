@@ -52,7 +52,10 @@ limitations under the License. -->
                     <textarea id="template_field" name="input_file"> </textarea>
                 </div>
             </div>
-            <label id="create_modal_error_message" class="modal_error_field"></label>
+            <div id="create_alert_box" class="alert">
+                <span class="closebtn" onclick="clearAlertBox('create');">&times;</span> 
+                <label id="create_alert_text_label"></label>
+            </div>
         </div>
         <div class="modal_footer_part">
             <center>
@@ -86,6 +89,10 @@ limitations under the License. -->
                 <br><br>
                 <h2><label id="delete_label_text" class="delete_label_text"></label></h2>
             </center>
+            <div id="delete_alert_box" class="alert">
+                <span class="closebtn" onclick="clearAlertBox('delete');">&times;</span> 
+                <label id="delete_alert_text_label"></label>
+            </div>
         </div>
         <div class="modal_footer_part">
             <center>
@@ -119,7 +126,10 @@ limitations under the License. -->
                     <input type="text" id="snapshot_name_field" name="name">
                 </div>
             </div>
-            <label id="create_snapshot_modal_error_message" class="modal_error_field"></label>
+            <div id="create_snapshot_alert_box" class="alert">
+                <span class="closebtn" onclick="clearAlertBox('create_snapshot');">&times;</span> 
+                <label id="create_snapshot_alert_text_label"></label>
+            </div>
         </div>
         <div class="modal_footer_part">
             <center>
@@ -153,7 +163,10 @@ limitations under the License. -->
                     <div id="dropdown_snapshot_div" name="snapshotDropdown"></div>
                 </div>
             </div>
-            <label id="restore_snapshot_modal_error_message" class="modal_error_field"></label>
+            <div id="restore_snapshot_alert_box" class="alert">
+                <span class="closebtn" onclick="clearAlertBox('restore_snapshot');">&times;</span> 
+                <label id="restore_snapshot_alert_text_label"></label>
+            </div>
         </div>
         <div class="modal_footer_part">
             <center>
@@ -210,7 +223,6 @@ limitations under the License. -->
 <script src="/scripts/common.js"></script>
 <script src="/scripts/actions.js"></script>
 <script>
-    // mapping for segment-template-table
     var headerMapping = new Map();
     headerMapping.set("uuid", "UUID");
     headerMapping.set("visibility", "Visibility");
@@ -223,6 +235,11 @@ limitations under the License. -->
                               'onclick="createClusterSnapshot(this.value)">Snapshot</button>',
                               'onclick="restoreClusterSnapshot(this.value)">Restore</button>'];
 
+    clearModalFields();
+
+    /**
+     * Send request to backend to create a new segmentTemplate
+     */
     function switchToTasks(clusterUuid)
     {
         selectedCluster = clusterUuid;
@@ -238,26 +255,24 @@ limitations under the License. -->
      */
     function createObject_build()
     {
-        // clear error-label to remove the error of an old session
-        document.getElementById('create_modal_error_message').innerHTML = "";
-
+        clearModalFields();
         const name = document.getElementById('name_field').value;
         const templateStr = document.getElementById('template_field').value;
 
         if(name == "") 
         {
-            document.getElementById('create_modal_error_message').innerHTML = "Name is missing";
+            showErrorInModal("create", "Name is missing");
             return;
         }
 
         if(templateStr == "") 
         {
-            document.getElementById('create_modal_error_message').innerHTML = "Definition is missing";
+            showErrorInModal("create", "Template is missing");
             return;
         }
        
         // create request-content
-        var reqContent = "{\"name\":\"" + name;
+        let reqContent = "{\"name\":\"" + name;
         reqContent += "\",\"cluster_definition\":" + templateStr + "}";
 
         createObject_request(reqContent, createRequest, "create_modal");
@@ -265,19 +280,15 @@ limitations under the License. -->
 
     function createClusterSnaphost_build()
     {
-        // clear error-label to remove the error of an old session
-        document.getElementById('create_snapshot_modal_error_message').innerHTML = "";
-
         const name = document.getElementById('snapshot_name_field').value;
-
         if(name == "") 
         {
-            document.getElementById('create_snapshot_modal_error_message').innerHTML = "Name is missing";
+            showErrorInModal("create", "Name is missing");
             return;
         }
        
         // create request-content
-        var reqContent = "{\"name\":\"" + name;
+        let reqContent = "{\"name\":\"" + name;
         reqContent += "\",\"cluster_uuid\":" + selectedCluster + "}";
         const clusterSnapshotCreateReq = "/control/kyouko/v1/cluster/save";
 
@@ -288,10 +299,11 @@ limitations under the License. -->
      */
     function createClusterSnapshot(clusterUuid) 
     {
+        clearModalFields();
         selectedCluster = clusterUuid;
-        var modal = document.getElementById("create_snapshot_modal");
-        var acceptButton = document.getElementById("modal_create_snapshot_accept_button");
-        var cancelButton = document.getElementById("modal_create_snapshot_cancel_button");
+        let modal = document.getElementById("create_snapshot_modal");
+        let acceptButton = document.getElementById("modal_create_snapshot_accept_button");
+        let cancelButton = document.getElementById("modal_create_snapshot_cancel_button");
 
         // handle accept-button
         acceptButton.onclick = function() {
@@ -317,12 +329,9 @@ limitations under the License. -->
     }
 
     function restoreClusterSnaphost_build()
-    {
-        // clear error-label to remove the error of an old session
-        document.getElementById('restore_snapshot_modal_error_message').innerHTML = "";
-       
+    {  
         // create request-content
-        var reqContent = "{\"snapshot_uuid\":\"" + getDropdownValue("dropdown_snapshot_div");
+        let reqContent = "{\"snapshot_uuid\":\"" + getDropdownValue("dropdown_snapshot_div");
         reqContent += "\",\"cluster_uuid\":" + selectedCluster + "}";
         const clusterSnapshotRestoreReq = "/control/kyouko/v1/cluster/load";
 
@@ -333,10 +342,12 @@ limitations under the License. -->
      */
     function restoreClusterSnapshot(clusterUuid) 
     {
+        clearModalFields();
+
         selectedCluster = clusterUuid;
-        var modal = document.getElementById("restore_snapshot_modal");
-        var acceptButton = document.getElementById("modal_restore_snapshot_accept_button");
-        var cancelButton = document.getElementById("modal_restore_snapshot_cancel_button");
+        let modal = document.getElementById("restore_snapshot_modal");
+        let acceptButton = document.getElementById("modal_restore_snapshot_accept_button");
+        let cancelButton = document.getElementById("modal_restore_snapshot_cancel_button");
 
         // handle accept-button
         acceptButton.onclick = function() {
@@ -369,6 +380,11 @@ limitations under the License. -->
         document.getElementById('name_field').value = "";
         document.getElementById('template_field').value = "";
         document.getElementById('snapshot_name_field').value = "";
+
+        clearAlertBox("create");
+        clearAlertBox("delete");
+        clearAlertBox("create_snapshot");
+        clearAlertBox("restore_snapshot");
     }
 
     document.getElementById("create_cluster_button").addEventListener("click", createObject, false);

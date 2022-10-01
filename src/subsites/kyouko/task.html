@@ -56,7 +56,10 @@ limitations under the License. -->
                     <div id="dropdown_div" name="datasetDropdown"></div>
                 </div>
             </div>
-            <label id="create_modal_error_message" class="modal_error_field"></label>
+            <div id="create_alert_box" class="alert">
+                <span class="closebtn" onclick="clearAlertBox('create');">&times;</span> 
+                <label id="create_alert_text_label"></label>
+            </div>
         </div>
         <div class="modal_footer_part">
             <center>
@@ -90,6 +93,10 @@ limitations under the License. -->
                 <br><br>
                 <h2><label id="delete_label_text" class="delete_label_text"></label></h2>
             </center>
+            <div id="delete_alert_box" class="alert">
+                <span class="closebtn" onclick="clearAlertBox('delete');">&times;</span> 
+                <label id="delete_alert_text_label"></label>
+            </div>
         </div>
         <div class="modal_footer_part">
             <center>
@@ -130,7 +137,6 @@ limitations under the License. -->
 <script src="/scripts/common.js"></script>
 <script src="/scripts/actions.js"></script>
 <script>
-    // mapping for segment-template-table
     var headerMapping = new Map();
     headerMapping.set("uuid", "UUID");
     headerMapping.set("state", "State");
@@ -147,6 +153,9 @@ limitations under the License. -->
     var taskTypes = ["learn", "request"];
     var taskDatasetTypes = ["image", "table"];
 
+    clearAlertBox("delete");
+    clearAlertBox("create");
+
     // inital creation of the segment-template-list when open the window
     listObjects_request();
 
@@ -159,14 +168,10 @@ limitations under the License. -->
      */
     function createObject_build()
     {
-        // clear error-label to remove the error of an old session
-        document.getElementById('create_modal_error_message').innerHTML = "";
-
         const name = document.getElementById('name_field').value;
-
         if(name == "") 
         {
-            document.getElementById('create_modal_error_message').innerHTML = "Name is missing";
+            showErrorInModal("create", "Name is missing");
             return;
         }
 

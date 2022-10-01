@@ -43,28 +43,32 @@ function getThreadMapping_request()
         return;
     }
 
-    var threadMapRequestConnection = new XMLHttpRequest();
-    threadMapRequestConnection.open("GET", "/control/azuki/v1/threading", true);
-    threadMapRequestConnection.setRequestHeader("X-Auth-Token", token);
+    // create request
+    let requestConnection = new XMLHttpRequest();
+    requestConnection.open("GET", "/control/azuki/v1/threading", true);
+    requestConnection.setRequestHeader("X-Auth-Token", token);
 
-    threadMapRequestConnection.onload = function(e) 
+    // callback for success
+    requestConnection.onload = function(e) 
     {
-        if(threadMapRequestConnection.status != 200) 
+        if(requestConnection.status != 200) 
         {
             // TODO: error-popup
-            return false;
+            return;
         }
 
-        const jsonContent = JSON.parse(threadMapRequestConnection.responseText);
-        var str = JSON.stringify(jsonContent, null, 4);
+        const jsonContent = JSON.parse(requestConnection.responseText);
+        const str = JSON.stringify(jsonContent, null, 4);
         document.getElementById("system_info_div").innerHTML = str;
     };
-    threadMapRequestConnection.onerror = function(e) 
+
+    // callback for fail
+    requestConnection.onerror = function(e) 
     {
         console.log("Failed to load list of segment-templates.");
     };
 
-    threadMapRequestConnection.send(null);
+    requestConnection.send(null);
 }
 
 </script>

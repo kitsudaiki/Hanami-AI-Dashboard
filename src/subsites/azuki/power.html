@@ -20,32 +20,32 @@ limitations under the License. -->
 
 <div class="tile_div">
     <svg width="100%" height="68">
-        <polygon class="hexagon_field header_label_position_mid" points="285,0 300,21 285,42 15,42 0,21 15,0"></polygon>
-        <text x="65" y="27"  class="header_label_position_mid" font-size="20px">Power - last minute</text>
+        <polygon class="hexagon_field header_label_position_long" points="385,0 400,21 385,42 15,42 0,21 15,0"></polygon>
+        <text x="65" y="27"  class="header_label_position_long" font-size="20px">CPU-Power - last 60 seconds</text>
     </svg>
     <div class="tile_content_div" id="seconds_graph"></div>
 </div>
 
 <div class="tile_div">
     <svg width="100%" height="68">
-        <polygon class="hexagon_field header_label_position_mid" points="285,0 300,21 285,42 15,42 0,21 15,0"></polygon>
-        <text x="75" y="27"  class="header_label_position_mid" font-size="20px">Power - last hour</text>
+        <polygon class="hexagon_field header_label_position_long" points="385,0 400,21 385,42 15,42 0,21 15,0"></polygon>
+        <text x="75" y="27"  class="header_label_position_long" font-size="20px">CPU-Power - last 60 minutes</text>
     </svg>
     <div class="tile_content_div" id="minutes_graph"></div>
 </div>
 
 <div class="tile_div">
     <svg width="100%" height="68">
-        <polygon class="hexagon_field header_label_position_mid" points="285,0 300,21 285,42 15,42 0,21 15,0"></polygon>
-        <text x="80" y="27"  class="header_label_position_mid" font-size="20px">Power - last day</text>
+        <polygon class="hexagon_field header_label_position_long" points="385,0 400,21 385,42 15,42 0,21 15,0"></polygon>
+        <text x="80" y="27"  class="header_label_position_long" font-size="20px">CPU-Power - last 24 hours</text>
     </svg>
     <div class="tile_content_div" id="hours_graph"></div>
 </div>
 
 <div class="tile_div">
     <svg width="100%" height="68">
-        <polygon class="hexagon_field header_label_position_mid" points="285,0 300,21 285,42 15,42 0,21 15,0"></polygon>
-        <text x="75" y="27"  class="header_label_position_mid" font-size="20px">Power - last year</text>
+        <polygon class="hexagon_field header_label_position_long" points="385,0 400,21 385,42 15,42 0,21 15,0"></polygon>
+        <text x="75" y="27"  class="header_label_position_long" font-size="20px">CPU-Power - last 365 days</text>
     </svg>
     <div class="tile_content_div" id="days_graph"></div>
 </div>
@@ -60,7 +60,7 @@ limitations under the License. -->
 getPowerData_request();
 
 /**
- * Send request to backend to get a list of all segment-template
+ * Send request request power-consumption-data from azuki
  */
 function getPowerData_request()
 {
@@ -69,38 +69,44 @@ function getPowerData_request()
         return;
     }
 
-    var powerRequestConnection = new XMLHttpRequest();
-    powerRequestConnection.open("GET", "/control/azuki/v1/power_consumption", true);
-    powerRequestConnection.setRequestHeader("X-Auth-Token", token);
+    // create request
+    let requestConnection = new XMLHttpRequest();
+    requestConnection.open("GET", "/control/azuki/v1/power_consumption", true);
+    requestConnection.setRequestHeader("X-Auth-Token", token);
 
-    powerRequestConnection.onload = function(e) 
+    // create requeset
+    requestConnection.onload = function(e) 
     {
-        if(powerRequestConnection.status != 200) 
+        if(requestConnection.status != 200) 
         {
             // TODO: error-popup
-            return false;
+            console.log("Failed to request power-consumption from azuki with response-code: " 
+                        + requestConnection.status);
+            return;
         }
 
-        const jsonContent = JSON.parse(powerRequestConnection.responseText);
-        //console.log(jsonContent);
+        const jsonContent = JSON.parse(requestConnection.responseText);
+
         const seconds = jsonContent.power.seconds;
-        showData(seconds, "seconds_graph", "seconds");
+        showData(seconds, "seconds_graph", "seconds", "Power consumpton in W");
 
         const minutes = jsonContent.power.minutes;
-        showData(minutes, "minutes_graph", "minutes");
+        showData(minutes, "minutes_graph", "minutes", "Power consumpton in W");
 
         const hours = jsonContent.power.hours;
-        showData(hours, "hours_graph", "hours");
+        showData(hours, "hours_graph", "hours", "Power consumpton in W");
 
         const days = jsonContent.power.days;
-        showData(days, "days_graph", "days");
-    };
-    powerRequestConnection.onerror = function(e) 
-    {
-        console.log("Failed to load list of segment-templates.");
+        showData(days, "days_graph", "days", "Power consumpton in W");
     };
 
-    powerRequestConnection.send(null);
+    // callback for fail
+    requestConnection.onerror = function(e) 
+    {
+        console.log("Failed to request power-consumption from azuki.");
+    };
+
+    requestConnection.send(null);
 }
 
 </script>

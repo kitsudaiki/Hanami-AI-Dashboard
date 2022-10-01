@@ -385,3 +385,8 @@ Diagramms
 .diagram_path {
     stroke: var(--color-highlight);
 }
+
+.diagram_grid {
+    stroke: 1px;
+    color: var(--color-text-light);
+}

@@ -46,6 +46,10 @@ limitations under the License. -->
                 <br><br><br>
                 <h2><label id="delete_label_text" class="delete_label_text"></label></h2>
             </center>
+            <div id="delete_alert_box" class="alert">
+                <span class="closebtn" onclick="clearAlertBox('delete');">&times;</span> 
+                <label id="delete_alert_text_label"></label>
+            </div>
         </div>
         <div class="modal_footer_part">
             <center>
@@ -89,34 +93,43 @@ limitations under the License. -->
     var listRequest = "/control/shiori/v1/request_result/all";
     var additionalButtons = [ 'onclick="downloadResult(this.value)">Download</button>' ];
 
+    clearAlertBox("delete");
+    listObjects_request();
+
+    /**
+     * Download the result of a request from Shiori
+     *
+     * @param {requestResultUuid} UUID of the request-result, which should be downloaded
+     */
     function downloadResult(requestResultUuid)
     {
+        clearAlertBox("delete");
         const token = getAndCheckToken();
         if(token == "") {
             return;
         }
-        
-        const request = "/control/shiori/v1/request_result?uuid=" + requestResultUuid;
-        var xmlHttp = new XMLHttpRequest();
-        xmlHttp.open("GET", request, true);
-        xmlHttp.setRequestHeader("X-Auth-Token", token);
 
-        xmlHttp.onload = function(e) 
+        // create request
+        const request = "/control/shiori/v1/request_result?uuid=" + requestResultUuid;
+        let requestConnection = new XMLHttpRequest();
+        requestConnection.open("GET", request, true);
+        requestConnection.setRequestHeader("X-Auth-Token", token);
+
+        // callback for success
+        requestConnection.onload = function(e) 
         {
-            if(xmlHttp.status != 200) {
-                return "";
+            if(requestConnection.status != 200) {
+                return false;
             }
 
-            var resultJson = JSON.parse(xmlHttp.responseText);
-
             // write data to file
-            var saveByteArray = (function () {
+            let saveByteArray = (function () {
                 var a = document.createElement("a");
                 document.body.appendChild(a);
                 a.style = "display: none";
                 return function (data, name) {
-                    var blob = new Blob(data, {type: "octet/stream"});
-                    var url = window.URL.createObjectURL(blob);
+                    let blob = new Blob(data, {type: "octet/stream"});
+                    let url = window.URL.createObjectURL(blob);
                     a.href = url;
                     a.download = name;
                     a.click();
@@ -124,17 +137,16 @@ limitations under the License. -->
                 };
             }());
 
+            const resultJson = JSON.parse(requestConnection.responseText);
             saveByteArray([JSON.stringify(resultJson.data)], "result_" + resultJson.name + ".json");
         };
-        xmlHttp.onerror = function(e) 
+
+        // callback for fail
+        requestConnection.onerror = function(e) 
         {
-            console.log("Download documentation failed.");
+            console.log("Download request-result failed.");
         };
 
-        xmlHttp.send(null);
+        requestConnection.send(null);
     }
-
-    // inital creation of the segment-template-list when open the window
-    listObjects_request();
-
 </script>

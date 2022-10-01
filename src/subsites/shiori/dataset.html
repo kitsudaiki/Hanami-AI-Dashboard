@@ -20,7 +20,7 @@ limitations under the License. -->
 
 <svg width="100%" height="68">
     <polygon class="hexagon_field header_label_position_short" points="185,0 200,21 185,42 15,42 0,21 15,0"></polygon>
-    <text x="60" y="27"  class="header_label_position_short" font-size="20px">Datasets</text>
+    <text x="60" y="27"  class="header_label_position_short" font-size="20px">Data-sets</text>
 </svg>
 
 <div class="tile_content_div">
@@ -37,7 +37,7 @@ limitations under the License. -->
         <div class="modal_header_part">
             <svg width="100%" height="68" class="modal_header_position">
                 <polygon class="hexagon_field header_label_position_mid" points="285,0 300,21 285,42 15,42 0,21 15,0"></polygon>
-                <text x="62" y="27" class="header_label_position_mid" font-size="20px">Create new dataset</text>
+                <text x="62" y="27" class="header_label_position_mid" font-size="20px">Create new data-set</text>
             </svg>
         </div>
         <div class="modal_content_part">
@@ -55,7 +55,10 @@ limitations under the License. -->
                         <label class="modal_label" for="input_file">Input-file:</label>
                         <input type="file" id="input_file_field_csv" name="input_file"> 
                     </div>
-                    <label id="create_modal_error_message" class="modal_error_field"></label>
+                    <div id="create_csv_alert_box" class="alert">
+                        <span class="closebtn" onclick="clearAlertBox('create_csv');">&times;</span> 
+                        <label id="create_csv_alert_text_label"></label>
+                    </div>
                 </div>
                 <div id="mnist_upload_div" class="tabcontent">
                     <div id="input_fields">
@@ -69,7 +72,10 @@ limitations under the License. -->
                         <label class="modal_label" for="label_file">Label-file:</label>
                         <input type="file" id="label_file_field_mnist" name="label_file">
                     </div>
-                    <label id="create_modal_error_message" class="modal_error_field"></label>
+                    <div id="create_mnist_alert_box" class="alert">
+                        <span class="closebtn" onclick="clearAlertBox('create_mnist');">&times;</span> 
+                        <label id="create_mnist_alert_text_label"></label>
+                    </div>
                 </div>
             </div>
         </div>
@@ -95,16 +101,20 @@ limitations under the License. -->
         <div class="modal_header_part">
             <svg width="100%" height="68" class="modal_header_position">
                 <polygon class="hexagon_field header_label_position_short " points="185,0 200,21 185,42 15,42 0,21 15,0"></polygon>
-                <text x="35" y="27" class="header_label_position_short" font-size="20px">Delete dataset</text>
+                <text x="35" y="27" class="header_label_position_short" font-size="20px">Delete data-set</text>
             </svg>
         </div>
         <div id="delete_modal_content_part" class="modal_content_part">
             <center>
                 <br><br>
-                Do you really want to delete dataset:
+                Do you really want to delete data-set:
                 <br><br><br>
                 <h2><label id="delete_label_text" class="delete_label_text"></label></h2>
             </center>
+            <div id="delete_alert_box" class="alert">
+                <span class="closebtn" onclick="clearAlertBox('delete');">&times;</span> 
+                <label id="delete_alert_text_label"></label>
+            </div>
         </div>
         <div class="modal_footer_part">
             <center>
@@ -161,11 +171,9 @@ limitations under the License. -->
     var selectedModalTab = "csv";
     var additionalButtons = [];
 
-    // inital creation of the dataset-list when open the window
     listObjects_request();
-
-    // activate default-tab in the dataset-create window
     activateDefaultTab();
+    clearModalFields();
 
     function selectTab(event, name)
     {
@@ -184,11 +192,13 @@ limitations under the License. -->
      */
     function createObject_build()
     {
+        // precheck
         const token = getAndCheckToken();
         if(token == "") {
             return;
         }
 
+        // upload
         if(selectedModalTab === "csv") {
             uploadCsvDataset(token);
         }
@@ -202,6 +212,10 @@ limitations under the License. -->
      */
     function clearModalFields()
     {
+        clearAlertBox("delete");
+        clearAlertBox("create_csv");
+        clearAlertBox("create_mnist");
+
         document.getElementById('name_field_mnist').value = "";
         document.getElementById('name_field_csv').value = "";
     }

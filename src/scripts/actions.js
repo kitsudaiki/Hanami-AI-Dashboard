@@ -15,15 +15,17 @@
 // limitations under the License.
 
 /**
- * Generic function to open and handle the 
+ * Generic function to open and handle the modal to delete an object
  *
  * @param {identifier} ID or UUID of the entry, which should be deleted
  */
 function deleteObject(identifier)
 {
-    var modal = document.getElementById("delete_modal");
-    var acceptButton = document.getElementById("modal_delete_accept_button");
-    var cancelButton = document.getElementById("modal_delete_cancel_button");
+    clearAlertBox("delete");
+
+    let modal = document.getElementById("delete_modal");
+    let acceptButton = document.getElementById("modal_delete_accept_button");
+    let cancelButton = document.getElementById("modal_delete_cancel_button");
 
     document.getElementById('delete_label_text').innerText = identifier;
 
@@ -49,9 +51,9 @@ function deleteObject(identifier)
 }
 
 /**
- * Create and send request to delete a segment-template from the list
+ * Delete an object from the backend
  *
- * @param {uuid} UUID of the segment-template to delete
+ * @param {uuid} UUID of the object to delete
  */
 function deleteObject_request(uuid)
 {
@@ -61,9 +63,9 @@ function deleteObject_request(uuid)
         return;
     }
     
-    // create requeset
+    // create request
     const request = deleteRequest + uuid;
-    var deleteConnection = new XMLHttpRequest();
+    let deleteConnection = new XMLHttpRequest();
     deleteConnection.open("DELETE", request, true);
     deleteConnection.setRequestHeader("X-Auth-Token", token);
 
@@ -91,7 +93,7 @@ function deleteObject_request(uuid)
 }
 
 /**
- * Send request to backend to get a list of all segment-template
+ * Send request to backend to get a list of all objects of a specific type
  */
 function listObjects_request()
 {
@@ -101,8 +103,8 @@ function listObjects_request()
         return;
     }
 
-    // create requeset
-    var listRequestConnection = new XMLHttpRequest();
+    // create request
+    let listRequestConnection = new XMLHttpRequest();
     listRequestConnection.open("GET", listRequest, true);
     listRequestConnection.setRequestHeader("X-Auth-Token", token);
 
@@ -112,7 +114,7 @@ function listObjects_request()
         if(listRequestConnection.status != 200) 
         {
             // TODO: error-popup
-            return false;
+            return;
         }
 
         const jsonContent = JSON.parse(listRequestConnection.responseText);
@@ -133,9 +135,9 @@ function listObjects_request()
  */
 function createObject() 
 {
-    var modal = document.getElementById("create_modal");
-    var acceptButton = document.getElementById("modal_create_accept_button");
-    var cancelButton = document.getElementById("modal_create_cancel_button");
+    let modal = document.getElementById("create_modal");
+    let acceptButton = document.getElementById("modal_create_accept_button");
+    let cancelButton = document.getElementById("modal_create_cancel_button");
 
     // handle accept-button
     acceptButton.onclick = function() {
@@ -161,7 +163,11 @@ function createObject()
 }
 
 /**
- * Send request to backend to create a new segmentTemplate
+ * Create a new object in the backend
+ *
+ * @param {payload} json-string with information to create the object
+ * @param {requestPath} request-path to create the object
+ * @param {modalDiv} create-modal, which triggered the create-request
  */
 function createObject_request(payload, requestPath, modalDiv)
 {
@@ -170,8 +176,8 @@ function createObject_request(payload, requestPath, modalDiv)
         return;
     }
 
-    // create requeset
-    var createRequestConnection = new XMLHttpRequest();
+    // create request
+    let createRequestConnection = new XMLHttpRequest();
     createRequestConnection.open("POST", requestPath, true);
     createRequestConnection.setRequestHeader("X-Auth-Token", token);
 
@@ -180,27 +186,34 @@ function createObject_request(payload, requestPath, modalDiv)
     {
         if(createRequestConnection.status != 200) 
         {
+            console.log("Failed to create object with status: " + createRequestConnection.status);
             showErrorInModal("create", createRequestConnection.responseText);
-            return false;
+            return;
         }
 
         // handle reqponse
         clearModalFields();
         listObjects_request();
 
-        var modal = document.getElementById(modalDiv);
+        let modal = document.getElementById(modalDiv);
         modal.style.display = "none";
     };
 
     // callback for fail
     createRequestConnection.onerror = function(e) 
     {
-        console.log("Failed to create segmentTemplate.");
+        console.log("Failed to create object.");
     };
 
     createRequestConnection.send(payload);
 }
 
+/**
+ * Fill dropdown-menu with values, which are requestd from the backend
+ *
+ * @param {dropdownDiv} ID of the dev, which should be filled with the requested set of values
+ * @param {dropdownListRequest} request-path to get list of values from the backend to fill the dropdown-list
+ */
 function fillDropdownList(dropdownDiv, dropdownListRequest)
 {     
     // get and check token
@@ -209,8 +222,8 @@ function fillDropdownList(dropdownDiv, dropdownListRequest)
         return;
     }
 
-    // create requeset
-    var listRequestConnection = new XMLHttpRequest();
+    // create request
+    let listRequestConnection = new XMLHttpRequest();
     listRequestConnection.open("GET", dropdownListRequest, true);
     listRequestConnection.setRequestHeader("X-Auth-Token", token);
 
@@ -220,7 +233,7 @@ function fillDropdownList(dropdownDiv, dropdownListRequest)
         if(listRequestConnection.status != 200) 
         {
             showErrorInModal("create", listRequestConnection.responseText);
-            return false;
+            return;
         }
 
         // remove the old dropdown-list to create a new one
@@ -232,14 +245,14 @@ function fillDropdownList(dropdownDiv, dropdownListRequest)
         select.name = dropdownDiv + "_select";
         select.id = dropdownDiv + "_select";
 
-        var idPos = 0;
-        var namePos = 0;
+        let idPos = 0;
+        let namePos = 0;
 
         const content = JSON.parse(listRequestConnection.responseText);
 
         // search for the column, which has the title "name" and get its position
         const headerContent = content.header;
-        for(var i = 0; i < headerContent.length; i++) 
+        for(let i = 0; i < headerContent.length; i++) 
         {
             if(headerContent[i] === "name") 
             {
@@ -250,7 +263,7 @@ function fillDropdownList(dropdownDiv, dropdownListRequest)
 
         // fill menu with name and id of all entries
         const bodyContent = content.body;
-        for(var row = 0; row < bodyContent.length; row++) 
+        for(let row = 0; row < bodyContent.length; row++) 
         {
             const id = bodyContent[row][idPos];
             const name = bodyContent[row][namePos];
@@ -273,6 +286,12 @@ function fillDropdownList(dropdownDiv, dropdownListRequest)
     listRequestConnection.send(null);
 }
 
+/**
+ * Fill dropdown-menu with a static list of values
+ *
+ * @param {dropdownDiv} ID of the dev, which should be filled with the static set of values
+ * @param {values} List of values to fill into the dropdown-list
+ */
 function fillStaticDropdownList(dropdownDiv, values)
 {     
     // remove the old dropdown-list to create a new one
@@ -309,7 +328,7 @@ function fillUserProjectDropdownList(dropdownDiv)
         return;
     }
 
-    // create requeset
+    // create request
     var listRequestConnection = new XMLHttpRequest();
     listRequestConnection.open("GET", "/control/misaki/v1/project/user", true);
     listRequestConnection.setRequestHeader("X-Auth-Token", authToken);
@@ -320,7 +339,7 @@ function fillUserProjectDropdownList(dropdownDiv)
         if(listRequestConnection.status != 200) 
         {
             showErrorInModal("create", listRequestConnection.responseText);
-            return false;
+            return;
         }
 
         // remove the old dropdown-list to create a new one
@@ -354,7 +373,6 @@ function fillUserProjectDropdownList(dropdownDiv)
         }
 
         document.getElementById(dropdownDiv).appendChild(select);
-
     };
 
     // callback for fail

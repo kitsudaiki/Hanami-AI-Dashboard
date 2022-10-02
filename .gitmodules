@@ -4,3 +4,6 @@
 [submodule "src/HanamiAI-Dashboard-Dependencies"]
 	path = src/HanamiAI-Dashboard-Dependencies
 	url = git@github.com:kitsudaiki/HanamiAI-Dashboard-Dependencies.git
+[submodule "src/libHanamiAiSdk"]
+	path = src/libHanamiAiSdk
+	url = git@github.com:kitsudaiki/libHanamiAiSdk.git

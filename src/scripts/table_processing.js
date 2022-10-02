@@ -93,8 +93,6 @@ function Body(bodyContent, selector, colIds, additionalButtons)
             buttons += '<button class="table_side_button" value="' + rowContent[0] + '" ';
             buttons += additionalButtons[i];
         }
-        buttons += '<button class="table_side_button" value="' + rowContent[0] + '" ';
-        buttons += 'onclick="deleteObject(this.value)">Delete</button>';
         let input = $(buttons);
 
         // additional buttons should be aligned at the right side

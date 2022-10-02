@@ -59,10 +59,10 @@ limitations under the License. -->
         </div>
         <div class="modal_footer_part">
             <center>
-                <button id="modal_create_accept_button" class="generic_svg_button modal_accept_button">
+                <button id="create_modal_accept_button" class="generic_svg_button modal_accept_button">
                     <img class="generic_svg_on_button" src="/HanamiAI-Dashboard-Dependencies/bootstrap_icons/check-lg.svg">
                 </button>
-                <button id="modal_create_cancel_button" class="generic_svg_button">
+                <button id="create_modal_cancel_button" class="generic_svg_button">
                     <img class="generic_svg_on_button" src="/HanamiAI-Dashboard-Dependencies/bootstrap_icons/x-lg.svg">
                 </button>
             </center>
@@ -96,10 +96,10 @@ limitations under the License. -->
         </div>
         <div class="modal_footer_part">
             <center>
-                <button id="modal_delete_accept_button" class="generic_svg_button modal_accept_button">
+                <button id="delete_modal_accept_button" class="generic_svg_button modal_accept_button">
                     <img class="generic_svg_on_button" src="/HanamiAI-Dashboard-Dependencies/bootstrap_icons/check-lg.svg">
                 </button>
-                <button id="modal_delete_cancel_button" class="generic_svg_button">
+                <button id="delete_modal_cancel_button" class="generic_svg_button">
                     <img class="generic_svg_on_button" src="/HanamiAI-Dashboard-Dependencies/bootstrap_icons/x-lg.svg">
                 </button>
             </center>
@@ -133,10 +133,10 @@ limitations under the License. -->
         </div>
         <div class="modal_footer_part">
             <center>
-                <button id="modal_create_snapshot_accept_button" class="generic_svg_button modal_accept_button">
+                <button id="create_snapshot_modal_accept_button" class="generic_svg_button modal_accept_button">
                     <img class="generic_svg_on_button" src="/HanamiAI-Dashboard-Dependencies/bootstrap_icons/check-lg.svg">
                 </button>
-                <button id="modal_create_snapshot_cancel_button" class="generic_svg_button">
+                <button id="create_snapshot_modal_cancel_button" class="generic_svg_button">
                     <img class="generic_svg_on_button" src="/HanamiAI-Dashboard-Dependencies/bootstrap_icons/x-lg.svg">
                 </button>
             </center>
@@ -170,10 +170,10 @@ limitations under the License. -->
         </div>
         <div class="modal_footer_part">
             <center>
-                <button id="modal_restore_snapshot_accept_button" class="generic_svg_button modal_accept_button">
+                <button id="restore_snapshot_modal_accept_button" class="generic_svg_button modal_accept_button">
                     <img class="generic_svg_on_button" src="/HanamiAI-Dashboard-Dependencies/bootstrap_icons/check-lg.svg">
                 </button>
-                <button id="modal_restore_snapshot_cancel_button" class="generic_svg_button">
+                <button id="restore_snapshot_modal_cancel_button" class="generic_svg_button">
                     <img class="generic_svg_on_button" src="/HanamiAI-Dashboard-Dependencies/bootstrap_icons/x-lg.svg">
                 </button>
             </center>
@@ -222,151 +222,22 @@ limitations under the License. -->
 <script src="/scripts/table_processing.js"></script>
 <script src="/scripts/common.js"></script>
 <script src="/scripts/actions.js"></script>
+<script src="/libHanamiAiSdk/javascript/cluster.js"></script> 
 <script>
-    var headerMapping = new Map();
-    headerMapping.set("uuid", "UUID");
-    headerMapping.set("visibility", "Visibility");
-    headerMapping.set("name", "Name");
 
-    var deleteRequest = "/control/kyouko/v1/cluster?uuid=";
-    var listRequest = "/control/kyouko/v1/cluster/all";
-    var createRequest = "/control/kyouko/v1/cluster";
-    var additionalButtons = [ 'onclick="switchToTasks(this.value)">Tasks</button>',
-                              'onclick="createClusterSnapshot(this.value)">Snapshot</button>',
-                              'onclick="restoreClusterSnapshot(this.value)">Restore</button>'];
-
-    clearModalFields();
-
-
+    /**
+     *
+     */
     function switchToTasks(clusterUuid)
     {
         selectedCluster = clusterUuid;
         $("#content_div").load("/subsites/kyouko/task.html")
     }
     
-    // inital creation of the segment-template-list when open the window
-    listObjects_request();
-    fillDropdownList("dropdown_snapshot_div", "/control/shiori/v1/cluster_snapshot/all");
-
-
-    function createObject_build()
-    {
-        const name = document.getElementById('name_field').value;
-        const templateStr = document.getElementById('template_field').value;
-
-        if(name == "") 
-        {
-            showErrorInModal("create", "Name is missing");
-            return;
-        }
-
-        if(templateStr == "") 
-        {
-            showErrorInModal("create", "Template is missing");
-            return;
-        }
-       
-        // create request-content
-        let reqContent = "{\"name\":\"" + name;
-        reqContent += "\",\"cluster_definition\":" + templateStr + "}";
-        clearModalFields();
-
-        createObject_request(reqContent, createRequest, "create_modal");
-    }
-
-    function createClusterSnaphost_build()
-    {
-        const name = document.getElementById('snapshot_name_field').value;
-        if(name == "") 
-        {
-            showErrorInModal("create", "Name is missing");
-            return;
-        }
-       
-        // create request-content
-        let reqContent = "{\"name\":\"" + name;
-        reqContent += "\",\"cluster_uuid\":" + selectedCluster + "}";
-        const clusterSnapshotCreateReq = "/control/kyouko/v1/cluster/save";
-
-        createObject_request(reqContent, clusterSnapshotCreateReq, "create_snapshot_modal");
-    }
-
-
-    function createClusterSnapshot(clusterUuid) 
-    {
-        clearModalFields();
-        selectedCluster = clusterUuid;
-        let modal = document.getElementById("create_snapshot_modal");
-        let acceptButton = document.getElementById("modal_create_snapshot_accept_button");
-        let cancelButton = document.getElementById("modal_create_snapshot_cancel_button");
-
-        // handle accept-button
-        acceptButton.onclick = function() {
-            createClusterSnaphost_build();
-        }
-
-        // handle cancel-button
-        cancelButton.onclick = function() {
-            modal.style.display = "none";
-        } 
-
-        // handle click outside of the window
-        window.onclick = function(event) 
-        {
-            if(event.target == modal) 
-            {
-                clearModalFields();
-                modal.style.display = "none";
-            }
-        } 
-
-        modal.style.display = "block";
-    }
-
-    function restoreClusterSnaphost_build()
-    {  
-        // create request-content
-        let reqContent = "{\"snapshot_uuid\":\"" + getDropdownValue("dropdown_snapshot_div");
-        reqContent += "\",\"cluster_uuid\":" + selectedCluster + "}";
-        const clusterSnapshotRestoreReq = "/control/kyouko/v1/cluster/load";
-
-        createObject_request(reqContent, clusterSnapshotRestoreReq, "restore_snapshot_modal");
-    }
-
-    function restoreClusterSnapshot(clusterUuid) 
-    {
-        clearModalFields();
-
-        selectedCluster = clusterUuid;
-        let modal = document.getElementById("restore_snapshot_modal");
-        let acceptButton = document.getElementById("modal_restore_snapshot_accept_button");
-        let cancelButton = document.getElementById("modal_restore_snapshot_cancel_button");
-
-        // handle accept-button
-        acceptButton.onclick = function() {
-            restoreClusterSnaphost_build();
-        }
-
-        // handle cancel-button
-        cancelButton.onclick = function() {
-            modal.style.display = "none";
-        } 
-
-        // handle click outside of the window
-        window.onclick = function(event) 
-        {
-            if(event.target == modal) 
-            {
-                clearModalFields();
-                modal.style.display = "none";
-            }
-        } 
-
-        modal.style.display = "block";
-    }
-
-
-    function clearModalFields()
+    /**
+     *
+     */
+    var clearModalFields = function()
     {
         document.getElementById('name_field').value = "";
         document.getElementById('template_field').value = "";
@@ -378,6 +249,108 @@ limitations under the License. -->
         clearAlertBox("restore_snapshot");
     }
 
-    document.getElementById("create_cluster_button").addEventListener("click", createObject, false);
+    /**
+     *
+     */
+    var listClusters = function() 
+    {
+        listClusters_request(function(jsonContent) 
+        {
+            var headerMapping = new Map();
+            headerMapping.set("uuid", "UUID");
+            headerMapping.set("visibility", "Visibility");
+            headerMapping.set("name", "Name");
+
+            let additionalButtons = [ 'onclick="switchToTasks(this.value)">Tasks</button>',
+                                      'onclick="saveClusterSnapshot(this.value)">Snapshot</button>',
+                                      'onclick="restoreClusterSnapshot(this.value)">Restore</button>',
+                                      'onclick="openDeleteModal(deleteResults, this.value)">Delete</button>' ];
+            constructTable(jsonContent, headerMapping, '#table', additionalButtons);
+        },
+        getAndCheckToken());
+    }
+
+    /**
+     *
+     */
+    var deleteResults = function(identifier)
+    {
+        deleteCluster_request(listClusters, identifier, getAndCheckToken());
+    }
+
+    /**
+     *
+     */
+    var createCluster = function()
+    {
+        const name = document.getElementById('name_field').value;
+        const templateStr = document.getElementById('template_field').value;
+
+        if(name == "") 
+        {
+            showErrorInModal("create", "Name is missing");
+            return false;
+        }
+
+        if(templateStr == "") 
+        {
+            showErrorInModal("create", "Template is missing");
+            return false;
+        }
+
+        createCluster_request(listClusters, name, templateStr, getAndCheckToken());
+        return true;
+    }
+
+    /**
+     *
+     */
+    var saveClusterSnapshot = function(clusterUuid)
+    {
+        openGenericModal(
+            function() 
+            {
+                const name = document.getElementById('snapshot_name_field').value;
+                if(name == "") 
+                {
+                    showErrorInModal("create_snapshot", "Name is missing");
+                    return false;
+                }
+               
+                saveCluster_request(listClusters, name, clusterUuid, getAndCheckToken());
+                return true;
+            }, 
+            "create_snapshot_modal", 
+            clearModalFields);
+    }
+
+    /**
+     *
+     */
+    var restoreClusterSnapshot = function(clusterUuid) 
+    {
+        fillDropdownList("dropdown_snapshot_div", "/control/shiori/v1/cluster_snapshot/all");
+        openGenericModal(
+            function() 
+            {
+                restoreCluster_request(listClusters, 
+                                       getDropdownValue("dropdown_snapshot_div"), 
+                                       clusterUuid, 
+                                       getAndCheckToken());
+                return true;
+            }, 
+            "restore_snapshot_modal", 
+            clearModalFields);
+    }
+
+    /**
+     *
+     */
+    document.getElementById("create_cluster_button").onclick = function() {
+        openGenericModal(createCluster, "create_modal", clearModalFields);
+    }
+        
+    listClusters();
+    clearModalFields();
 
 </script>

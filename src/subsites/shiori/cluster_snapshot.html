@@ -93,18 +93,39 @@ limitations under the License. -->
 <script src="/scripts/table_processing.js"></script>
 <script src="/scripts/common.js"></script>
 <script src="/scripts/actions.js"></script>
+<script src="/libHanamiAiSdk/javascript/snapshot.js"></script> 
 <script>
-    var headerMapping = new Map();
-    headerMapping.set("uuid", "UUID");
-    headerMapping.set("name", "Name");
-    headerMapping.set("type", "Type");
-    headerMapping.set("visibility", "Visibility");
 
-    var deleteRequest = "/control/shiori/v1/cluster_snapshot?uuid=";
-    var listRequest = "/control/shiori/v1/cluster_snapshot/all";
-    var additionalButtons = [];
+    /**
+     *
+     */
+    var listClusterSnapshots = function() 
+    {
+        listClusterSnapshots_request(
+            function(jsonContent) 
+            {
+                var headerMapping = new Map();
+                headerMapping.set("uuid", "UUID");
+                headerMapping.set("name", "Name");
+                headerMapping.set("type", "Type");
+                headerMapping.set("visibility", "Visibility");
 
-    clearAlertBox("delete");
-    listObjects_request();
+                let additionalButtons = [ 'onclick="openDeleteModal(deleteClusterSnapshots, this.value)">Delete</button>' ];
+                constructTable(jsonContent, headerMapping, '#table', additionalButtons);
+            },
+            getAndCheckToken()
+        );
+    }
+        
+    /**
+     *
+     */
+    var deleteClusterSnapshots = function(identifier)
+    {
+        clearAlertBox("delete");
+        deleteClusterSnapshot_request(listResults, identifier, getAndCheckToken());
+    }
+
+    listClusterSnapshots();
 
 </script>

@@ -55,10 +55,10 @@ limitations under the License. -->
         </div>
         <div class="modal_footer_part">
             <center>
-                <button id="modal_create_accept_button" class="generic_svg_button modal_accept_button">
+                <button id="create_modal_accept_button" class="generic_svg_button modal_accept_button">
                     <img class="generic_svg_on_button" src="/HanamiAI-Dashboard-Dependencies/bootstrap_icons/check-lg.svg">
                 </button>
-                <button id="modal_create_cancel_button" class="generic_svg_button">
+                <button id="create_modal_cancel_button" class="generic_svg_button">
                     <img class="generic_svg_on_button" src="/HanamiAI-Dashboard-Dependencies/bootstrap_icons/x-lg.svg">
                 </button>
             </center>
@@ -92,10 +92,10 @@ limitations under the License. -->
         </div>
         <div class="modal_footer_part">
             <center>
-                <button id="modal_delete_accept_button" class="generic_svg_button modal_accept_button">
+                <button id="delete_modal_accept_button" class="generic_svg_button modal_accept_button">
                     <img class="generic_svg_on_button" src="/HanamiAI-Dashboard-Dependencies/bootstrap_icons/check-lg.svg">
                 </button>
-                <button id="modal_delete_cancel_button" class="generic_svg_button">
+                <button id="delete_modal_cancel_button" class="generic_svg_button">
                     <img class="generic_svg_on_button" src="/HanamiAI-Dashboard-Dependencies/bootstrap_icons/x-lg.svg">
                 </button>
             </center>
@@ -135,25 +135,50 @@ limitations under the License. -->
 <script src="/scripts/table_processing.js"></script>
 <script src="/scripts/common.js"></script>
 <script src="/scripts/actions.js"></script>
+<script src="/libHanamiAiSdk/javascript/project.js"></script> 
 <script>
-    // mapping for project-table
-    var headerMapping = new Map();
-    headerMapping.set("id", "ID");
-    headerMapping.set("name", "Name");
-    headerMapping.set("creator_id", "Creator-ID");
-
-    var deleteRequest = "/control/misaki/v1/project?id=";
-    var listRequest = "/control/misaki/v1/project/all";
-    var createRequest = "/control/misaki/v1/project";
-    var additionalButtons = [];
-
-    clearModalFields();
-    listObjects_request();
-
+        
     /**
-     * Send request to backend to create a new project
+     *
      */
-    function createObject_build()
+    var clearModalFields = function()
+    {
+        clearAlertBox("delete");
+        clearAlertBox("create");
+
+        document.getElementById('id_field').value = "";
+        document.getElementById('name_field').value = "";
+    }
+    
+    /**
+     *
+     */
+    var listProjects = function() 
+    {
+        listProjects_request(function(jsonContent) 
+        {
+            var headerMapping = new Map();
+            headerMapping.set("id", "ID");
+            headerMapping.set("name", "Name");
+            headerMapping.set("creator_id", "Creator-ID");
+            var additionalButtons = ['onclick="openDeleteModal(deleteProject, this.value)">Delete</button>' ];
+            constructTable(jsonContent, headerMapping, '#table', additionalButtons);
+        },
+        getAndCheckToken());
+    }
+    
+    /**
+     *
+     */
+    var deleteProject = function(identifier)
+    {
+        deleteProject_request(listProjects, identifier, getAndCheckToken());
+    }
+        
+    /**
+     *
+     */
+    var createProject = function()
     {
         const name = document.getElementById('name_field').value;
         const id = document.getElementById('id_field').value;
@@ -169,24 +194,17 @@ limitations under the License. -->
             return;
         }
 
-        // create request-content
-        const reqContent = "{id:\"" + id + "\",name:\"" + name + "\"}";
-
-        createObject_request(reqContent, createRequest, "create_modal");
+        createProject_request(listProjects, id, name, getAndCheckToken());
+        return true;
     }
 
     /**
-     * Clear all fields of the user-create-modal
+     *
      */
-    function clearModalFields()
-    {
-        clearAlertBox("delete");
-        clearAlertBox("create");
-
-        document.getElementById('id_field').value = "";
-        document.getElementById('name_field').value = "";
+    document.getElementById("create_project_button").onclick = function() {
+        openGenericModal(createProject, "create_modal", clearModalFields);
     }
-
-    document.getElementById("create_project_button").addEventListener("click", createObject, false);
+    clearModalFields();
+    listProjects();
     
 </script>

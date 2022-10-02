@@ -63,10 +63,10 @@ limitations under the License. -->
         </div>
         <div class="modal_footer_part">
             <center>
-                <button id="modal_create_accept_button" class="generic_svg_button modal_accept_button">
+                <button id="create_modal_accept_button" class="generic_svg_button modal_accept_button">
                     <img class="generic_svg_on_button" src="/HanamiAI-Dashboard-Dependencies/bootstrap_icons/check-lg.svg">
                 </button>
-                <button id="modal_create_cancel_button" class="generic_svg_button">
+                <button id="create_modal_cancel_button" class="generic_svg_button">
                     <img class="generic_svg_on_button" src="/HanamiAI-Dashboard-Dependencies/bootstrap_icons/x-lg.svg">
                 </button>
             </center>
@@ -100,10 +100,10 @@ limitations under the License. -->
         </div>
         <div class="modal_footer_part">
             <center>
-                <button id="modal_delete_accept_button" class="generic_svg_button modal_accept_button">
+                <button id="delete_modal_accept_button" class="generic_svg_button modal_accept_button">
                     <img class="generic_svg_on_button" src="/HanamiAI-Dashboard-Dependencies/bootstrap_icons/check-lg.svg">
                 </button>
-                <button id="modal_delete_cancel_button" class="generic_svg_button">
+                <button id="delete_modal_cancel_button" class="generic_svg_button">
                     <img class="generic_svg_on_button" src="/HanamiAI-Dashboard-Dependencies/bootstrap_icons/x-lg.svg">
                 </button>
             </center>
@@ -136,37 +136,48 @@ limitations under the License. -->
 <script src="/scripts/table_processing.js"></script>
 <script src="/scripts/common.js"></script>
 <script src="/scripts/actions.js"></script>
+<script src="/libHanamiAiSdk/javascript/task.js"></script> 
 <script>
-    var headerMapping = new Map();
-    headerMapping.set("uuid", "UUID");
-    headerMapping.set("state", "State");
-    headerMapping.set("percentage", "Progress");
-    headerMapping.set("queued", "Queued-Time");
-    headerMapping.set("start", "Start-Time");
-    headerMapping.set("end", "End-Time");
+    
+    /**
+     *
+     */
+    var clearModalFields = function()
+    {
+        clearAlertBox("delete");
+        clearAlertBox("create");
 
-    var deleteRequest = "/control/kyouko/v1/task?cluster_uuid=" + selectedCluster + "&uuid=";
-    var listRequest = "/control/kyouko/v1/task/all?cluster_uuid=" + selectedCluster;
-    var createRequest = "/control/kyouko/v1/task";
-    var additionalButtons = [];
+        document.getElementById('name_field').value = "";
+    }
+    
+    /**
+     *
+     */
+    var listTasks = function() 
+    {
+        listTasks_request(
+            function(jsonContent) 
+            {
+                let headerMapping = new Map();
+                headerMapping.set("uuid", "UUID");
+                headerMapping.set("state", "State");
+                headerMapping.set("percentage", "Progress");
+                headerMapping.set("queued", "Queued-Time");
+                headerMapping.set("start", "Start-Time");
+                headerMapping.set("end", "End-Time");
 
-    var taskTypes = ["learn", "request"];
-    var taskDatasetTypes = ["image", "table"];
-
-    clearAlertBox("delete");
-    clearAlertBox("create");
-
-    // inital creation of the segment-template-list when open the window
-    listObjects_request();
-
-    fillDropdownList("dropdown_div", "/control/shiori/v1/data_set/all");
-    fillStaticDropdownList("dropdown_taskType_div", taskTypes);
-    fillStaticDropdownList("dropdown_datasetType_div", taskDatasetTypes);
+                let additionalButtons = [];
+                constructTable(jsonContent, headerMapping, '#table', additionalButtons);
+            },
+            selectedCluster,
+            getAndCheckToken()
+        );
+    }
 
     /**
-     * Send request to backend to create a new segmentTemplate
+     *
      */
-    function createObject_build()
+    var createTask = function()
     {
         const name = document.getElementById('name_field').value;
         if(name == "") 
@@ -175,27 +186,32 @@ limitations under the License. -->
             return;
         }
 
-        // update create-request-path, because different tasks have a different path
-        createRequest = "/control/kyouko/v1/task";
-        createRequest += "/" + getDropdownValue("dropdown_datasetType_div");
-        createRequest += "/" + getDropdownValue("dropdown_taskType_div");
+        createTask_request(listTasks, 
+                           name, 
+                           selectedCluster, 
+                           getDropdownValue("dropdown_div"), 
+                           getDropdownValue("dropdown_datasetType_div"), 
+                           getDropdownValue("dropdown_taskType_div"), 
+                           getAndCheckToken());
 
-        // create request-content
-        var reqContent = "{\"name\":\"" + name
-                         + "\",\"cluster_uuid\":\"" + selectedCluster
-                         + "\",\"data_set_uuid\":\"" + getDropdownValue("dropdown_div") + "\"}";
-
-        createObject_request(reqContent, createRequest, "create_modal");
+        return true;
     }
 
-    /**
-     * Clear all fields of the segment-template-create-modal
-     */
-    function clearModalFields()
-    {
-        document.getElementById('name_field').value = "";
+
+    document.getElementById("create_task_button").onclick = function() {
+        openGenericModal(createTask, "create_modal", clearModalFields);
     }
 
-    document.getElementById("create_task_button").addEventListener("click", createObject, false);
+        
+    listTasks();
+    clearModalFields();
+
+    var taskTypes = ["learn", "request"];
+    var taskDatasetTypes = ["image", "table"];
+
+    fillDropdownList("dropdown_div", "/control/shiori/v1/data_set/all");
+    fillStaticDropdownList("dropdown_taskType_div", taskTypes);
+    fillStaticDropdownList("dropdown_datasetType_div", taskDatasetTypes);
+    
 
 </script>

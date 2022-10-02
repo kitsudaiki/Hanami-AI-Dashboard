@@ -55,58 +55,28 @@ limitations under the License. -->
 <!--=============================================================================-->
 
 <script src="/scripts/diagrams.js"></script>
+<script src="/libHanamiAiSdk/javascript/common.js"></script>  
+<script src="/libHanamiAiSdk/javascript/measurements.js"></script>  
 <script>
 
-getTemperatureData_request();
-
 /**
- * Send request request temperature-production-data from azuki
+ *
  */
-function getTemperatureData_request()
-{
-    const token = getAndCheckToken();
-    if(token == "") {
-        return;
-    }
-
-    // create request
-    let requestConnection = new XMLHttpRequest();
-    requestConnection.open("GET", "/control/azuki/v1/temperature_production", true);
-    requestConnection.setRequestHeader("X-Auth-Token", token);
-
-    // create requeset
-    requestConnection.onload = function(e) 
+getTemperatureData_request(function(thermalData)
     {
-        if(requestConnection.status != 200) 
-        {
-            // TODO: error-popup
-            console.log("Failed to request thermal-production from azuki with response-code: " 
-                        + requestConnection.status);
-            return;
-        }
-
-        const jsonContent = JSON.parse(requestConnection.responseText);
-
-        const seconds = jsonContent.temperature.seconds;
+        const seconds = thermalData.temperature.seconds;
         showData(seconds, "seconds_graph", "seconds", "Thermal production in °C");
 
-        const minutes = jsonContent.temperature.minutes;
+        const minutes = thermalData.temperature.minutes;
         showData(minutes, "minutes_graph", "minutes", "Thermal production in °C");
 
-        const hours = jsonContent.temperature.hours;
+        const hours = thermalData.temperature.hours;
         showData(hours, "hours_graph", "hours", "Thermal production in °C");
 
-        const days = jsonContent.temperature.days;
+        const days = thermalData.temperature.days;
         showData(days, "days_graph", "days", "Thermal production in °C");
-    };
-
-    // callback for fail
-    requestConnection.onerror = function(e) 
-    {
-        console.log("Failed to request thermal-production from azuki.");
-    };
-
-    requestConnection.send(null);
-}
+    },
+    getAndCheckToken()
+);
 
 </script>

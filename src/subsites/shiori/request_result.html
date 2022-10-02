@@ -91,10 +91,18 @@ limitations under the License. -->
 
     var deleteRequest = "/control/shiori/v1/request_result?uuid=";
     var listRequest = "/control/shiori/v1/request_result/all";
-    var additionalButtons = [ 'onclick="downloadResult(this.value)">Download</button>' ];
+    var additionalButtons = [ 'onclick="switchToGraphicalOutput(this.value)">Grahical Output</button>',
+                              'onclick="downloadResult(this.value)">Download</button>' ];
 
     clearAlertBox("delete");
     listObjects_request();
+
+
+    function switchToGraphicalOutput(requestResultUuid)
+    {
+        selectedRequestResult = requestResultUuid;
+        $("#content_div").load("/subsites/shiori/graphical_result.html")
+    }
 
     /**
      * Download the result of a request from Shiori
@@ -103,14 +111,13 @@ limitations under the License. -->
      */
     function downloadResult(requestResultUuid)
     {
-        clearAlertBox("delete");
         const token = getAndCheckToken();
         if(token == "") {
             return;
         }
 
         // create request
-        const request = "/control/shiori/v1/request_result?uuid=" + requestResultUuid;
+        const request = "/control/shiori/v1/request_result?uuid=" + selectedRequestResult;
         let requestConnection = new XMLHttpRequest();
         requestConnection.open("GET", request, true);
         requestConnection.setRequestHeader("X-Auth-Token", token);

@@ -237,9 +237,7 @@ limitations under the License. -->
 
     clearModalFields();
 
-    /**
-     * Send request to backend to create a new segmentTemplate
-     */
+
     function switchToTasks(clusterUuid)
     {
         selectedCluster = clusterUuid;
@@ -250,12 +248,9 @@ limitations under the License. -->
     listObjects_request();
     fillDropdownList("dropdown_snapshot_div", "/control/shiori/v1/cluster_snapshot/all");
 
-    /**
-     * Send request to backend to create a new segmentTemplate
-     */
+
     function createObject_build()
     {
-        clearModalFields();
         const name = document.getElementById('name_field').value;
         const templateStr = document.getElementById('template_field').value;
 
@@ -274,6 +269,7 @@ limitations under the License. -->
         // create request-content
         let reqContent = "{\"name\":\"" + name;
         reqContent += "\",\"cluster_definition\":" + templateStr + "}";
+        clearModalFields();
 
         createObject_request(reqContent, createRequest, "create_modal");
     }
@@ -295,8 +291,7 @@ limitations under the License. -->
         createObject_request(reqContent, clusterSnapshotCreateReq, "create_snapshot_modal");
     }
 
-    /**
-     */
+
     function createClusterSnapshot(clusterUuid) 
     {
         clearModalFields();
@@ -338,8 +333,6 @@ limitations under the License. -->
         createObject_request(reqContent, clusterSnapshotRestoreReq, "restore_snapshot_modal");
     }
 
-    /**
-     */
     function restoreClusterSnapshot(clusterUuid) 
     {
         clearModalFields();
@@ -372,9 +365,7 @@ limitations under the License. -->
         modal.style.display = "block";
     }
 
-    /**
-     * Clear all fields of the segment-template-create-modal
-     */
+
     function clearModalFields()
     {
         document.getElementById('name_field').value = "";

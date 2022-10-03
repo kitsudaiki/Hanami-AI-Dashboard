@@ -53,10 +53,10 @@ limitations under the License. -->
         </div>
         <div class="modal_footer_part">
             <center>
-                <button id="modal_delete_accept_button" class="generic_svg_button modal_accept_button">
+                <button id="delete_modal_accept_button" class="generic_svg_button modal_accept_button">
                     <img class="generic_svg_on_button" src="/HanamiAI-Dashboard-Dependencies/bootstrap_icons/check-lg.svg">
                 </button>
-                <button id="modal_delete_cancel_button" class="generic_svg_button">
+                <button id="delete_modal_cancel_button" class="generic_svg_button">
                     <img class="generic_svg_on_button" src="/HanamiAI-Dashboard-Dependencies/bootstrap_icons/x-lg.svg">
                 </button>
             </center>
@@ -83,21 +83,43 @@ limitations under the License. -->
 <script src="/scripts/table_processing.js"></script>
 <script src="/scripts/common.js"></script>
 <script src="/scripts/actions.js"></script>
-<script>
-    // mapping for result-table
-    var headerMapping = new Map();
-    headerMapping.set("uuid", "UUID");
-    headerMapping.set("name", "Name");
+<script src="/scripts/login.js"></script>
+<script src="/libHanamiAiSdk/javascript/common.js"></script>  
+<script src="/libHanamiAiSdk/javascript/request_result.js"></script>  
+<script>    
+    /**
+     *
+     */
+    var listResults = function() 
+    {
+        listResults_request(
+            function(jsonContent) 
+            {
+                let headerMapping = new Map();
+                headerMapping.set("uuid", "UUID");
+                headerMapping.set("name", "Name");
 
-    var deleteRequest = "/control/shiori/v1/request_result?uuid=";
-    var listRequest = "/control/shiori/v1/request_result/all";
-    var additionalButtons = [ 'onclick="switchToGraphicalOutput(this.value)">Grahical Output</button>',
-                              'onclick="downloadResult(this.value)">Download</button>' ];
-
-    clearAlertBox("delete");
-    listObjects_request();
-
-
+                let additionalButtons = [ 'onclick="switchToGraphicalOutput(this.value)">Grahical Output</button>',
+                                          'onclick="downloadResult(this.value)">Download</button>',
+                                          'onclick="openDeleteModal(deleteResults, this.value)">Delete</button>' ];
+                constructTable(jsonContent, headerMapping, '#table', additionalButtons);
+            },
+            getAndCheckToken()
+        );
+    }
+        
+    /**
+     *
+     */
+    var deleteResults = function(identifier)
+    {
+        clearAlertBox("delete");
+        deleteResult_request(listResults, identifier, getAndCheckToken());
+    }
+    
+    /**
+     *
+     */
     function switchToGraphicalOutput(requestResultUuid)
     {
         selectedRequestResult = requestResultUuid;
@@ -105,30 +127,12 @@ limitations under the License. -->
     }
 
     /**
-     * Download the result of a request from Shiori
      *
-     * @param {requestResultUuid} UUID of the request-result, which should be downloaded
      */
     function downloadResult(requestResultUuid)
     {
-        const token = getAndCheckToken();
-        if(token == "") {
-            return;
-        }
-
-        // create request
-        const request = "/control/shiori/v1/request_result?uuid=" + selectedRequestResult;
-        let requestConnection = new XMLHttpRequest();
-        requestConnection.open("GET", request, true);
-        requestConnection.setRequestHeader("X-Auth-Token", token);
-
-        // callback for success
-        requestConnection.onload = function(e) 
+        let resultOutput = function(resultJson)
         {
-            if(requestConnection.status != 200) {
-                return false;
-            }
-
             // write data to file
             let saveByteArray = (function () {
                 var a = document.createElement("a");
@@ -144,16 +148,12 @@ limitations under the License. -->
                 };
             }());
 
-            const resultJson = JSON.parse(requestConnection.responseText);
             saveByteArray([JSON.stringify(resultJson.data)], "result_" + resultJson.name + ".json");
-        };
+        }
 
-        // callback for fail
-        requestConnection.onerror = function(e) 
-        {
-            console.log("Download request-result failed.");
-        };
-
-        requestConnection.send(null);
+        getRequestResultData_request(resultOutput, requestResultUuid, getAndCheckToken());
     }
+
+    listResults();
+
 </script>

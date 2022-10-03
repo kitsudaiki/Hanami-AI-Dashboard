@@ -29,46 +29,20 @@ limitations under the License. -->
 <!--                                 script                                      -->
 <!--=============================================================================-->
 
+<script src="/libHanamiAiSdk/javascript/common.js"></script> 
+<script src="/libHanamiAiSdk/javascript/system_info.js"></script> 
 <script>
 
-getThreadMapping_request();
-
 /**
- * Send request to backend to get a list of all segment-template
+ *
  */
-function getThreadMapping_request()
-{
-    const token = getAndCheckToken();
-    if(token == "") {
-        return;
-    }
-
-    // create request
-    let requestConnection = new XMLHttpRequest();
-    requestConnection.open("GET", "/control/azuki/v1/threading", true);
-    requestConnection.setRequestHeader("X-Auth-Token", token);
-
-    // callback for success
-    requestConnection.onload = function(e) 
+getThreadMapping_request(
+    function(jsonContent)
     {
-        if(requestConnection.status != 200) 
-        {
-            // TODO: error-popup
-            return;
-        }
-
-        const jsonContent = JSON.parse(requestConnection.responseText);
         const str = JSON.stringify(jsonContent, null, 4);
         document.getElementById("system_info_div").innerHTML = str;
-    };
-
-    // callback for fail
-    requestConnection.onerror = function(e) 
-    {
-        console.log("Failed to load list of segment-templates.");
-    };
-
-    requestConnection.send(null);
-}
+    },
+    getAndCheckToken()
+);
 
 </script>

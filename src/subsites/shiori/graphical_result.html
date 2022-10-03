@@ -31,48 +31,19 @@ limitations under the License. -->
 <!--=============================================================================-->
 
 <script src="/scripts/diagrams.js"></script>
+<script src="/libHanamiAiSdk/javascript/request_result.js"></script>  
 <script>
-
-getRequestResultData_request();
-
+    
 /**
- * Send request request power-consumption-data from azuki
+ *
  */
-function getRequestResultData_request()
-{
-    const token = getAndCheckToken();
-    if(token == "") {
-        return;
-    }
-
-    // create request
-    const request = "/control/shiori/v1/request_result?uuid=" + selectedRequestResult;
-    let requestConnection = new XMLHttpRequest();
-    requestConnection.open("GET", request, true);
-    requestConnection.setRequestHeader("X-Auth-Token", token);
-
-    // create requeset
-    requestConnection.onload = function(e) 
+getRequestResultData_request(
+    function(resultJson)
     {
-        if(requestConnection.status != 200) 
-        {
-            // TODO: error-popup
-            console.log("Failed to request power-consumption from azuki with response-code: " 
-                        + requestConnection.status);
-            return;
-        }
-
-        const jsonContent = JSON.parse(requestConnection.responseText);
-        showData(jsonContent.data, "request_result_graph", "position", "value");
-    };
-
-    // callback for fail
-    requestConnection.onerror = function(e) 
-    {
-        console.log("Failed to request request-results from shiori.");
-    };
-
-    requestConnection.send(null);
-}
+        showData(resultJson.data, "request_result_graph", "position", "value");
+    }, 
+    selectedRequestResult, 
+    getAndCheckToken()
+);
 
 </script>

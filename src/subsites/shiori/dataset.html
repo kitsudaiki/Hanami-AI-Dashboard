@@ -81,10 +81,10 @@ limitations under the License. -->
         </div>
         <div class="modal_footer_part">
             <center>
-                <button id="modal_create_accept_button" class="generic_svg_button modal_accept_button">
+                <button id="create_modal_accept_button" class="generic_svg_button modal_accept_button">
                     <img class="generic_svg_on_button" src="/HanamiAI-Dashboard-Dependencies/bootstrap_icons/check-lg.svg">
                 </button>
-                <button id="modal_create_cancel_button" class="generic_svg_button">
+                <button id="create_modal_cancel_button" class="generic_svg_button">
                     <img class="generic_svg_on_button" src="/HanamiAI-Dashboard-Dependencies/bootstrap_icons/x-lg.svg">
                 </button>
             </center>
@@ -118,10 +118,10 @@ limitations under the License. -->
         </div>
         <div class="modal_footer_part">
             <center>
-                <button id="modal_delete_accept_button" class="generic_svg_button modal_accept_button">
+                <button id="delete_modal_accept_button" class="generic_svg_button modal_accept_button">
                     <img class="generic_svg_on_button" src="/HanamiAI-Dashboard-Dependencies/bootstrap_icons/check-lg.svg">
                 </button>
-                <button id="modal_delete_cancel_button" class="generic_svg_button">
+                <button id="delete_modal_cancel_button" class="generic_svg_button">
                     <img class="generic_svg_on_button" src="/HanamiAI-Dashboard-Dependencies/bootstrap_icons/x-lg.svg">
                 </button>
             </center>
@@ -154,27 +154,12 @@ limitations under the License. -->
 <script src="/scripts/table_processing.js"></script>
 <script src="/scripts/common.js"></script>
 <script src="/scripts/actions.js"></script>
-<script src="/scripts/dataset_upload.js"></script>
+<script src="/libHanamiAiSdk/javascript/data_set.js"></script> 
 <script>
-    // mapping for dataset-table
-    var headerMapping = new Map();
-    headerMapping.set("uuid", "UUID");
-    headerMapping.set("name", "Name");
-    headerMapping.set("type", "Type");
-    headerMapping.set("visibility", "Visibility");
-
-    var deleteRequest = "/control/shiori/v1/data_set?uuid=";
-    var listRequest = "/control/shiori/v1/data_set/all";
-    var createRequest = "/control/shiori/v1/csv/data_set";
-    var defaultTabName = "csv_upload_div";
-    var defaultTabIndex = 0;
-    var selectedModalTab = "csv";
-    var additionalButtons = [];
-
-    listObjects_request();
-    activateDefaultTab();
-    clearModalFields();
-
+    
+    /**
+     *
+     */
     function selectTab(event, name)
     {
         if(name === "csv") {
@@ -188,29 +173,9 @@ limitations under the License. -->
     }
 
     /**
-     * Send request to backend to create a new dataset
+     *
      */
-    function createObject_build()
-    {
-        // precheck
-        const token = getAndCheckToken();
-        if(token == "") {
-            return;
-        }
-
-        // upload
-        if(selectedModalTab === "csv") {
-            uploadCsvDataset(token);
-        }
-        if(selectedModalTab === "mnist") {
-            uploadMnistDataset(token);
-        }
-    }
-
-    /**
-     * Clear all fields of the dataset-create-modal
-     */
-    function clearModalFields()
+    var clearModalFields = function()
     {
         clearAlertBox("delete");
         clearAlertBox("create_csv");
@@ -219,7 +184,128 @@ limitations under the License. -->
         document.getElementById('name_field_mnist').value = "";
         document.getElementById('name_field_csv').value = "";
     }
+    
+    /**
+     *
+     */
+    var listDataSet = function() 
+    {
+        listDataSet_request(function(jsonContent) 
+        {
+            var headerMapping = new Map();
+            headerMapping.set("uuid", "UUID");
+            headerMapping.set("name", "Name");
+            headerMapping.set("type", "Type");
+            headerMapping.set("visibility", "Visibility");
+            var additionalButtons = ['onclick="openDeleteModal(deleteDataSet, this.value)">Delete</button>' ];
+            constructTable(jsonContent, headerMapping, '#table', additionalButtons);
+        },
+        getAndCheckToken());
+    }
+    
+    /**
+     *
+     */
+    var deleteDataSet = function(identifier)
+    {
+        deleteDataSet_request(listDataSet, identifier, getAndCheckToken());
+    }
+    
+    /**
+     *
+     */
+    var runfinishUploadMnistDataSet = function(jsonContent)
+    {
+        uploadMnistFiles(jsonContent, inputFile, labelFile, getAndCheckToken());
+        inputFile = "";
+        labelFile = "";
+        var modal = document.getElementById("create_modal");
+        clearModalFields();
+        modal.style.display = "none";
+        listDataSet();
+    }
+    
+    /**
+     *
+     */
+    var runUploadCsvDataSet = function(jsonContent)
+    {
+        uploadCsvFile(jsonContent, inputFile, getAndCheckToken());
+        inputFile = "";
+        var modal = document.getElementById("create_modal");
+        clearModalFields();
+        modal.style.display = "none";
+        listDataSet();
+    }
+        
+    /**
+     *
+     */
+    var createDataSet = function()
+    {
+        if(selectedModalTab === "csv") 
+        {
+            const name = document.getElementById('name_field_csv').value;
+            inputFile = document.getElementById('input_file_field_csv').files[0];
 
-    document.getElementById("create_dataset_button").addEventListener("click", createObject, false);
+            if(name == "") 
+            {
+                showErrorInModal("create_csv", "Name is missing");
+                return false;
+            }
+
+            if(inputFile.name == "") 
+            {
+                showErrorInModal("create_csv", "Input-file is missing");
+                return false;
+            }
+
+            createCsvDataSet_request(runUploadCsvDataSet, name, inputFile, getAndCheckToken())
+        }
+        if(selectedModalTab === "mnist") 
+        {
+            const name = document.getElementById('name_field_mnist').value;
+            inputFile = document.getElementById('input_file_field_mnist').files[0];
+            labelFile = document.getElementById('label_file_field_mnist').files[0];
+
+            if(name == "") 
+            {
+                showErrorInModal("create_mnist", "Name is missing");
+                return false;
+            }
+
+            if(inputFile.name == "") 
+            {
+                showErrorInModal("create_mnist", "Input-file is missing");
+                return false;
+            }
+           
+            if(labelFile.name == "") 
+            {   
+                showErrorInModal("create_mnist", "Label-file is missing");
+                return false;
+            }
+
+            createMnistDataSet_request(runfinishUploadMnistDataSet, name, inputFile, labelFile, getAndCheckToken())
+        }
+
+        return true;
+    }   
+
+    /**
+     *
+     */
+    var defaultTabName = "csv_upload_div";
+    var defaultTabIndex = 0;
+    var selectedModalTab = "csv";
+    var additionalButtons = [];
+    var inputFile = "";
+    var labelFile = "";
+    document.getElementById("create_dataset_button").onclick = function() {
+        openGenericModal(createDataSet, "create_modal", clearModalFields, false);
+    }
+    clearModalFields();
+    listDataSet();
+    activateDefaultTab();
     
 </script>

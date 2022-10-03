@@ -55,58 +55,28 @@ limitations under the License. -->
 <!--=============================================================================-->
 
 <script src="/scripts/diagrams.js"></script>
+<script src="/libHanamiAiSdk/javascript/common.js"></script>  
+<script src="/libHanamiAiSdk/javascript/measurements.js"></script>  
 <script>
 
-getPowerData_request();
-
 /**
- * Send request request power-consumption-data from azuki
+ *
  */
-function getPowerData_request()
-{
-    const token = getAndCheckToken();
-    if(token == "") {
-        return;
-    }
-
-    // create request
-    let requestConnection = new XMLHttpRequest();
-    requestConnection.open("GET", "/control/azuki/v1/power_consumption", true);
-    requestConnection.setRequestHeader("X-Auth-Token", token);
-
-    // create requeset
-    requestConnection.onload = function(e) 
+getPowerData_request(function(powerData)
     {
-        if(requestConnection.status != 200) 
-        {
-            // TODO: error-popup
-            console.log("Failed to request power-consumption from azuki with response-code: " 
-                        + requestConnection.status);
-            return;
-        }
-
-        const jsonContent = JSON.parse(requestConnection.responseText);
-
-        const seconds = jsonContent.power.seconds;
+        const seconds = powerData.power.seconds;
         showData(seconds, "seconds_graph", "seconds", "Power consumpton in W");
 
-        const minutes = jsonContent.power.minutes;
+        const minutes = powerData.power.minutes;
         showData(minutes, "minutes_graph", "minutes", "Power consumpton in W");
 
-        const hours = jsonContent.power.hours;
+        const hours = powerData.power.hours;
         showData(hours, "hours_graph", "hours", "Power consumpton in W");
 
-        const days = jsonContent.power.days;
+        const days = powerData.power.days;
         showData(days, "days_graph", "days", "Power consumpton in W");
-    };
-
-    // callback for fail
-    requestConnection.onerror = function(e) 
-    {
-        console.log("Failed to request power-consumption from azuki.");
-    };
-
-    requestConnection.send(null);
-}
+    },
+    getAndCheckToken()
+);
 
 </script>

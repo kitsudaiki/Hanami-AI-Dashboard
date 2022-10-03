@@ -59,10 +59,10 @@ limitations under the License. -->
         </div>
         <div class="modal_footer_part">
             <center>
-                <button id="modal_create_accept_button" class="generic_svg_button modal_accept_button">
+                <button id="create_modal_accept_button" class="generic_svg_button modal_accept_button">
                     <img class="generic_svg_on_button" src="/HanamiAI-Dashboard-Dependencies/bootstrap_icons/check-lg.svg">
                 </button>
-                <button id="modal_create_cancel_button" class="generic_svg_button">
+                <button id="create_modal_cancel_button" class="generic_svg_button">
                     <img class="generic_svg_on_button" src="/HanamiAI-Dashboard-Dependencies/bootstrap_icons/x-lg.svg">
                 </button>
             </center>
@@ -96,10 +96,10 @@ limitations under the License. -->
         </div>
         <div class="modal_footer_part">
             <center>
-                <button id="modal_delete_accept_button" class="generic_svg_button modal_accept_button">
+                <button id="delete_modal_accept_button" class="generic_svg_button modal_accept_button">
                     <img class="generic_svg_on_button" src="/HanamiAI-Dashboard-Dependencies/bootstrap_icons/check-lg.svg">
                 </button>
-                <button id="modal_delete_cancel_button" class="generic_svg_button">
+                <button id="delete_modal_cancel_button" class="generic_svg_button">
                     <img class="generic_svg_on_button" src="/HanamiAI-Dashboard-Dependencies/bootstrap_icons/x-lg.svg">
                 </button>
             </center>
@@ -136,27 +136,51 @@ limitations under the License. -->
 <script src="/scripts/table_processing.js"></script>
 <script src="/scripts/common.js"></script>
 <script src="/scripts/actions.js"></script>
+<script src="/libHanamiAiSdk/javascript/common.js"></script>  
+<script src="/libHanamiAiSdk/javascript/template.js"></script> 
 <script>
-    var headerMapping = new Map();
-    headerMapping.set("uuid", "UUID");
-    headerMapping.set("visibility", "Visibility");
-    headerMapping.set("name", "Name");
-
-    var deleteRequest = "/control/kyouko/v1/template?uuid=";
-    var listRequest = "/control/kyouko/v1/template/all";
-    var createRequest = "/control/kyouko/v1/template/upload";
-    var additionalButtons = [];
-
-    clearAlertBox("delete");
-    clearAlertBox("create");
-
-    // inital creation of the segment-template-list when open the window
-    listObjects_request();
 
     /**
-     * Send request to backend to create a new segmentTemplate
+     *
      */
-    function createObject_build()
+    var clearModalFields = function()
+    {
+        clearAlertBox("delete");
+        clearAlertBox("create");
+
+        document.getElementById('name_field').value = "";
+        document.getElementById('template_field').value = "";
+    }
+    
+    /**
+     *
+     */
+    var listSegmentTemplates = function() 
+    {
+        listSegmentTemplaetes_request(function(jsonContent) 
+        {
+            var headerMapping = new Map();
+            headerMapping.set("uuid", "UUID");
+            headerMapping.set("visibility", "Visibility");
+            headerMapping.set("name", "Name");
+            var additionalButtons = ['onclick="openDeleteModal(deleteSegmentTemplate, this.value)">Delete</button>' ];
+            constructTable(jsonContent, headerMapping, '#table', additionalButtons);
+        },
+        getAndCheckToken());
+    }
+    
+    /**
+     *
+     */
+    var deleteSegmentTemplate = function(identifier)
+    {
+        deleteSegmentTemplaete_request(listSegmentTemplates, identifier, getAndCheckToken());
+    }
+        
+    /**
+     *
+     */
+    var createSegmentTemplate = function()
     {
         const name = document.getElementById('name_field').value;
         const templateStr = document.getElementById('template_field').value;
@@ -164,29 +188,26 @@ limitations under the License. -->
         if(name == "") 
         {
             showErrorInModal("create", "Name is missing");
-            return;
+            return false;
         }
 
         if(templateStr == "") 
         {
             showErrorInModal("create", "Template is missing");
-            return;
+            return false;
         }
-       
-        // create request-content
-        const reqContent = "{\"name\":\"" + name + "\",\"template\":" + templateStr + "}";
-        createObject_request(reqContent, createRequest, "create_modal");
+
+        createSegmentTemplaete_request(listSegmentTemplates, name, templateStr, getAndCheckToken());
+        return true;
     }
 
     /**
-     * Clear all fields of the segment-template-create-modal
+     *
      */
-    function clearModalFields()
-    {
-        document.getElementById('name_field').value = "";
-        document.getElementById('template_field').value = "";
+    document.getElementById("create_segment_template_button").onclick = function() {
+        openGenericModal(createSegmentTemplate, "create_modal", clearModalFields);
     }
-
-    document.getElementById("create_segment_template_button").addEventListener("click", createObject, false);
+    clearModalFields();
+    listSegmentTemplates();
 
 </script>

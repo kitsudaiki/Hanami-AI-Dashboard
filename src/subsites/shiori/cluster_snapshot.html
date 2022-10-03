@@ -53,10 +53,10 @@ limitations under the License. -->
         </div>
         <div class="modal_footer_part">
             <center>
-                <button id="modal_delete_accept_button" class="generic_svg_button modal_accept_button">
+                <button id="delete_modal_accept_button" class="generic_svg_button modal_accept_button">
                     <img class="generic_svg_on_button" src="/HanamiAI-Dashboard-Dependencies/bootstrap_icons/check-lg.svg">
                 </button>
-                <button id="modal_delete_cancel_button" class="generic_svg_button">
+                <button id="delete_modal_cancel_button" class="generic_svg_button">
                     <img class="generic_svg_on_button" src="/HanamiAI-Dashboard-Dependencies/bootstrap_icons/x-lg.svg">
                 </button>
             </center>
@@ -123,7 +123,7 @@ limitations under the License. -->
     var deleteClusterSnapshots = function(identifier)
     {
         clearAlertBox("delete");
-        deleteClusterSnapshot_request(listResults, identifier, getAndCheckToken());
+        deleteClusterSnapshot_request(listClusterSnapshots, identifier, getAndCheckToken());
     }
 
     listClusterSnapshots();

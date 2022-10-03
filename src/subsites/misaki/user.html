@@ -303,28 +303,29 @@ limitations under the License. -->
         if(password1 != password2) 
         {
             showErrorInModal("create", "Passwords are not equal");
-            return;
+            return false;
         }
 
         if(id == "") 
         {
             showErrorInModal("create", "ID is missing");
-            return;
+            return false;
         }
 
         if(name == "") 
         {
             showErrorInModal("create", "Name is missing");
-            return;
+            return false;
         }
 
         if(password1 == "") 
         {
             showErrorInModal("create", "Password is missing");
-            return;
+            return false;
         }
 
         createUser_request(listUsers, id, name, password1, isAdmin, getAndCheckToken());
+        return true;
     }
 
     /**

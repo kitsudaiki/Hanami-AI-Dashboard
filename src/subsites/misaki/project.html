@@ -186,12 +186,12 @@ limitations under the License. -->
         if(id == "") 
         {
             showErrorInModal("create", "ID is missing");
-            return;
+            return false;
         }
         if(name == "") 
         {
             showErrorInModal("create", "Name is missing");
-            return;
+            return false;
         }
 
         createProject_request(listProjects, id, name, getAndCheckToken());

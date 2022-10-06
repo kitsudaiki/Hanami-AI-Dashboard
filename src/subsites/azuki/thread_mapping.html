@@ -37,8 +37,12 @@ limitations under the License. -->
  *
  */
 getThreadMapping_request(
-    function(jsonContent)
+    function(status, response)
     {
+        if(status !== 200) {
+            return;
+        }
+        const jsonContent = JSON.parse(response);
         const str = JSON.stringify(jsonContent, null, 4);
         document.getElementById("system_info_div").innerHTML = str;
     },

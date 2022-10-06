@@ -266,19 +266,27 @@ limitations under the License. -->
      */
     var listUsers = function() 
     {
-        listUsers_request(function(jsonContent) 
-        {
-            var headerMapping = new Map();
-            headerMapping.set("id", "ID");
-            headerMapping.set("name", "Name");
-            headerMapping.set("projects", "Projects");
-            headerMapping.set("is_admin", "Is Admin"); 
-            var additionalButtons = ['onclick="addProjectToUser(this.value)">Add Project</button>',
-                                     'onclick="removeProjectFromUser(this.value)">Remove Project</button>',
-                                     'onclick="openDeleteModal(deleteUser, this.value)">Delete</button>' ];
-            constructTable(jsonContent, headerMapping, '#table', additionalButtons);
-        },
-        getAndCheckToken());
+        listUsers_request(
+            function(status, responseText) 
+            {
+                if(status !== 200) {
+                    //TODO: error-popup
+                    return;
+                }
+
+                const jsonContent = JSON.parse(responseText);
+                var headerMapping = new Map();
+                headerMapping.set("id", "ID");
+                headerMapping.set("name", "Name");
+                headerMapping.set("projects", "Projects");
+                headerMapping.set("is_admin", "Is Admin"); 
+                var additionalButtons = ['onclick="addProjectToUser(this.value)">Add Project</button>',
+                                         'onclick="removeProjectFromUser(this.value)">Remove Project</button>',
+                                         'onclick="openDeleteModal(deleteUser, this.value)">Delete</button>' ];
+                constructTable(jsonContent, headerMapping, '#table', additionalButtons);
+            },
+            getAndCheckToken()
+        );
     }
 
     /**
@@ -286,7 +294,19 @@ limitations under the License. -->
      */
     var deleteUser = function(identifier)
     {
-        deleteUser_request(listUsers, identifier, getAndCheckToken());
+        deleteUser_request(
+            function(status, responseText) 
+            {
+                if(status !== 200) {
+                    showErrorInModal("delete", responseText);
+                    return;
+                }
+                document.getElementById("delete_modal").style.display = "none";
+                listUsers();
+            }, 
+            identifier, 
+            getAndCheckToken()
+        );
     }
     
     /**
@@ -324,7 +344,23 @@ limitations under the License. -->
             return false;
         }
 
-        createUser_request(listUsers, id, name, password1, isAdmin, getAndCheckToken());
+        createUser_request(
+            function(status, responseText) 
+            {
+                if(status !== 200) 
+                {
+                    showErrorInModal("create", responseText);
+                    return;
+                }
+                document.getElementById("create_modal").style.display = "none";
+                listUsers();
+            }, 
+            id, 
+            name, 
+            password1, 
+            isAdmin, 
+            getAndCheckToken()
+        );
         return true;
     }
 
@@ -339,9 +375,25 @@ limitations under the License. -->
             {
                 const projectId = getDropdownValue("dropdown_project_div");
                 const role = getDropdownValue("dropdown_userRole_div");
-                const idProjectAdmin = document.getElementById('isProjectAdmin_field').checked;
+                const isProjectAdmin = document.getElementById('isProjectAdmin_field').checked;
 
-                addProjectToUser_request(listUsers, userId, projectId, role, idProjectAdmin, getAndCheckToken());
+                addProjectToUser_request(
+                    function(status, responseText) 
+                    {
+                        if(status !== 200) 
+                        {
+                            showErrorInModal("add_project", responseText);
+                            return;
+                        }
+                        document.getElementById("add_project_modal").style.display = "none";
+                        listUsers();
+                    }, 
+                    userId, 
+                    projectId, 
+                    role, 
+                    isProjectAdmin, 
+                    getAndCheckToken()
+                );
             }, 
             "add_project_modal", 
             clearModalFields
@@ -358,7 +410,16 @@ limitations under the License. -->
             function() 
             {
                 const projectId = getDropdownValue("dropdown_user_project_div");
-                removeProjectFromUser_request(listUsers, userId, projectId, getAndCheckToken());
+                removeProjectFromUser_request(function(status, responseText) {
+                    if(status !== 200) {
+                        showErrorInModal("remove_project", responseText);
+                    }
+                    document.getElementById("remove_project_modal").style.display = "none";
+                    listUsers();
+                }, 
+                userId, 
+                projectId, 
+                getAndCheckToken());
             }, 
             "remove_project_modal", 
             clearModalFields

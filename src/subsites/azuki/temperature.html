@@ -62,8 +62,14 @@ limitations under the License. -->
 /**
  *
  */
-getTemperatureData_request(function(thermalData)
+getTemperatureData_request(
+    function(status, response)
     {
+        if(status !== 200) {
+            return;
+        }
+        
+        const thermalData = JSON.parse(response);
         const seconds = thermalData.temperature.seconds;
         showData(seconds, "seconds_graph", "seconds", "Thermal production in °C");
 

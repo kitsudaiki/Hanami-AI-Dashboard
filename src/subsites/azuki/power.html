@@ -62,8 +62,14 @@ limitations under the License. -->
 /**
  *
  */
-getPowerData_request(function(powerData)
+getPowerData_request(
+    function(status, response)
     {
+        if(status !== 200) {
+            return;
+        }
+
+        const powerData = JSON.parse(response);
         const seconds = powerData.power.seconds;
         showData(seconds, "seconds_graph", "seconds", "Power consumpton in W");
 

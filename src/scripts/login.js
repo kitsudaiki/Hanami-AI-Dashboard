@@ -35,7 +35,6 @@ var loginFunction = function(responseJson)
     document.cookie = "Is_Admin=" + responseJson.is_admin;
 
     updateSidebar();
-    fillUserProjectDropdownList();
 
     document.getElementById("login_id_field").value = "";
     document.getElementById("login_pw_field").value = "";
@@ -88,5 +87,5 @@ function getAndCheckToken()
 function logout()
 {
     deleteAllCookies() 
-    login();
+    loginModalFunction();
 }

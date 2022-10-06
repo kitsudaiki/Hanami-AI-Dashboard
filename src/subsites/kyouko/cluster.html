@@ -254,20 +254,28 @@ limitations under the License. -->
      */
     var listClusters = function() 
     {
-        listClusters_request(function(jsonContent) 
-        {
-            var headerMapping = new Map();
-            headerMapping.set("uuid", "UUID");
-            headerMapping.set("visibility", "Visibility");
-            headerMapping.set("name", "Name");
+        listClusters_request(
+            function(status, responseText) 
+            {
+                if(status !== 200) {
+                    //TODO: error-popup
+                    return;
+                }
 
-            let additionalButtons = [ 'onclick="switchToTasks(this.value)">Tasks</button>',
-                                      'onclick="saveClusterSnapshot(this.value)">Snapshot</button>',
-                                      'onclick="restoreClusterSnapshot(this.value)">Restore</button>',
-                                      'onclick="openDeleteModal(deleteResults, this.value)">Delete</button>' ];
-            constructTable(jsonContent, headerMapping, '#table', additionalButtons);
-        },
-        getAndCheckToken());
+                const jsonContent = JSON.parse(responseText);
+                var headerMapping = new Map();
+                headerMapping.set("uuid", "UUID");
+                headerMapping.set("visibility", "Visibility");
+                headerMapping.set("name", "Name");
+
+                let additionalButtons = [ 'onclick="switchToTasks(this.value)">Tasks</button>',
+                                          'onclick="saveClusterSnapshot(this.value)">Snapshot</button>',
+                                          'onclick="restoreClusterSnapshot(this.value)">Restore</button>',
+                                          'onclick="openDeleteModal(deleteResults, this.value)">Delete</button>' ];
+                constructTable(jsonContent, headerMapping, '#table', additionalButtons);
+            },
+            getAndCheckToken()
+        );
     }
 
     /**
@@ -275,7 +283,19 @@ limitations under the License. -->
      */
     var deleteResults = function(identifier)
     {
-        deleteCluster_request(listClusters, identifier, getAndCheckToken());
+        deleteCluster_request(
+            function(status, responseText) 
+            {
+                if(status !== 200) {
+                    showErrorInModal("delete", responseText);
+                    return;
+                }
+                document.getElementById("delete_modal").style.display = "none";
+                listClusters();
+            }, 
+            identifier, 
+            getAndCheckToken()
+        );
     }
 
     /**
@@ -298,7 +318,21 @@ limitations under the License. -->
             return false;
         }
 
-        createCluster_request(listClusters, name, templateStr, getAndCheckToken());
+        createCluster_request(
+            function(status, responseText) 
+            {
+                if(status !== 200) 
+                {
+                    showErrorInModal("create", responseText);
+                    return;
+                }
+                document.getElementById("create_modal").style.display = "none";
+                listClusters();
+            }, 
+            name, 
+            templateStr, 
+            getAndCheckToken()
+        );
         return true;
     }
 
@@ -317,7 +351,21 @@ limitations under the License. -->
                     return false;
                 }
                
-                saveCluster_request(listClusters, name, clusterUuid, getAndCheckToken());
+                saveCluster_request(
+                    function(status, responseText) 
+                    {
+                        if(status !== 200) 
+                        {
+                            showErrorInModal("create_snapshot", responseText);
+                            return;
+                        }
+                        document.getElementById("create_snapshot_modal").style.display = "none";
+                        listClusters();
+                    }, 
+                    name, 
+                    clusterUuid, 
+                    getAndCheckToken()
+                );
                 return true;
             }, 
             "create_snapshot_modal", 
@@ -333,10 +381,21 @@ limitations under the License. -->
         openGenericModal(
             function() 
             {
-                restoreCluster_request(listClusters, 
-                                       getDropdownValue("dropdown_snapshot_div"), 
-                                       clusterUuid, 
-                                       getAndCheckToken());
+                restoreCluster_request(
+                    function(status, responseText) 
+                    {
+                        if(status !== 200) 
+                        {
+                            showErrorInModal("restore_snapshot", responseText);
+                            return;
+                        }
+                        document.getElementById("restore_snapshot_modal").style.display = "none";
+                        listClusters();
+                    },
+                    getDropdownValue("dropdown_snapshot_div"), 
+                    clusterUuid, 
+                    getAndCheckToken()
+                );
                 return true;
             }, 
             "restore_snapshot_modal", 

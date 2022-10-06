@@ -190,17 +190,25 @@ limitations under the License. -->
      */
     var listDataSet = function() 
     {
-        listDataSet_request(function(jsonContent) 
-        {
-            var headerMapping = new Map();
-            headerMapping.set("uuid", "UUID");
-            headerMapping.set("name", "Name");
-            headerMapping.set("type", "Type");
-            headerMapping.set("visibility", "Visibility");
-            var additionalButtons = ['onclick="openDeleteModal(deleteDataSet, this.value)">Delete</button>' ];
-            constructTable(jsonContent, headerMapping, '#table', additionalButtons);
-        },
-        getAndCheckToken());
+        listDataSet_request(
+            function(status, responseText) 
+            {
+                if(status !== 200) {
+                    //TODO: error-popup
+                    return;
+                }
+
+                const jsonContent = JSON.parse(responseText);
+                var headerMapping = new Map();
+                headerMapping.set("uuid", "UUID");
+                headerMapping.set("name", "Name");
+                headerMapping.set("type", "Type");
+                headerMapping.set("visibility", "Visibility");
+                var additionalButtons = ['onclick="openDeleteModal(deleteDataSet, this.value)">Delete</button>' ];
+                constructTable(jsonContent, headerMapping, '#table', additionalButtons);
+            },
+            getAndCheckToken()
+        );
     }
     
     /**
@@ -208,7 +216,19 @@ limitations under the License. -->
      */
     var deleteDataSet = function(identifier)
     {
-        deleteDataSet_request(listDataSet, identifier, getAndCheckToken());
+        deleteDataSet_request(
+            function(status, responseText) 
+            {
+                if(status !== 200) {
+                    showErrorInModal("delete", responseText);
+                    return;
+                }
+                document.getElementById("delete_modal").style.display = "none";
+                listDataSet();
+            }, 
+            identifier, 
+            getAndCheckToken()
+        );
     }
     
     /**

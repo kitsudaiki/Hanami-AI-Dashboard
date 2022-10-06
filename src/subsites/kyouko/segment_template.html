@@ -157,16 +157,24 @@ limitations under the License. -->
      */
     var listSegmentTemplates = function() 
     {
-        listSegmentTemplaetes_request(function(jsonContent) 
-        {
-            var headerMapping = new Map();
-            headerMapping.set("uuid", "UUID");
-            headerMapping.set("visibility", "Visibility");
-            headerMapping.set("name", "Name");
-            var additionalButtons = ['onclick="openDeleteModal(deleteSegmentTemplate, this.value)">Delete</button>' ];
-            constructTable(jsonContent, headerMapping, '#table', additionalButtons);
-        },
-        getAndCheckToken());
+        listSegmentTemplaetes_request(
+            function(status, responseText) 
+            {
+                if(status !== 200) {
+                    //TODO: error-popup
+                    return;
+                }
+
+                const jsonContent = JSON.parse(responseText);
+                var headerMapping = new Map();
+                headerMapping.set("uuid", "UUID");
+                headerMapping.set("visibility", "Visibility");
+                headerMapping.set("name", "Name");
+                var additionalButtons = ['onclick="openDeleteModal(deleteSegmentTemplate, this.value)">Delete</button>' ];
+                constructTable(jsonContent, headerMapping, '#table', additionalButtons);
+            },
+            getAndCheckToken()
+        );
     }
     
     /**
@@ -174,7 +182,19 @@ limitations under the License. -->
      */
     var deleteSegmentTemplate = function(identifier)
     {
-        deleteSegmentTemplaete_request(listSegmentTemplates, identifier, getAndCheckToken());
+        deleteSegmentTemplaete_request(
+            function(status, responseText) 
+            {
+                if(status !== 200) {
+                    showErrorInModal("delete", responseText);
+                    return;
+                }
+                document.getElementById("delete_modal").style.display = "none";
+                listSegmentTemplates();
+            }, 
+            identifier, 
+            getAndCheckToken()
+        );
     }
         
     /**
@@ -197,7 +217,21 @@ limitations under the License. -->
             return false;
         }
 
-        createSegmentTemplaete_request(listSegmentTemplates, name, templateStr, getAndCheckToken());
+        createSegmentTemplaete_request(
+            function(status, responseText) 
+            {
+                if(status !== 200) 
+                {
+                    showErrorInModal("create", responseText);
+                    return;
+                }
+                document.getElementById("create_modal").style.display = "none";
+                listSegmentTemplates();
+            },
+            name, 
+            templateStr, 
+            getAndCheckToken()
+        );
         return true;
     }
 

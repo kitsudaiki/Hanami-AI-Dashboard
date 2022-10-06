@@ -93,8 +93,13 @@ limitations under the License. -->
     var listResults = function() 
     {
         listResults_request(
-            function(jsonContent) 
+            function(status, responseText) 
             {
+                if(status !== 200) {
+                    //TODO: error-popup
+                    return;
+                }
+                const jsonContent = JSON.parse(responseText);
                 let headerMapping = new Map();
                 headerMapping.set("uuid", "UUID");
                 headerMapping.set("name", "Name");
@@ -114,7 +119,19 @@ limitations under the License. -->
     var deleteResults = function(identifier)
     {
         clearAlertBox("delete");
-        deleteResult_request(listResults, identifier, getAndCheckToken());
+        deleteResult_request(
+            function(status, responseText) 
+            {
+                if(status !== 200) {
+                    showErrorInModal("delete", responseText);
+                    return;
+                }
+                document.getElementById("delete_modal").style.display = "none";
+                listResults();
+            }, 
+            identifier, 
+            getAndCheckToken()
+        );
     }
     
     /**
@@ -131,9 +148,15 @@ limitations under the License. -->
      */
     function downloadResult(requestResultUuid)
     {
-        let resultOutput = function(resultJson)
+        let resultOutput = function(status, response)
         {
+            if(status !== 200) {
+                // TODO: error-popup
+                return;
+            }
+
             // write data to file
+            const resultJson = JSON.parse(response);
             let saveByteArray = (function () {
                 var a = document.createElement("a");
                 document.body.appendChild(a);

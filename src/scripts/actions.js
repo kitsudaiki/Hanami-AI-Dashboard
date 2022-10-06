@@ -28,7 +28,6 @@ function openDeleteModal(deleteFunction, identifier)
     acceptButton.onclick = function() 
     {
         deleteFunction(identifier);
-        modal.style.display = "none";
     }
 
     // handle cancel-button
@@ -58,11 +57,7 @@ function openGenericModal(outputFunc, modalName, clearFunction, closeModal=true)
     // handle accept-button
     acceptButton.onclick = function() 
     {
-        if(outputFunc() === true
-            && closeModal) 
-        {
-            modal.style.display = "none";
-        }
+        outputFunc();
     }
 
     // handle cancel-button

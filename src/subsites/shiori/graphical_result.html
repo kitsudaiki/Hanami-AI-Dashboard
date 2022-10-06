@@ -46,8 +46,14 @@ limitations under the License. -->
  *
  */
 getRequestResultData_request(
-    function(resultJson)
+    function(status, responseText) 
     {
+        if(status !== 200) {
+            //TODO: error-popup
+            return;
+        }
+
+        const resultJson = JSON.parse(responseText);
         showData(resultJson.data, "request_result_graph", "position", "value");
 
         var arrayLength = resultJson.data.length;

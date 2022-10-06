@@ -156,8 +156,13 @@ limitations under the License. -->
     var listTasks = function() 
     {
         listTasks_request(
-            function(jsonContent) 
-            {
+            function(status, responseText) {
+                if(status !== 200) {
+                    //TODO: error-popup
+                    return;
+                }
+
+                const jsonContent = JSON.parse(responseText);
                 let headerMapping = new Map();
                 headerMapping.set("uuid", "UUID");
                 headerMapping.set("state", "State");
@@ -166,10 +171,31 @@ limitations under the License. -->
                 headerMapping.set("start", "Start-Time");
                 headerMapping.set("end", "End-Time");
 
-                let additionalButtons = [];
+                let additionalButtons = [ 'onclick="openDeleteModal(deleteTask, this.value)">Delete</button>' ];
                 constructTable(jsonContent, headerMapping, '#table', additionalButtons);
             },
             selectedCluster,
+            getAndCheckToken()
+        );
+    }
+
+    /**
+     *
+     */
+    var deleteTask = function(identifier)
+    {
+        deleteTask_request(
+            function(status, responseText) 
+            {
+                if(status !== 200) {
+                    showErrorInModal("delete", responseText);
+                    return;
+                }
+                document.getElementById("delete_modal").style.display = "none";
+                listTasks();
+            }, 
+            selectedCluster,
+            identifier, 
             getAndCheckToken()
         );
     }
@@ -186,13 +212,24 @@ limitations under the License. -->
             return;
         }
 
-        createTask_request(listTasks, 
-                           name, 
-                           selectedCluster, 
-                           getDropdownValue("dropdown_div"), 
-                           getDropdownValue("dropdown_datasetType_div"), 
-                           getDropdownValue("dropdown_taskType_div"), 
-                           getAndCheckToken());
+        createTask_request(
+            function(status, responseText) 
+            {
+                if(status !== 200) 
+                {
+                    showErrorInModal("create", responseText);
+                    return;
+                }
+                document.getElementById("create_modal").style.display = "none";
+                listTasks();
+            }, 
+            name, 
+            selectedCluster, 
+            getDropdownValue("dropdown_div"), 
+            getDropdownValue("dropdown_datasetType_div"), 
+            getDropdownValue("dropdown_taskType_div"), 
+            getAndCheckToken()
+        );
 
         return true;
     }

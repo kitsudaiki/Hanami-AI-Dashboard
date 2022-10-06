@@ -102,8 +102,14 @@ limitations under the License. -->
     var listClusterSnapshots = function() 
     {
         listClusterSnapshots_request(
-            function(jsonContent) 
+            function(status, responseText) 
             {
+                if(status !== 200) {
+                    //TODO: error-popup
+                    return;
+                }
+
+                const jsonContent = JSON.parse(responseText);
                 var headerMapping = new Map();
                 headerMapping.set("uuid", "UUID");
                 headerMapping.set("name", "Name");
@@ -123,7 +129,19 @@ limitations under the License. -->
     var deleteClusterSnapshots = function(identifier)
     {
         clearAlertBox("delete");
-        deleteClusterSnapshot_request(listClusterSnapshots, identifier, getAndCheckToken());
+        deleteClusterSnapshot_request(
+            function(status, responseText) 
+            {
+                if(status !== 200) {
+                    showErrorInModal("delete", responseText);
+                    return;
+                }
+                document.getElementById("delete_modal").style.display = "none";
+                listClusterSnapshots();
+            }, 
+            identifier, 
+            getAndCheckToken()
+        );
     }
 
     listClusterSnapshots();

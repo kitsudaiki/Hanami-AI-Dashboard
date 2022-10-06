@@ -155,16 +155,24 @@ limitations under the License. -->
      */
     var listProjects = function() 
     {
-        listProjects_request(function(jsonContent) 
-        {
-            var headerMapping = new Map();
-            headerMapping.set("id", "ID");
-            headerMapping.set("name", "Name");
-            headerMapping.set("creator_id", "Creator-ID");
-            var additionalButtons = ['onclick="openDeleteModal(deleteProject, this.value)">Delete</button>' ];
-            constructTable(jsonContent, headerMapping, '#table', additionalButtons);
-        },
-        getAndCheckToken());
+        listProjects_request(
+            function(status, responseText) 
+            {
+                if(status !== 200) {
+                    //TODO: error-popup
+                    return;
+                }
+
+                const jsonContent = JSON.parse(responseText);
+                var headerMapping = new Map();
+                headerMapping.set("id", "ID");
+                headerMapping.set("name", "Name");
+                headerMapping.set("creator_id", "Creator-ID");
+                var additionalButtons = ['onclick="openDeleteModal(deleteProject, this.value)">Delete</button>' ];
+                constructTable(jsonContent, headerMapping, '#table', additionalButtons);
+            },
+            getAndCheckToken()
+        );
     }
     
     /**
@@ -172,7 +180,18 @@ limitations under the License. -->
      */
     var deleteProject = function(identifier)
     {
-        deleteProject_request(listProjects, identifier, getAndCheckToken());
+        deleteProject_request(
+            function(status, responseText) {
+                if(status !== 200) {
+                    showErrorInModal("delete", responseText);
+                    return;
+                }
+                document.getElementById("delete_modal").style.display = "none";
+                listProjects();
+            }, 
+            identifier, 
+            getAndCheckToken()
+        );
     }
         
     /**
@@ -194,7 +213,21 @@ limitations under the License. -->
             return false;
         }
 
-        createProject_request(listProjects, id, name, getAndCheckToken());
+        createProject_request(
+            function(status, responseText) 
+            {
+                if(status !== 200) 
+                {
+                    showErrorInModal("create", responseText);
+                    return;
+                }
+                document.getElementById("create_modal").style.display = "none";
+                listProjects();
+            }, 
+            id, 
+            name, 
+            getAndCheckToken()
+        );
         return true;
     }
 

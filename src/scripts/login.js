@@ -31,8 +31,8 @@ var loginFunction = function(responseJson)
 
     // TODO: check if json-parsing is successful
     document.cookie = "Auth_JWT_Token=" + responseJson.token + "; SameSite=Strict; Secure";
-    document.cookie = "User_Name=" + responseJson.name;
-    document.cookie = "Is_Admin=" + responseJson.is_admin;
+    document.cookie = "User_Name=" + responseJson.name + "; SameSite=Strict;";
+    document.cookie = "Is_Admin=" + responseJson.is_admin + "; SameSite=Strict;";
 
     updateSidebar();
 

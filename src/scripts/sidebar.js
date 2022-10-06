@@ -190,7 +190,9 @@ function switchProject_request(projectId)
             return false;
         }
 
-        $("#content_div").load("/subsites/kyouko/cluster.html"); 
+        deleteAllCookies();
+        const jsonResponse = JSON.parse(switchProjectConnection.responseText);
+        loginFunction(jsonResponse);
 
         var modal = document.getElementById("switch_project_modal");
         modal.style.display = "none";

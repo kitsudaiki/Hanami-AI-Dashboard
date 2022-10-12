@@ -109,7 +109,7 @@ function downloadDocumentation_Request()
         return;
     }
     
-    const request = "/control/misaki/v1/documentation/api/rest?type=md";
+    const request = "/control/misaki/v1/documentation/api/rest?type=pdf";
     let requestConnection = new XMLHttpRequest();
     requestConnection.open("GET", request, true);
     requestConnection.setRequestHeader("X-Auth-Token", token);
@@ -138,7 +138,7 @@ function downloadDocumentation_Request()
             };
         }());
 
-        saveByteArray([decodedDocu], 'rest_api_documentation.md');
+        saveByteArray([decodedDocu], 'rest_api_documentation.pdf');
     };
 
     // callback for fail
@@ -193,6 +193,8 @@ function switchProject_request(projectId)
         deleteAllCookies();
         const jsonResponse = JSON.parse(switchProjectConnection.responseText);
         loginFunction(jsonResponse);
+
+        $("#content_div").load("/subsites/kyouko/cluster.html"); 
 
         var modal = document.getElementById("switch_project_modal");
         modal.style.display = "none";

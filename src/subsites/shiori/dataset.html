@@ -234,8 +234,13 @@ limitations under the License. -->
     /**
      *
      */
-    var runfinishUploadMnistDataSet = function(jsonContent)
+    var runfinishUploadMnistDataSet = function(status, responseText)
     {
+        if(status !== 200) {
+            showErrorInModal("create", responseText);
+            return;
+        }
+        const jsonContent = JSON.parse(responseText);
         uploadMnistFiles(jsonContent, inputFile, labelFile, getAndCheckToken());
         inputFile = "";
         labelFile = "";
@@ -248,8 +253,13 @@ limitations under the License. -->
     /**
      *
      */
-    var runUploadCsvDataSet = function(jsonContent)
+    var runUploadCsvDataSet = function(status, responseText)
     {
+        if(status !== 200) {
+            showErrorInModal("create", responseText);
+            return;
+        }
+        const jsonContent = JSON.parse(responseText);
         uploadCsvFile(jsonContent, inputFile, getAndCheckToken());
         inputFile = "";
         var modal = document.getElementById("create_modal");

@@ -217,7 +217,7 @@ function fillUserProjectDropdownList(dropdownDiv)
 
     // create request
     var listRequestConnection = new XMLHttpRequest();
-    listRequestConnection.open("GET", "/control/misaki/v1/project/user", true);
+    listRequestConnection.open("GET", "/control/misaki/v1/user/project", true);
     listRequestConnection.setRequestHeader("X-Auth-Token", authToken);
 
     // callback for success

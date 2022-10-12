@@ -41,6 +41,7 @@ limitations under the License. -->
             <a id="azuki_system_info" class="sidebar_dropdown_entry" href="#">System-Info</a>
             <a id="azuki_thread_mapping" class="sidebar_dropdown_entry" href="#">Thread-Mapping</a>
             <a id="azuki_power_overview" class="sidebar_dropdown_entry" href="#">Power</a>
+            <a id="azuki_speed_overview" class="sidebar_dropdown_entry" href="#">Speed</a>
             <a id="azuki_temperature_overview" class="sidebar_dropdown_entry" href="#">Temperature</a>
         </div>
 
@@ -172,6 +173,9 @@ limitations under the License. -->
     });
     document.getElementById("azuki_power_overview").addEventListener("click", function() {
         $("#content_div").load("/subsites/azuki/power.html"); 
+    });
+    document.getElementById("azuki_speed_overview").addEventListener("click", function() {
+        $("#content_div").load("/subsites/azuki/speed.html"); 
     });
     document.getElementById("azuki_temperature_overview").addEventListener("click", function() {
         $("#content_div").load("/subsites/azuki/temperature.html"); 

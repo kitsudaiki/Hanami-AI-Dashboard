@@ -405,7 +405,7 @@ limitations under the License. -->
      */
     var removeProjectFromUser = function(userId)
     {
-        fillUserProjectDropdownList("dropdown_user_project_div"); 
+        fillUserProjectDropdownList("dropdown_user_project_div", userId); 
         openGenericModal(
             function() 
             {
@@ -433,7 +433,7 @@ limitations under the License. -->
         openGenericModal(createUser, "create_modal", clearModalFields);
     }
 
-    var availableRoles = ["admin", "member"];
+    var availableRoles = ["member"];
     clearModalFields();
     fillStaticDropdownList("dropdown_userRole_div", availableRoles);
     listUsers();

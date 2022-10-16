@@ -207,7 +207,7 @@ function fillStaticDropdownList(dropdownDiv, values)
  *
  * @param {dropdownDiv} ID of the dev, which should be filled with projects of the user
  */
-function fillUserProjectDropdownList(dropdownDiv)
+function fillUserProjectDropdownList(dropdownDiv, userId="")
 {
     // get and check token
     const authToken = getCookieValue("Auth_JWT_Token");
@@ -217,7 +217,11 @@ function fillUserProjectDropdownList(dropdownDiv)
 
     // create request
     var listRequestConnection = new XMLHttpRequest();
-    listRequestConnection.open("GET", "/control/misaki/v1/user/project", true);
+    let path = "/control/misaki/v1/user/project";
+    if(userId !== "") {
+        path += "?user_id=" + userId
+    }
+    listRequestConnection.open("GET", path, true);
     listRequestConnection.setRequestHeader("X-Auth-Token", authToken);
 
     // callback for success

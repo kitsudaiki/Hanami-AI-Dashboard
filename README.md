@@ -1,8 +1,8 @@
-# HanamiDashboard
+# Hanami-AI-Dashboard
 
 ## Description
 
-Client for at the moment primary debugging and testing of the KouykoMind-project.
+Dashboard of the Hanami-AI-Project: https://github.com/kitsudaiki/Hanami-AI
 
 ## License
 

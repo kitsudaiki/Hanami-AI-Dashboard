@@ -63,7 +63,6 @@ function openGenericModal(outputFunc, modalName, clearFunction, closeModal=true)
     // handle cancel-button
     cancelButton.onclick = function() 
     {
-        outputFunc();
         clearFunction();
         modal.style.display = "none";
     } 

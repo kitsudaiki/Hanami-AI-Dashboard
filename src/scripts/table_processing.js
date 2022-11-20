@@ -75,7 +75,6 @@ function Body(bodyContent, selector, colIds, additionalButtons)
         {
             // if cell is a json-object, then transform it into a better readable version by replacing special characters
             let cell = JSON.stringify(rowContent[colIds[i]]);
-            cell = cell.replaceAll(":", ": ");
             cell = cell.replaceAll("},", "},<br/>");
             cell = cell.replaceAll(",", "<br/>");
             cell = cell.replaceAll("[", "");
@@ -83,6 +82,7 @@ function Body(bodyContent, selector, colIds, additionalButtons)
             cell = cell.replaceAll("]", "");
             cell = cell.replaceAll("{", "");
             cell = cell.replaceAll("}", "");
+            cell = cell.replaceAll("\\n", "<br/>");
             body.append($('<td/>').html(cell));
         }
 

@@ -49,9 +49,6 @@ limitations under the License. -->
                     <label class="modal_label" for="datasetDropdown">Task-Type:</label>
                     <div id="dropdown_taskType_div" name="datasetDropdown"></div>
                     <br>
-                    <label class="modal_label" for="datasetTypeDropdown">Dataset-Type:</label>
-                    <div id="dropdown_datasetType_div" name="datasetTypeDropdown"></div>
-                    <br>
                     <label class="modal_label" for="datasetDropdown">Dataset:</label>
                     <div id="dropdown_div" name="datasetDropdown"></div>
                 </div>
@@ -119,7 +116,7 @@ limitations under the License. -->
     #create_modal_content { 
         color: var(--color-text);
         width: 40rem;
-        height: 35rem;
+        height: 28rem;
     }
 
     #delete_modal_content { 
@@ -224,10 +221,9 @@ limitations under the License. -->
                 listTasks();
             }, 
             name, 
+            getDropdownValue("dropdown_taskType_div"), 
             selectedCluster, 
             getDropdownValue("dropdown_div"), 
-            getDropdownValue("dropdown_datasetType_div"), 
-            getDropdownValue("dropdown_taskType_div"), 
             getAndCheckToken()
         );
 
@@ -243,12 +239,10 @@ limitations under the License. -->
     listTasks();
     clearModalFields();
 
-    var taskTypes = ["learn", "request"];
-    var taskDatasetTypes = ["image", "table"];
+    const taskTypes = ["learn", "request"];
 
     fillDropdownList("dropdown_div", "/control/shiori/v1/data_set/all");
     fillStaticDropdownList("dropdown_taskType_div", taskTypes);
-    fillStaticDropdownList("dropdown_datasetType_div", taskDatasetTypes);
     
 
 </script>
